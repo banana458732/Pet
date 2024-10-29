@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}お問い合わせ{% endblock %}
+
+{% block contents %}
+<section class="page-section" id="contact">
+    <div class="container px-4 px-lg-5">
+        <h2 class="text-center mt-0">お問い合わせ</h2>
+        <hr class="divider" />
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="sender_name" class="form-label">お名前:</label>
+                <input type="text" class="form-control" id="sender_name" name="sender_name" required>
+            </div>
+            <div class="mb-3">
+                <label for="sender_email" class="form-label">メールアドレス:</label>
+                <input type="email" class="form-control" id="sender_email" name="sender_email" required>
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label">メッセージ内容:</label>
+                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">送信</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

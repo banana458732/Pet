@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ pet.pet_id }}の詳細{% endblock %}
+
+{% block contents %}
+<h2>{{ pet.pet_id }}の詳細</h2>
+
+<!-- 選択された画像表示用のセクション -->
+<div id="selectedImage"></div>
+
+<!-- JavaScriptによる画像表示制御 -->
+<script>
+    function showSelectedImage(imageUrl) {
+        const selectedImageContainer = document.getElementById('selectedImage');
+        selectedImageContainer.innerHTML = '';
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = '選択された画像';
+        img.style.width = '300px';
+        img.style.height = 'auto';
+        img.style.margin = '10px';
+        selectedImageContainer.appendChild(img);
+    }
+
+    // ページ読み込み時に最初の画像を表示
+    window.onload = function() {
+        const firstImage = "{{ pet.images.first.image.url|default:'' }}";
+        if (firstImage) {
+            showSelectedImage(firstImage);
+        }
+    };
+</script>
+
+<!-- 画像一覧表示 -->
+<div>
+    {% if pet.images.count > 0 %}
+        {% for pet_image in pet.images.all %}
+            <img src="{{ pet_image.image.url }}" alt="{{ pet.pet_id }}の画像" 
+                 style="width:100px;height:auto;margin:10px;cursor:pointer;" 
+                 onclick="showSelectedImage('{{ pet_image.image.url }}')">
+        {% endfor %}
+    {% else %}
+        <p>画像が登録されていません。</p>
+    {% endif %}
+</div>
+
+<p>年齢 : {{ pet.age }}</p>
+<p>性別 : {{ pet.sex }}</p>
+<p>サイズ : {{ pet.size }}</p>
+<p>色 : {{ pet.color }}</p>
+{% if pet.disease %}
+    <p>病気 : {{ pet.disease }}</p>
+{% endif %}
+
+{% if pet.inuneko == '犬' %}
+    <p>犬種 : {{ pet.syu }}</p>
+{% else %}
+    <p>猫種 : {{ pet.syu }}</p>
+{% endif %}
+<p>性格 : {{ pet.personality }}</p>
+
+<!-- コメントセクション -->
+<h2>コメント</h2>
+<ul>
+    {% for comment in comments %}
+    <li>
+        <strong>{{ comment.user.username }}:
+            {% if comment.user.is_superuser %}
+                <span style="color: red;">[管理者]</span>
+            {% endif %}
+        </strong> 
+        {{ comment.content }}
+        <br><small>{{ comment.timestamp }}</small>
+    </li>
+    {% empty %}
+    <p>まだコメントはありません。</p>
+    {% endfor %}
+</ul>
+
+<!-- コメントフォーム -->
+{% if user.is_superuser %}
+    <h3>管理者としてコメントを追加</h3>
+    <form method="post">
+        {% csrf_token %}
+        <textarea id="admin_comment" name="content" required></textarea>
+        <button type="submit">コメントを投稿する</button>
+    </form>
+{% elif user.is_authenticated %}
+    <h3>コメントを追加</h3>
+    <form method="post">
+        {% csrf_token %}
+        <textarea id="message" name="content" required></textarea>
+        <button type="submit">コメントを投稿する</button>
+    </form>
+{% else %}
+    <p>コメントするには<a href="{% url 'login' %}">ログイン</a>してください。</p>
+{% endif %}
+{% endblock %}
