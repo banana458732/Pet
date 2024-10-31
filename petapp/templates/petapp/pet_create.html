@@ -1,0 +1,37 @@
+<h2>新しい 犬・猫 の登録</h2>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    
+    <label for="{{ form.id.id_for_label }}">ID:</label>
+    {{ form.id.errors }}
+    {{ form.id }}
+    <br>
+
+    <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
+    {{ form.type.errors }}
+    {{ form.type }}
+    <br>
+
+    <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
+    {{ form.size.errors }}
+    {{ form.size }}
+    <br>
+
+    <label for="{{ form.color.id_for_label }}">色:</label>
+    {{ form.color.errors }}
+    {{ form.color }}
+    <br>
+
+    <label for="{{ form.age.id_for_label }}">年齢:</label>
+    {{ form.age.errors }}
+    {{ form.age }}
+    <br>
+
+    <label for="{{ form.image.id_for_label }}">画像:</label>
+    {{ form.image.errors }}
+    {{ form.image }}
+    <br>
+    <button type="submit">登録</button>
+</form>
+<a href="{% url 'pet-list' %}">戻る</a>
