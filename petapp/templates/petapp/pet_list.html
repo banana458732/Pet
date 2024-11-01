@@ -1,0 +1,18 @@
+<h2>犬・猫 一覧</h2>
+<ul>
+{% for pet in object_list %}
+    <li>
+        <!-- 画像が登録されているか確認し、画像を表示 -->
+        {% if pet.image %}
+            <img src="{{ pet.image.url }}" alt="ペットの画像" style="max-width: 200px; height: auto;">
+        {% else %}
+            <p>画像が登録されていません</p>
+        {% endif %}
+        <!-- 更新と削除リンク -->
+        <a href="{% url 'pet-update' pet.id %}">更新</a> |
+        <a href="{% url 'pet-delete' pet.id %}">削除</a>
+    </li>
+{% endfor %}
+</ul>
+
+<a href="{% url 'pet-create' %}">新しい 犬・猫 を登録</a>
