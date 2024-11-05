@@ -6,8 +6,8 @@ app_name = 'messaging'
 
 
 urlpatterns = [
-    path('messaging/', views.IndexView.as_view(), name='send_message'),
+    path('', views.IndexView.as_view(), name='Index'),
     path('', index, name='index'),
     path('send/', views.send_message, name='send_message'),
-    path('pets/<str:pet_id>/', views.pet_detail, name='pet_detail'),  # ペットの詳細
+    path('pet/<str:pet_id>/', views.pet_detail, name='pet_detail'),  # ペットの詳細
 ]

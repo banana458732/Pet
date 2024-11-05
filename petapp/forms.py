@@ -10,17 +10,19 @@
 from django import forms
 from .models import Pet
 
+
 class PetCreateForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['id', 'type', 'size', 'color', 'age', 'image']
+
 
 class PetUpdateForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['type', 'size', 'color', 'age', 'image']  # IDは除外
 
-      # IDの重複をチェックするバリデーション
+    # IDの重複をチェックするバリデーション
     def clean_id(self):
         id = self.cleaned_data.get('id')
         # 現在のオブジェクトのIDを取得（もし存在する場合）
@@ -30,20 +32,20 @@ class PetUpdateForm(forms.ModelForm):
             # 新しいIDがすでに存在する場合
             if Pet.objects.filter(id=id).exists():
                 raise forms.ValidationError("このIDはすでに登録されています。別のIDを入力してください。")
-        
+
         return id
 
     TYPE_CHOICES = [
         ('dog', '犬'),
         ('cat', '猫'),
     ]
-    
+
     SIZE_CHOICES = [
         ('large', '大型'),
         ('medium', '中型'),
         ('small', '小型'),
     ]
-    
+
     AGE_CHOICES = [(i, f'{i}歳') for i in range(21)]  # 0歳から20歳までのドロップダウン
 
     id = forms.IntegerField(widget=forms.NumberInput(), label='ID')  # 数字専用のIDフィールド
