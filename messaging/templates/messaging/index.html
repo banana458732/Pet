@@ -1,54 +1,65 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Matching system{% endblock %}
+{% block title %}Top Page{% endblock %}
 
 {% block header %}
 <!-- Masthead-->
-<header class="masthead" style="background-image: url({% static 'assets/img/bg-masthead.jpg' %})">
-    <div class="container px-4 px-lg-5 h-100">
-        <div class="row gx-4 gx-lg-5 h-100 align-items-center justify-content-center text-center">
-            <div class="col-lg-8 align-self-end">
-                <h1 class="font-weight-bold" style="color: orange;">Matching system that connects lives</h1>
-                <hr class="divider" />
+<header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading" style="text-align: center;">
+                    <h1 style="font-size: 60px; white-space: nowrap;">Matching system that connects</h1>
+                </div>
             </div>
         </div>
     </div>
 </header>
-{% endblock %}
 
+{% endblock %}
 {% block contents %}
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="">Top page</a>
+        <a class="navbar-brand" href="#page-top">Top page</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#about">登録・ログイン</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about2">アンケートに回答</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">ログイン・登録</a></li>
                 <li class="nav-item"><a class="nav-link" href="#services">サービス内容</a></li>
-                <li class="nav-item"><a class="nav-link" href="#portfolio">問い合わせ</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about2">アンケートに回答</a></li>
+                <li class="nav-item"><a class="nav-link" href="#call">お問い合わせ</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
 <!-- About-->
-<section class="page-section bg-primary" id="about" style="height: 230px; padding-top: 10px;">
+<section class="page-section bg-primary" id="about" style="height: 250px; padding-top: 50px;">
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-lg-8 text-center">
-                <h2 class="text-white mt-0">会員登録  ログイン</h2>
+                <h2 class="text-white mt-0">ログイン・登録</h2>
                 <hr class="divider divider-light" />
-                <h3 class="text-white-75 mb-4">↓↓↓↓↓</h3>
-                <a class="btn btn-light btn-xl" href="https://startbootstrap.com/theme/creative/">登録する!</a>
+                <h3 class="text-white-75 mb-4">  </h3>
+                <a class="btn btn-light btn-xl rounded-btn" href="#">ログイン</a>
+                <a class="btn btn-light btn-xl rounded-btn" href="#">登録する</a>
             </div>
         </div>
     </div>
 </section>
 
+<!-- カスタムCSS -->
+<style>
+    .rounded-btn {
+        border-radius: 50px; /* 角を丸くする */
+        padding: 15px 30px;  /* ボタンのパディングを調整 */
+    }
+</style>
+
+
 <!-- Services-->
-<section class="page-section" id="services" style="height: 400px; padding-top: 10px;">
+<section class="page-section" id="services" style="height: 450px; padding-top: 30px;">
     <div class="container px-4 px-lg-5">
         <h2 class="text-center mt-0">サービスについて</h2>
         <hr class="divider" />
@@ -74,7 +85,7 @@
                 <div class="mt-5">
                     <div class="mb-2"><i class="fas fa-cat fs-1 text-primary"></i></div>
                     <h3 class="h4 mb-2">飼い主とペットがより良い関係を築く</h3>
-                    <p class="text-muted mb-0">マッチングシステムを導入</p>
+                    <p class="text-muted mb-0">ペットの特性に合わせたケア方法や、必要なトレーニングの情報を提供</p>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6 text-center">
@@ -89,50 +100,76 @@
     </div>
 </section>
 
-<section class="page-section bg-primary" id="about2" style="height: 230px; padding-top: 10px;">
+<section class="page-section bg-primary" id="about2" style="height: 250px; padding-top: 50px;">
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-lg-8 text-center">
                 <h2 class="text-white mt-0">アンケートに回答する</h2>
                 <hr class="divider divider-light" />
-                <h3 class="text-white-75 mb-4">↓↓↓↓↓</h3>
-                <a class="btn btn-light btn-xl" href="https://startbootstrap.com/theme/creative/">回答する!</a>
-                
+                <h3 class="text-white-75 mb-4"></h3>
+                <a class="btn btn-light btn-xl rounded-btn" href="https://startbootstrap.com/theme/creative/">回答する</a>
             </div>
         </div>
     </div>
 </section>
 
+<!-- カスタムCSS -->
+<style>
+    .rounded-btn {
+        border-radius: 50px; /* 角を丸くする */
+        padding: 15px 30px;  /* ボタンのパディングを調整 */
+    }
+</style>
+
 <!-- Portfolio-->
 <div id="portfolio">
-    <div class="container-fluid p-0">
-        <div class="row g-0">
-            <div class="col-lg-4 col-sm-6">
-                    <img class="img-fluid" src={% static 'assets/img/portfolio/thumbnails/1.jpg' %} alt="..." />
-                    <div class="portfolio-box-caption">
-                    </div>
+    <div class="container-fluid p-0" style="padding-top: 30px;">
+        <div id="portfolioCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img class="img-fluid w-100" src={% static 'assets/img/portfolio/thumbnails/Image2.jpg' %} alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img class="img-fluid w-100" src={% static 'assets/img/portfolio/thumbnails/Image6.jpg' %} alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img class="img-fluid w-100" src={% static 'assets/img/portfolio/thumbnails/Image4.jpg' %} alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img class="img-fluid w-100" src={% static 'assets/img/portfolio/thumbnails/Image5.jpg' %} alt="...">
+                </div>
             </div>
-            <div class="col-lg-4 col-sm-6">
-                    <img class="img-fluid" src={% static 'assets/img/portfolio/thumbnails/2.jpg' %} alt="..." />
-                    <div class="portfolio-box-caption">
-                    </div>
-            </div>
-            <div class="col-lg-4 col-sm-6">   
-                    <img class="img-fluid" src={% static 'assets/img/portfolio/thumbnails/3.jpg' %} alt="..." />
-                    <div class="portfolio-box-caption">
-                    </div>
-            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#portfolioCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
 </div>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
 <!-- Call to action-->
-<section class="page-section bg-dark text-white"id="portfolio" style="height: 200px; padding-top: 10px;">
+<section class="page-section bg-dark text-white" id="call" style="height: 250px; padding-top: 30px;">
     <div class="container px-4 px-lg-5 text-center">
         <h2 class="mb-4" style="margin-top: 30px;">お問い合わせ</h2>
-        <a class="btn btn-light btn-xl" href="https://startbootstrap.com/theme/creative/">お問い合わせはこちらから</a>
+        <a class="btn btn-light btn-xl rounded-btn" href="https://startbootstrap.com/theme/creative/">お問い合わせをする</a>
     </div>
 </section>
 
-{% endblock %}
+<!-- カスタムCSS -->
+<style>
+    .rounded-btn {
+        border-radius: 50px; /* 角を丸くする */
+        padding: 15px 30px;  /* ボタンのパディングを調整 */
+    }
+</style>
 
+
+{% endblock %}

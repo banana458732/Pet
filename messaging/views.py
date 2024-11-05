@@ -3,6 +3,7 @@ from .models import Pet
 from django.contrib.auth.decorators import login_required
 from .forms import MessageForm, CommentForm
 from django.core.mail import send_mail
+from django.views.generic.base import TemplateView
 
 
 def send_message(request):
@@ -60,6 +61,10 @@ def pet_detail(request, pet_id):
         'comments': comments,  # ペットのコメントをテンプレートに渡す
         'form': form
     })
+
+
+class IndexView(TemplateView):
+    template_name = 'messaging/index.html'
 
 
 def index(request):
