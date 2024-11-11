@@ -7,7 +7,7 @@ from .models import SurveyResult
 from sklearn.preprocessing import LabelEncoder
 
 # モデルのパスを設定
-MODEL_PATH = 'C:/Users/t_koitabashi/Desktop/PET/Pet/Pet/Pet/models/your_trained_model.pkl'
+MODEL_PATH = 'C:/Users/t_koitabashi/Desktop/卒業制作/PET/Pet/models/your_trained_model.pkl'
 
 # AIモデルを読み込む
 try:
