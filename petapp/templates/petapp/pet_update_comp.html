@@ -1,0 +1,10 @@
+{% block title %}更新完了{% endblock %}
+
+{% block content %}
+<h2>更新が完了しました</h2>
+
+<p>選択したペットの情報が正常に更新されました。</p>
+
+<!-- 戻るリンク -->
+<a href="{% url 'petapp:pet-list' %}">ペット一覧に戻る</a>
+{% endblock %}

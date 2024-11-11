@@ -1,5 +1,3 @@
-{% extends 'base.html' %}
-{% load static %}
 
 {% block title %}お問い合わせ完了{% endblock %}
 
@@ -9,5 +7,5 @@
 <p>お名前: {{ sender_name }}</p>
 <p>メールアドレス: {{ sender_email }}</p>
 <p>メッセージ内容: {{ message_content }}</p>
-<a href="{% url 'pet_detail' pet_id=pet.pet_id %}">ペット詳細ページに戻る</a>
+<a href="{% url 'messaging:index' %}">トップページに戻る</a>
 {% endblock %}

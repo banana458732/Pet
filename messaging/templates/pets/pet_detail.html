@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
-{% load static %}
 
-{% block title %}{{ pet.pet_id }}の詳細{% endblock %}
+{% block title %}{{ pet.id }}の詳細{% endblock %}
 
 {% block contents %}
-<h2>{{ pet.pet_id }}の詳細</h2>
+<h2>{{ pet.id }}の詳細</h2>
 
 <!-- 選択された画像表示用のセクション -->
 <div id="selectedImage"></div>
@@ -36,7 +35,7 @@
 <div>
     {% if pet.images.count > 0 %}
         {% for pet_image in pet.images.all %}
-            <img src="{{ pet_image.image.url }}" alt="{{ pet.pet_id }}の画像" 
+            <img src="{{ pet_image.image.url }}" alt="{{ pet.id }}の画像" 
                  style="width:100px;height:auto;margin:10px;cursor:pointer;" 
                  onclick="showSelectedImage('{{ pet_image.image.url }}')">
         {% endfor %}
@@ -50,15 +49,25 @@
 <p>サイズ : {{ pet.size }}</p>
 <p>色 : {{ pet.color }}</p>
 {% if pet.disease %}
-    <p>病気 : {{ pet.disease }}</p>
+    <p>病歴 : {{ pet.disease }}</p>
 {% endif %}
 
-{% if pet.inuneko == '犬' %}
+{% if pet.type == '犬' %}
     <p>犬種 : {{ pet.syu }}</p>
 {% else %}
     <p>猫種 : {{ pet.syu }}</p>
 {% endif %}
 <p>性格 : {{ pet.personality }}</p>
+
+<!-- 電話番号の表示 -->
+<div>
+    <p>ご購入を検討中の方は以下の電話番号までご連絡ください:</p>
+    {% if pet.phone_number %}
+        <p style="font-weight: bold; color: blue;">{{ pet.phone_number.number }}</p>
+    {% else %}
+        <p>電話番号が登録されていません。</p>
+    {% endif %}
+</div>
 
 <!-- コメントセクション -->
 <h2>コメント</h2>
@@ -94,7 +103,5 @@
         <button type="submit">コメントを投稿する</button>
     </form>
 {% endif %}
-
-
 
 {% endblock %}

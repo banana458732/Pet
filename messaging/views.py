@@ -11,6 +11,7 @@ def send_message(request):
         sender_name = request.POST.get('sender_name')  # フォームから送信された名前
         sender_email = request.POST.get('sender_email')  # フォームから送信されたメールアドレス
         message_content = request.POST.get('message')
+        pet_id = request.POST.get('pet_id')  # pet_id がPOSTデータで送られる場合
 
         recipient_email = 'ngn2349602@stu.o-hara.ac.jp'  # 固定の受信者メールアドレス
 
@@ -28,6 +29,7 @@ def send_message(request):
             'sender_name': sender_name,
             'sender_email': sender_email,
             'message_content': message_content,
+            'pet_id': pet_id,
         })
     else:
         form = MessageForm()
@@ -36,7 +38,7 @@ def send_message(request):
 
 
 def pet_detail(request, pet_id):
-    pet = get_object_or_404(Pet, pet_id=pet_id)
+    pet = get_object_or_404(Pet, id=pet_id)
     comments = pet.comments.all().order_by('-timestamp')  # ペットに関連するすべてのコメントを取得
 
     # コメントフォームの処理
@@ -52,7 +54,7 @@ def pet_detail(request, pet_id):
                 comment.content = comment.content
 
             comment.save()
-            return redirect('pet_detail', pet_id=pet.pet_id)  # コメント後にリロード
+            return redirect('pet_detail', pet_id=pet.id)  # コメント後にリロード
     else:
         form = CommentForm()
 

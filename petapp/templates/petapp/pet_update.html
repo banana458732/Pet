@@ -2,37 +2,67 @@
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
+    {{ form.errors }}
 
-    <input type="hidden" name="id" value="{{ view.object.id }}">
-
+    <!-- IDの表示 (変更不可) -->
     <label>ID:</label>
-    <span>{{ view.object.id }}</span>
+    <span>{{ view.object.id }}</span>  <!-- IDは表示のみ -->
+    <input type="hidden" name="id" value="{{ view.object.id }}">
     <br>
 
+    <!-- 種類 (犬/猫) (変更不可) -->
     <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
     {{ form.type.errors }}
-    {{ form.type }}
+    <span>{{ form.type.value }}</span>  <!-- 種類は表示のみ -->
     <br>
 
+    <!-- サイズ (大型/中型/小型) (変更不可) -->
     <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
     {{ form.size.errors }}
-    {{ form.size }}
+    <span>{{ form.size.value }}</span>  <!-- サイズは表示のみ -->
     <br>
 
+    <!-- 色 (変更可能) -->
     <label for="{{ form.color.id_for_label }}">色:</label>
     {{ form.color.errors }}
     {{ form.color }}
     <br>
 
+    <!-- 年齢 (変更可能) -->
     <label for="{{ form.age.id_for_label }}">年齢:</label>
     {{ form.age.errors }}
     {{ form.age }}
     <br>
 
-    <label for="{{ form.image.id_for_label }}">画像:</label>
-    {{ form.image.errors }}
-    {{ form.image }}
+    <!-- 性別 (固定表示) -->
+    <label>性別:</label>
+    <span>{{ view.object.sex }}</span>  <!-- 性別はオブジェクトから直接表示 -->
     <br>
+
+    <!-- その他のフィールド (変更可能) -->
+    <label for="{{ form.syu.id_for_label }}">種別:</label>
+    {{ form.syu.errors }}
+    {{ form.syu }}  
+    <br>
+
+    <label for="{{ form.disease.id_for_label }}">病歴:</label>
+    {{ form.disease.errors }}
+    {{ form.disease }}  
+    <br>
+
+    <label for="{{ form.personality.id_for_label }}">性格:</label>
+    {{ form.personality.errors }}
+    {{ form.personality }}
+    <br>
+
+    <label for="{{ form.phone_number.id_for_label }}">電話番号:</label>
+    {{ form.phone_number.errors }}
+    {{ form.phone_number }}
+    <br>
+
+    <!-- 更新ボタン -->
     <button type="submit">更新</button>
 </form>
-<a href="{% url 'pet-list' %}">戻る</a>
+
+<!-- 戻るリンク -->
+<a href="{% url 'petapp:pet-list' %}">戻る</a>

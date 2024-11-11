@@ -1,37 +1,87 @@
-<h2>新しい 犬・猫 の登録</h2>
+<h2>新しい犬・猫の登録</h2>
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
-    
+
     <label for="{{ form.id.id_for_label }}">ID:</label>
-    {{ form.id.errors }}
     {{ form.id }}
     <br>
 
     <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
-    {{ form.type.errors }}
     {{ form.type }}
     <br>
 
     <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
-    {{ form.size.errors }}
     {{ form.size }}
     <br>
 
     <label for="{{ form.color.id_for_label }}">色:</label>
-    {{ form.color.errors }}
     {{ form.color }}
     <br>
 
     <label for="{{ form.age.id_for_label }}">年齢:</label>
-    {{ form.age.errors }}
     {{ form.age }}
     <br>
 
-    <label for="{{ form.image.id_for_label }}">画像:</label>
-    {{ form.image.errors }}
-    {{ form.image }}
+    <label for="{{ form.syu.id_for_label }}">種別 (犬種/猫種):</label>
+    {{ form.syu }}
     <br>
+
+    <label for="{{ form.disease.id_for_label }}">病気:</label>
+    {{ form.disease }}
+    <br>
+
+    <label for="{{ form.personality.id_for_label }}">性格:</label>
+    {{ form.personality }}
+    <br>
+
+    <label for="{{ form.sex.id_for_label }}">性別:</label>
+    {{ form.sex }}
+    <br>
+
+    <!-- 電話番号 -->
+    <label for="{{ form.phone_number.id_for_label }}">電話番号:</label>
+    {{ form.phone_number }}
+    {% if form.phone_number.errors %}
+        <div class="error-list">
+            {% for error in form.phone_number.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <br>    
+
+    <!-- 写真フォームセットエラーメッセージ -->
+    {% if photo_formset.non_form_errors %}
+        <div class="error-list">
+            {% for error in photo_formset.non_form_errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- 写真フォームセット -->
+    <div class="formset">
+        {{ photo_formset.management_form }}
+
+        {% for form in photo_formset %}
+            <div class="formset_row">
+                <!-- 写真ラベルと入力フィールド -->
+                {{ form.image.label }} {{ form.image }}
+                
+                <!-- 各画像フィールドのエラーメッセージ -->
+                {% if form.image.errors %}
+                    <div class="error-list">
+                        {% for error in form.image.errors %}
+                            <p class="error">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
     <button type="submit">登録</button>
 </form>
-<a href="{% url 'petapp:pet-list' %}">戻る</a>
+
+<a href="{% url 'petapp:pet-list' %}" class="btn">戻る</a>

@@ -1,0 +1,20 @@
+{% block title %}登録完了{% endblock %}
+
+{% block content %}
+<h2>ペットの登録が完了しました！</h2>
+
+<p>種類 : {{ pet.get_type_display }}</p>
+<p>大きさ : {{ pet.get_size_display }}</p>
+<p>色 : {{ pet.color }}</p>
+<p>歳 : {{ pet.age }}歳</p>
+<p>犬種/猫種 : {{ pet.syu }}</p>
+{% if pet.disease %}
+    <p>病歴 : {{ pet.disease }}</p>
+{% endif %}
+
+<p>性格 : {{ pet.personality }}</p>
+<p>性別 : {{ pet.sex }}</p>
+<p>電話番号 : {{ pet.phone_number }}</p>
+
+<a href="{% url 'petapp:pet-list' %}">ペット一覧に戻る</a>
+{% endblock %}

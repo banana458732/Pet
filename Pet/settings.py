@@ -147,5 +147,5 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # デフォルトの設�
 # settings.py
 CONTACT_EMAIL = 'ngn2349602@stu.o-hara.ac.jp'
 
-MEDIA_URL = '/media/'  # メディアファイルのURL
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # メディアファイルの保存場所
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

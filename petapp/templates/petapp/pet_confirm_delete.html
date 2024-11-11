@@ -1,6 +1,11 @@
-<h2>{{ object.name }} を本当に削除しますか？</h2>
+
+{% block title %}削除確認{% endblock %}
+
+{% block content %}
+<h2>{{ pet.id }} を本当に削除しますか？</h2>
 <form method="post">
     {% csrf_token %}
     <button type="submit">はい、削除します</button>
 </form>
-<a href="{% url 'pet-list' %}">キャンセル</a>
+<a href="{% url 'petapp:pet-list' %}">キャンセル</a>
+{% endblock %}
