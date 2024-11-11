@@ -1,0 +1,21 @@
+<h2>マッチングされたペット</h2>
+
+{% if matched_pets %}
+    <ul>
+        {% for pet in matched_pets %}
+            <li>
+                <strong>ペットの種類:</strong> {{ pet.type }}<br>
+                <strong>年齢:</strong> {{ pet.age }}歳<br>
+                <strong>サイズ:</strong> {{ pet.size }}<br>
+                <strong>毛の色:</strong> {{ pet.color }}<br>
+                <strong>適合度スコア:</strong> {{ pet.score|floatformat:2 }}<br>  <!-- petにスコアが含まれている場合 -->
+                {% if pet.image %}
+                    <img src="{{ pet.image.url }}" alt="{{ pet.type }}" width="200">
+                {% endif %}
+            </li>
+        {% endfor %}
+
+    </ul>
+{% else %}
+    <p>条件に合うペットは見つかりませんでした。</p>
+{% endif %}
