@@ -1,19 +1,20 @@
-import joblib
-from django.shortcuts import render
-from django.views.generic.base import TemplateView
+import joblib  # type: ignore
+from django.shortcuts import render  # type: ignore
+from django.views.generic.base import TemplateView  # type: ignore
 from .forms import SimplePetSurveyForm
 from petapp.models import Pet
 from .models import SurveyResult
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder  # type: ignore
 
 # モデルのパスを設定
 MODEL_PATH = 'C:/Users/t_koitabashi/Desktop/卒業制作/PET/Pet/models/your_trained_model.pkl'
 
-# AIモデルを読み込む
+# AIモデルの読み込み
 try:
     model = joblib.load(MODEL_PATH)
     print("Model loaded successfully!")
 except FileNotFoundError:
+    model = None
     print(f"Model file not found at {MODEL_PATH}")
 
 # カテゴリカルデータを数値に変換するためのラベルエンコーダー
@@ -33,6 +34,9 @@ def predict_pet_match_score(pet_data, survey_data):
     """
     survey_data の情報を基に、AIモデルが予測した適合度スコアを返します。
     """
+    if model is None:
+        raise Exception("AIモデルが読み込まれていません")
+
     # survey_dataからカテゴリカルデータを数値に変換
     survey_features = [
         len(survey_data['pet_type']), 
@@ -96,9 +100,11 @@ def pet_survey(request):
                     pet_size_preference=pet_size_preference
                 )
                 survey_result.save()
-                return render(request, 'survey/results.html', {'matched_pets': matched_pets})
+                return render(request, 'survey/results.html',
+                              {'matched_pets': matched_pets})
             else:
-                return render(request, 'survey/no_results.html', {'form': form})
+                return render(request, 'survey/no_results.html',
+                              {'form': form})
     else:
         form = SimplePetSurveyForm()
 

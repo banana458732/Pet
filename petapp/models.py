@@ -1,5 +1,5 @@
-from django.db import models
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+from django.db import models  # type: ignore
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator  # type: ignore
 
 
 class Pet(models.Model):
