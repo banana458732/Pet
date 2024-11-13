@@ -1,5 +1,8 @@
 from django.db import models
+from django.db.models.signals import pre_delete  # これを追加
+from django.dispatch import receiver  # これを追加
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
+import os
 
 
 class Pet(models.Model):
@@ -22,18 +25,19 @@ class Pet(models.Model):
         validators=[MinValueValidator(0), MaxValueValidator(30)]
     )
     syu = models.CharField(max_length=100, default='')
-    disease = models.CharField(max_length=100, null=True,  blank=True, default='')
+    disease = models.CharField(max_length=100, null=True, blank=True, default='')
     personality = models.CharField(max_length=500, null=False, default='')
     sex = models.CharField(
         max_length=10,
         choices=[('男の子', '男の子'), ('女の子', '女の子')],
-        default='')
+        default=''
+    )
 
     phone_number = models.CharField(
         max_length=15,
         blank=False,
         null=True,
-        validators=[RegexValidator(r'^\d{10,15}$', '電話番号は数字のみで、10～15桁にしてください。')]
+        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')]
     )
 
     def __str__(self):
@@ -44,7 +48,7 @@ class PhoneNumber(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='phone_numbers')  # related_nameを追加
     number = models.CharField(
         max_length=15,
-        validators=[RegexValidator(r'^\d{10,15}$', '電話番号は数字のみで、10～15桁にしてください。')]
+        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')]
     )
 
     def __str__(self):
@@ -53,7 +57,19 @@ class PhoneNumber(models.Model):
 
 class PetImage(models.Model):
     pet = models.ForeignKey(Pet, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='pet_images/')
+    image = models.ImageField(upload_to='pet_images/', null=True, blank=True)
+
+    def __str__(self):
+        return f"Image for {self.pet.id}"
+
+
+@receiver(pre_delete, sender=Pet)
+def delete_pet_images(sender, instance, **kwargs):
+    # 関連する画像を削除
+    for pet_image in instance.images.all():
+        # 画像ファイルが存在するか確認
+        if pet_image.image and os.path.isfile(pet_image.image.path):
+            os.remove(pet_image.image.path)
 
 
 class Survey(models.Model):

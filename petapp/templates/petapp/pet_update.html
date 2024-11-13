@@ -2,7 +2,6 @@
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
-    {{ form.errors }}
 
     <!-- IDの表示 (変更不可) -->
     <label>ID:</label>
@@ -13,13 +12,13 @@
     <!-- 種類 (犬/猫) (変更不可) -->
     <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
     {{ form.type.errors }}
-    <span>{{ form.type.value }}</span>  <!-- 種類は表示のみ -->
+    <span>{{ view.object.type }}</span>  <!-- 種類は表示のみ -->
     <br>
 
-    <!-- サイズ (大型/中型/小型) (変更不可) -->
+    <!-- サイズ (大型/中型/小型) (編集可能) -->
     <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
     {{ form.size.errors }}
-    <span>{{ form.size.value }}</span>  <!-- サイズは表示のみ -->
+    {{ form.size }}  <!-- サイズを編集可能にする -->
     <br>
 
     <!-- 色 (変更可能) -->
@@ -55,9 +54,12 @@
     {{ form.personality }}
     <br>
 
+    <!-- 電話番号フィールド -->
     <label for="{{ form.phone_number.id_for_label }}">電話番号:</label>
-    {{ form.phone_number.errors }}
-    {{ form.phone_number }}
+    {{ form.phone_number }}  <!-- 電話番号入力欄 -->
+    {% if form.phone_number.errors %}
+        <div class="error">{{ form.phone_number.errors }}</div>  <!-- エラーを下に表示 -->
+    {% endif %}
     <br>
 
     <!-- 更新ボタン -->

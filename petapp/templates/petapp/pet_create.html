@@ -21,6 +21,13 @@
 
     <label for="{{ form.age.id_for_label }}">年齢:</label>
     {{ form.age }}
+    {% if form.age.errors %}
+        <div class="error-list">
+            {% for error in form.age.errors %}
+                <p class="error">{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
     <br>
 
     <label for="{{ form.syu.id_for_label }}">種別 (犬種/猫種):</label>
@@ -49,7 +56,7 @@
             {% endfor %}
         </div>
     {% endif %}
-    <br>    
+    <br>
 
     <!-- 写真フォームセットエラーメッセージ -->
     {% if photo_formset.non_form_errors %}
@@ -63,17 +70,14 @@
     <!-- 写真フォームセット -->
     <div class="formset">
         {{ photo_formset.management_form }}
-
         {% for form in photo_formset %}
-            <div class="formset_row">
-                <!-- 写真ラベルと入力フィールド -->
-                {{ form.image.label }} {{ form.image }}
-                
-                <!-- 各画像フィールドのエラーメッセージ -->
+            <div class="form-group">
+                {{ form.image.label_tag }}
+                {{ form.image }}
                 {% if form.image.errors %}
-                    <div class="error-list">
+                    <div class="error">
                         {% for error in form.image.errors %}
-                            <p class="error">{{ error }}</p>
+                            <p>{{ error }}</p>
                         {% endfor %}
                     </div>
                 {% endif %}

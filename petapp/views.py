@@ -1,8 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, UpdateView, DeleteView
 from .models import Pet, PetImage
-from .forms import PetCreateForm, PetImageForm, PetUpdateForm, PetImageFormSet
+from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm
 from django.urls import reverse_lazy
+from django.conf import settings
+import os
+import uuid
+from django.core.exceptions import ValidationError
 
 
 class PetListView(ListView):
@@ -11,43 +15,51 @@ class PetListView(ListView):
 
 
 def pet_create_view(request):
+    pet_form = PetCreateForm()
+    # 既存の画像を表示しないようにする
+    photo_formset = PetImageFormSet(queryset=PetImage.objects.none())
+
+    error_messages = []
+
     if request.method == 'POST':
         pet_form = PetCreateForm(request.POST)
-        photo_formset = PetImageFormSet(request.POST, request.FILES, queryset=PetImage.objects.none())
-
-        # 各フォームのラベルを設定
-        for i, form in enumerate(photo_formset):
-            form.fields['image'].label = f'写真{i+1}'
+        photo_formset = PetImageFormSet(request.POST, request.FILES)
 
         if pet_form.is_valid() and photo_formset.is_valid():
-            pet = pet_form.save()
-            # 写真のフォームセットからデータを保存
-            for form in photo_formset:
-                if form.is_valid() and form.cleaned_data.get('image'):  # バリデーションが通った場合のみcleaned_dataを使う
-                    photo = form.save(commit=False)
-                    photo.pet = pet
-                    photo.save()
+            try:
+                pet = pet_form.save()
+                for form in photo_formset:
+                    if form.is_valid():
+                        pet_image = form.save(commit=False)
+                        pet_image.pet = pet
 
-            return redirect('petapp:pet-create-comp', pet_id=pet.id)
-        else:
-            print("Pet form errors:", pet_form.errors)
-            print("写真が入っていません:", photo_formset.errors)
-    else:
-        pet_form = PetCreateForm()
-        photo_formset = PetImageFormSet(queryset=PetImage.objects.none())
+                        image = form.cleaned_data.get('image')
+                        if image:
+                            file_extension = os.path.splitext(image.name)[1]
+                            unique_filename = f"uuid_{uuid.uuid4().hex}{file_extension}"
+                            pet_image.image.name = unique_filename
 
-        for i, form in enumerate(photo_formset):
-            form.fields['image'].label = f'写真{i+1}'
+                        pet_image.save()
+
+                return redirect('petapp:pet-create-comp', pet_id=pet.id)
+
+            except ValidationError as e:
+                error_messages.append(f"Validation error: {str(e)}")
 
     return render(request, 'petapp/pet_create.html', {
         'form': pet_form,
         'photo_formset': photo_formset,
+        'error_messages': error_messages,
     })
 
 
 def pet_create_comp_view(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
-    return render(request, 'petapp/pet_create_comp.html', {'pet': pet})
+    pet_images = PetImage.objects.filter(pet=pet)
+    return render(request, 'petapp/pet_create_comp.html', {
+        'pet': pet,
+        'pet_images': pet_images
+    })
 
 
 class PetUpdateView(UpdateView):

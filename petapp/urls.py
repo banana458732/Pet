@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import PetListView, PetUpdateView, PetDeleteView, pet_create_view, pet_create_comp_view, pet_update_comp_view
 from django.views.generic import TemplateView
+from . import views  # views.py からインポート
+
 
 app_name = 'petapp'
 

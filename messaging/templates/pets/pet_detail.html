@@ -63,7 +63,7 @@
 <div>
     <p>ご購入を検討中の方は以下の電話番号までご連絡ください:</p>
     {% if pet.phone_number %}
-        <p style="font-weight: bold; color: blue;">{{ pet.phone_number.number }}</p>
+        <p style="font-weight: bold; color: blue;">{{ pet.phone_number }}</p>
     {% else %}
         <p>電話番号が登録されていません。</p>
     {% endif %}

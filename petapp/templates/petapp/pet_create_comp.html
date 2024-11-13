@@ -16,5 +16,15 @@
 <p>性別 : {{ pet.sex }}</p>
 <p>電話番号 : {{ pet.phone_number }}</p>
 
+<!-- 画像表示部分 -->
+{% if pet.petimage_set.exists %}
+    <h3>ペットの画像</h3>
+    {% for image in pet.petimage_set.all %}
+        <img src="{{ image.image.url }}" alt="ペット画像" width="200">
+    {% endfor %}
+{% else %}
+    <p>画像は登録されていません。</p>
+{% endif %}
+
 <a href="{% url 'petapp:pet-list' %}">ペット一覧に戻る</a>
 {% endblock %}
