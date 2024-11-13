@@ -1,12 +1,21 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, UpdateView, DeleteView
-from .models import Pet, PetImage
-from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm
-from django.urls import reverse_lazy
-from django.conf import settings
 import os
 import uuid
+import pandas as pd
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ValidationError
+from django.views.generic import ListView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from .models import Pet, PetImage, PhoneNumber
+from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm
+
+# CSVファイルのパスを指定
+csv_file_path = 'C:\\Users\\t_koitabashi\\Desktop\\卒業制作\\Pet\\pets_data.csv'
+
+# CSVファイルを読み込む
+data = pd.read_csv(csv_file_path)
+
+# データの先頭5行を表示（サンプルデータ）
+sample_data = data.head()
 
 
 class PetListView(ListView):
@@ -16,9 +25,7 @@ class PetListView(ListView):
 
 def pet_create_view(request):
     pet_form = PetCreateForm()
-    # 既存の画像を表示しないようにする
     photo_formset = PetImageFormSet(queryset=PetImage.objects.none())
-
     error_messages = []
 
     if request.method == 'POST':
@@ -27,7 +34,10 @@ def pet_create_view(request):
 
         if pet_form.is_valid() and photo_formset.is_valid():
             try:
+                # ペット情報の保存
                 pet = pet_form.save()
+
+                # 画像の保存
                 for form in photo_formset:
                     if form.is_valid():
                         pet_image = form.save(commit=False)
@@ -41,6 +51,34 @@ def pet_create_view(request):
 
                         pet_image.save()
 
+                # 電話番号があれば保存（電話番号が別モデルの場合）
+                phone_number = request.POST.get('phone_number')  # 入力された電話番号を取得
+                if phone_number:
+                    PhoneNumber.objects.create(pet=pet, number=phone_number)
+
+                # ペットデータをCSVに追加（電話番号を除く）
+                new_pet_data = {
+                    'id': pet.id,
+                    'type': pet.type,
+                    'size': pet.size,
+                    'color': pet.color,
+                    'age': pet.age,
+                    'syu': pet.syu,
+                    'disease': pet.disease,
+                    'personality': pet.personality,
+                    'sex': pet.sex,
+                }
+
+                # CSVファイルを読み込み、データを追加
+                data = pd.read_csv(csv_file_path)
+                
+                # 新しいデータをDataFrameに変換して追加
+                new_pet_df = pd.DataFrame([new_pet_data])
+                data = pd.concat([data, new_pet_df], ignore_index=True)
+
+                # 変更をCSVファイルに保存
+                data.to_csv(csv_file_path, index=False)
+
                 return redirect('petapp:pet-create-comp', pet_id=pet.id)
 
             except ValidationError as e:
@@ -50,6 +88,7 @@ def pet_create_view(request):
         'form': pet_form,
         'photo_formset': photo_formset,
         'error_messages': error_messages,
+        'csv_data': sample_data  # CSVデータを渡す
     })
 
 
@@ -85,3 +124,7 @@ class PetDeleteView(DeleteView):
     model = Pet
     template_name = 'petapp/pet_confirm_delete.html'
     success_url = reverse_lazy('petapp:pet-delete-comp')
+
+
+def index(request):
+    return render(request, 'Survey/index.html', {'csv_data': sample_data})  # CSVデータを渡す
