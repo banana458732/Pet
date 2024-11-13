@@ -1,8 +1,13 @@
+<<<<<<< HEAD
 from django.db import models
 from django.db.models.signals import pre_delete  # これを追加
 from django.dispatch import receiver  # これを追加
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 import os
+=======
+from django.db import models  # type: ignore
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator  # type: ignore
+>>>>>>> 8bf8a72ba6d7e54f5df8844f3d4bce5ed7d0b6f1
 
 
 class Pet(models.Model):

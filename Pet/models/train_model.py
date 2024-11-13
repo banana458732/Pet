@@ -1,26 +1,25 @@
-import joblib
-import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-from django.db import models
+import os
+import joblib  # type: ignore
+import pandas as pd  # type: ignore
+from sklearn.ensemble import RandomForestClassifier  # type: ignore
+from sklearn.model_selection import train_test_split  # type: ignore
+from sklearn.metrics import accuracy_score  # type: ignore
+from petapp.models import Pet
 
-# Djangoのモデルからデータを取得（SurveyResultモデルを例に）
-from survey.models import SurveyResult
+# Petモデルからデータを取得
+data = Pet.objects.all()
 
-# SurveyResultモデルからデータを取得
-data = SurveyResult.objects.all()
+# DataFrameに変換し、必要なフィールドを抽出
+df = pd.DataFrame(list(data.values('size', 'age', 'personality', 'type')))
 
-# データフレームに変換
-df = pd.DataFrame(list(data.values('living_environment', 'pet_personality', 'activity_level', 
-                                   'pet_size_preference', 'age', 'pet_type')))
+# personalityフィールドの欠損値を埋める
+df['personality'] = df['personality'].fillna('Unknown')
 
 # 特徴量とターゲット変数を設定
-X = df[['living_environment', 'pet_personality', 'activity_level', 
-        'pet_size_preference', 'age']]  # 特徴量
-y = df['pet_type']  # ターゲット変数
+X = df[['size', 'age', 'personality']]
+y = df['type']
 
-# カテゴリカルデータを数値に変換
+# カテゴリカルデータの数値エンコード
 X = pd.get_dummies(X)
 
 # データをトレーニングセットとテストセットに分ける
@@ -35,6 +34,10 @@ y_pred = model.predict(X_test)
 print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
 
 # モデルの保存
-model_path = 'C:\\Users\\t_koitabashi\\Desktop\\卒業制作\\PET\\Pet\\models\\your_trained_model.pkl'
+model_dir = os.path.join(os.getcwd(), 'Pet', 'models')
+if not os.path.exists(model_dir):
+    os.makedirs(model_dir)
+
+model_path = os.path.join(model_dir, 'your_trained_model.pkl')
 joblib.dump(model, model_path)
 print(f"Model saved as {model_path}")
