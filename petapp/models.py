@@ -1,10 +1,12 @@
 from django.db import models
-from django.db.models.signals import pre_delete  # これを追加
-from django.dispatch import receiver  # これを追加
+from django.db.models.signals import pre_delete  # 追加
+from django.dispatch import receiver  # 追加
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 import os
-from django.db import models  # type: ignore
-from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator  # type: ignore
+import pandas as pd
+
+# CSV ファイルのパスを指定
+CSV_FILE_PATH = 'C:\\Users\\t_koitabashi\\Desktop\\卒業制作\\Pet\\pets_data.csv'
 
 
 class Pet(models.Model):
@@ -47,7 +49,7 @@ class Pet(models.Model):
 
 
 class PhoneNumber(models.Model):
-    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='phone_numbers')  # related_nameを追加
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='phone_numbers')
     number = models.CharField(
         max_length=15,
         validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')]
@@ -69,13 +71,17 @@ class PetImage(models.Model):
 def delete_pet_images(sender, instance, **kwargs):
     # 関連する画像を削除
     for pet_image in instance.images.all():
-        # 画像ファイルが存在するか確認
         if pet_image.image and os.path.isfile(pet_image.image.path):
             os.remove(pet_image.image.path)
 
+    # CSVファイルからペット情報を削除
+    if os.path.exists(CSV_FILE_PATH):
+        data = pd.read_csv(CSV_FILE_PATH)
+        data = data[data['id'] != instance.id]  # 該当する行を削除
+        data.to_csv(CSV_FILE_PATH, index=False)
+
 
 class Survey(models.Model):
-    # 例：アンケートで収集する情報
     pet_type = models.CharField(max_length=10, choices=[('犬', '犬'), ('猫', '猫')])
     size = models.CharField(max_length=10, choices=[('小型', '小型'), ('中型', '中型'), ('大型', '大型')])
     age = models.IntegerField()

@@ -1,4 +1,2 @@
-id,type,size,color,age,syu,disease,personality,sex,
-2,猫,小型,白,111,雑種,,おとなしい,男の子,
-111,犬,大型,赤,23,雑種,白内障,おとなしい,男の子,
-5,犬,大型,白,2,あ,,ｓ,男の子,
+id,type,size,color,age,syu,disease,personality,sex,image_urls
+22,犬,中型,茶,8,あ,,明るい,女の子,/media/pet_images/uuid_a220b7d9a9c1420c8a744ae6a9447afc.jpg

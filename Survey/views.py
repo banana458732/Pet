@@ -1,110 +1,111 @@
-import joblib  # type: ignore
-from django.shortcuts import render  # type: ignore
-from django.views.generic.base import TemplateView  # type: ignore
+import pandas as pd
+from django.shortcuts import render
 from .forms import SimplePetSurveyForm
-from petapp.models import Pet
-from .models import SurveyResult
-from sklearn.preprocessing import LabelEncoder  # type: ignore
-
-# モデルのパスを設定
-MODEL_PATH = 'C:/Users/t_koitabashi/Desktop/卒業制作/PET/Pet/models/your_trained_model.pkl'
-
-# AIモデルの読み込み
-try:
-    model = joblib.load(MODEL_PATH)
-    print("Model loaded successfully!")
-except FileNotFoundError:
-    model = None
-    print(f"Model file not found at {MODEL_PATH}")
-
-# カテゴリカルデータを数値に変換するためのラベルエンコーダー
-size_encoder = LabelEncoder()
+from django.views.generic.base import TemplateView
 
 
-# ラベルエンコーダーを使ってサイズを数値に変換
-def encode_size(size):
-    try:
-        return size_encoder.transform([size])[0]
-    except ValueError:
-        # ラベルエンコーダーに対応していないサイズが入力された場合
-        return 0  # 0でデフォルトの処理を行う
+# pets_data.csvからデータを読み込む
+def load_pet_data():
+    """CSVファイルからペット情報を読み込む"""
+    pet_df = pd.read_csv('pets_data.csv')
+    return pet_df
 
 
-def predict_pet_match_score(pet_data, survey_data):
-    """
-    survey_data の情報を基に、AIモデルが予測した適合度スコアを返します。
-    """
-    if model is None:
-        raise Exception("AIモデルが読み込まれていません")
+# ユーザーが入力した自由記述の内容を解析
+def parse_user_input(user_input, pet_df):
+    """ユーザーの入力を解析して、条件を抽出"""
+    # CSVからユニークなキーワードを抽出
+    keywords = {
+        'type': pet_df['type'].dropna().unique().tolist(),
+        'size': pet_df['size'].dropna().unique().tolist(),
+        'personality': pet_df['personality'].dropna().unique().tolist(),
+        'color': pet_df['color'].dropna().unique().tolist(),
+        'disease': pet_df['disease'].dropna().unique().tolist()
+    }
 
-    # survey_dataからカテゴリカルデータを数値に変換
-    survey_features = [
-        len(survey_data['pet_type']), 
-        len(survey_data['activity_level']),
-        encode_size(survey_data['pet_size_preference']),  # ここでエンコード
-        len(survey_data['living_environment']),
-        0,  # その他の特徴量（仮）
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  # 合計20個
-    ]
-    
-    # 20個の特徴量を持つ入力に変換して予測
-    score = model.predict([survey_features])[0]
-    return score
+    # 初期条件を設定
+    conditions = {
+        'type': None,
+        'size': None,
+        'personality': None,
+        'color': None,
+        'disease': None
+    }
+
+    # ユーザー入力が文字列であるかを確認し、小文字に変換
+    if isinstance(user_input, str):
+        user_input = user_input.lower()
+    else:
+        user_input = ""  # 文字列でない場合は空文字列にする
+
+    # ユーザーの入力に基づいて条件を探す
+    for key, values in keywords.items():
+        for value in values:
+            if isinstance(value, str) and value.lower() in user_input:  # 入力とキーワードを小文字で比較
+                conditions[key] = value  # マッチした場合、条件を更新
+
+    return conditions
+
+
+# 年齢範囲のフィルタリング条件を作成
+def age_filter(age_ranges, pet_df):
+    """選択された年齢範囲に基づいてフィルタリング"""
+    if not age_ranges:
+        return None  # 年齢範囲が指定されていない場合はフィルタなし
+
+    filters = []
+    for age_range in age_ranges:
+        if age_range == '0-3':
+            filters.append((pet_df['age'] >= 0) & (pet_df['age'] <= 3))
+        elif age_range == '4-7':
+            filters.append((pet_df['age'] >= 4) & (pet_df['age'] <= 7))
+        elif age_range == '8-10':
+            filters.append((pet_df['age'] >= 8) & (pet_df['age'] <= 10))
+
+    return filters
 
 
 def pet_survey(request):
     if request.method == 'POST':
         form = SimplePetSurveyForm(request.POST)
         if form.is_valid():
-            # アンケートの回答をモデルで扱いやすい形式に変換
-            pet_type = form.cleaned_data['pet_type']
-            living_environment = form.cleaned_data['living_environment']
-            pet_personality = form.cleaned_data['pet_personality']
-            activity_level = form.cleaned_data['activity_level']
-            pet_size_preference = form.cleaned_data['pet_size_preference']
+            # フォームからのユーザー入力
+            user_input = form.cleaned_data['general_info']
+            selected_age_ranges = form.cleaned_data['age_range']
 
-            # データベースからペットをフィルター
-            matched_pets = Pet.objects.all()
+            # ペット情報のCSVを読み込む
+            pet_df = load_pet_data()
 
-            # アンケートデータをAIモデル用に変換
-            survey_data = {
-                'pet_type': [pet_type],
-                'activity_level': [activity_level],
-                'pet_size_preference': [pet_size_preference],
-                'living_environment': [living_environment]
-            }
+            # ユーザー入力を解析して条件を抽出
+            conditions = parse_user_input(user_input, pet_df)
 
-            # ペットごとの適合度スコアを計算し、スコア順に並び替える
-            pet_scores = []
-            for pet in matched_pets:
-                pet_data = {
-                    'type': pet.type,
-                    'size': pet.size,
-                    'color': pet.color,
-                    'age': pet.age,
-                }
-                score = predict_pet_match_score(pet_data, survey_data)
-                pet_scores.append((pet, score))
+            # フィルタリング条件を構築
+            filters = []
+            for column, value in conditions.items():
+                if value is not None:
+                    filters.append(pet_df[column] == value)  # 各列の値が条件と一致するかをチェック
 
-            # スコア順にソートし、スコアが0.5以上のペットのみを選択
-            pet_scores.sort(key=lambda x: x[1], reverse=True)
-            matched_pets = [pet for pet, score in pet_scores if score > 0.5]
+            # 年齢範囲のフィルタを追加
+            age_conditions = age_filter(selected_age_ranges, pet_df)
+            if age_conditions:
+                filters.extend(age_conditions)
 
-            # 結果を保存または表示
-            if matched_pets:
-                survey_result = SurveyResult(
-                    pet_type=pet_type,
-                    living_environment=living_environment,
-                    pet_personality=pet_personality,
-                    activity_level=activity_level,
-                    pet_size_preference=pet_size_preference
-                )
-                survey_result.save()
-                return render(request, 'survey/results.html',
-                              {'matched_pets': matched_pets})
+            # フィルタリング条件を全てANDで結合
+            if filters:
+                combined_filter = filters[0]
+                for filter_cond in filters[1:]:
+                    combined_filter &= filter_cond  # 各条件をANDで結合
+                # 条件に基づいてペット情報をフィルタリング
+                matching_pets = pet_df[combined_filter]
             else:
-                return render(request, 'survey/no_results.html',
-                              {'form': form})
+                # 条件が何もない場合はすべてのペットを返す
+                matching_pets = pet_df
+
+            # 結果を表示
+            if not matching_pets.empty:
+                return render(request, 'survey/results.html', {'matching_pets': matching_pets.to_dict(orient='records')})
+            else:
+                return render(request, 'survey/no_results.html', {'form': form})
     else:
         form = SimplePetSurveyForm()
 

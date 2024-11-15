@@ -11,12 +11,8 @@ from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm
 # CSVファイルのパスを指定
 csv_file_path = 'C:\\Users\\t_koitabashi\\Desktop\\卒業制作\\Pet\\pets_data.csv'
 
-# CSVファイルを読み込む
+# CSVデータを最初に読み込んでおく
 data = pd.read_csv(csv_file_path)
-
-# データの先頭5行を表示（サンプルデータ）
-sample_data = data.head()
-
 
 class PetListView(ListView):
     model = Pet
@@ -28,6 +24,9 @@ def pet_create_view(request):
     photo_formset = PetImageFormSet(queryset=PetImage.objects.none())
     error_messages = []
 
+    # CSVデータを最初に読み込んでおく
+    data = pd.read_csv(csv_file_path)
+
     if request.method == 'POST':
         pet_form = PetCreateForm(request.POST)
         photo_formset = PetImageFormSet(request.POST, request.FILES)
@@ -38,6 +37,7 @@ def pet_create_view(request):
                 pet = pet_form.save()
 
                 # 画像の保存
+                image_urls = []
                 for form in photo_formset:
                     if form.is_valid():
                         pet_image = form.save(commit=False)
@@ -48,15 +48,16 @@ def pet_create_view(request):
                             file_extension = os.path.splitext(image.name)[1]
                             unique_filename = f"uuid_{uuid.uuid4().hex}{file_extension}"
                             pet_image.image.name = unique_filename
+                            pet_image.save()
+                            # 画像のURLをリストに追加
+                            image_urls.append(pet_image.image.url)
 
-                        pet_image.save()
-
-                # 電話番号があれば保存（電話番号が別モデルの場合）
-                phone_number = request.POST.get('phone_number')  # 入力された電話番号を取得
+                # 電話番号があれば保存
+                phone_number = request.POST.get('phone_number')
                 if phone_number:
                     PhoneNumber.objects.create(pet=pet, number=phone_number)
 
-                # ペットデータをCSVに追加（電話番号を除く）
+                # ペットデータをCSVに追加
                 new_pet_data = {
                     'id': pet.id,
                     'type': pet.type,
@@ -67,16 +68,13 @@ def pet_create_view(request):
                     'disease': pet.disease,
                     'personality': pet.personality,
                     'sex': pet.sex,
+                    'image_urls': ', '.join(image_urls)
                 }
 
-                # CSVファイルを読み込み、データを追加
+                # CSVファイルを再読み込みして新しいデータを追加
                 data = pd.read_csv(csv_file_path)
-                
-                # 新しいデータをDataFrameに変換して追加
                 new_pet_df = pd.DataFrame([new_pet_data])
                 data = pd.concat([data, new_pet_df], ignore_index=True)
-
-                # 変更をCSVファイルに保存
                 data.to_csv(csv_file_path, index=False)
 
                 return redirect('petapp:pet-create-comp', pet_id=pet.id)
@@ -88,7 +86,7 @@ def pet_create_view(request):
         'form': pet_form,
         'photo_formset': photo_formset,
         'error_messages': error_messages,
-        'csv_data': sample_data  # CSVデータを渡す
+        'csv_data': data.head()  # CSVデータを渡す
     })
 
 
@@ -125,6 +123,20 @@ class PetDeleteView(DeleteView):
     template_name = 'petapp/pet_confirm_delete.html'
     success_url = reverse_lazy('petapp:pet-delete-comp')
 
+    def delete(self, request, *args, **kwargs):
+        pet = self.get_object()
+        response = super().delete(request, *args, **kwargs)
+
+        try:
+            # CSVファイルを読み込んで指定IDの行を削除
+            data = pd.read_csv(csv_file_path)
+            data = data[data['id'] != pet.id]
+            data.to_csv(csv_file_path, index=False)
+        except Exception as e:
+            print(f"Error updating CSV file after deleting pet: {str(e)}")
+
+        return response
+
 
 def index(request):
-    return render(request, 'Survey/index.html', {'csv_data': sample_data})  # CSVデータを渡す
+    return render(request, 'Survey/index.html', {'csv_data': data.head()})
