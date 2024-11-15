@@ -1,5 +1,11 @@
+{% extends '..base.html' %}
+{% load static %}
+{% block title %}アンケート{% endblock %}
+
+{% block contents %}
 <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">送信</button>
 </form>
+{% endblock %}
