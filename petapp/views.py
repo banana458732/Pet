@@ -8,8 +8,17 @@ from django.urls import reverse_lazy
 from .models import Pet, PetImage, PhoneNumber
 from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm
 
+# 現在のスクリプトファイルのディレクトリを取得
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 1つ上の階層のディレクトリパスを取得
+parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+
+# 1つ上の階層にあるファイルのパスを作成
+file_path = os.path.join(parent_dir, "pets_data.csv")
+
 # CSVファイルのパスを指定
-csv_file_path = 'C:\\Users\\t_koitabashi\\Desktop\\卒業制作\\Pet\\pets_data.csv'
+csv_file_path = file_path
 
 # CSVデータを最初に読み込んでおく
 data = pd.read_csv(csv_file_path)

@@ -6,7 +6,18 @@ import os
 import pandas as pd
 
 # CSV ファイルのパスを指定
-CSV_FILE_PATH = 'C:\\Users\\t_koitabashi\\Desktop\\卒業制作\\Pet\\pets_data.csv'
+import os
+
+# 現在のスクリプトファイルのディレクトリを取得
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 1つ上の階層のディレクトリパスを取得
+parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+
+# 1つ上の階層にあるファイルのパスを作成
+file_path = os.path.join(parent_dir, "pets_data.csv")
+
+CSV_FILE_PATH = file_path
 
 
 class Pet(models.Model):
