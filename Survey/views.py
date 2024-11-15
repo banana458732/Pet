@@ -7,7 +7,7 @@ from django.views.generic.base import TemplateView
 # pets_data.csvからデータを読み込む
 def load_pet_data():
     """CSVファイルからペット情報を読み込む"""
-    pet_df = pd.read_csv('pets_data.csv')
+    pet_df = pd.read_csv('pets_data.csv')  # CSVファイルのパスを設定
     return pet_df
 
 
@@ -20,7 +20,9 @@ def parse_user_input(user_input, pet_df):
         'size': pet_df['size'].dropna().unique().tolist(),
         'personality': pet_df['personality'].dropna().unique().tolist(),
         'color': pet_df['color'].dropna().unique().tolist(),
-        'disease': pet_df['disease'].dropna().unique().tolist()
+        'disease': pet_df['disease'].dropna().unique().tolist(),
+        'sex': pet_df['sex'].dropna().unique().tolist(),
+        'syu': pet_df['syu'].dropna().unique().tolist(),
     }
 
     # 初期条件を設定
@@ -29,7 +31,9 @@ def parse_user_input(user_input, pet_df):
         'size': None,
         'personality': None,
         'color': None,
-        'disease': None
+        'disease': None,
+        'sex': None,  # sexを追加
+        'syu': None   # syuを追加
     }
 
     # ユーザー入力が文字列であるかを確認し、小文字に変換
@@ -66,6 +70,7 @@ def age_filter(age_ranges, pet_df):
 
 
 def pet_survey(request):
+    """ペットアンケートに基づいてペット情報をフィルタリングし表示"""
     if request.method == 'POST':
         form = SimplePetSurveyForm(request.POST)
         if form.is_valid():
@@ -103,7 +108,10 @@ def pet_survey(request):
 
             # 結果を表示
             if not matching_pets.empty:
-                return render(request, 'survey/results.html', {'matching_pets': matching_pets.to_dict(orient='records')})
+                # 画像URLのベースパスをテンプレートに渡す
+                return render(request, 'survey/results.html', {
+                    'matching_pets': matching_pets.to_dict(orient='records'),
+                })
             else:
                 return render(request, 'survey/no_results.html', {'form': form})
     else:
@@ -113,8 +121,10 @@ def pet_survey(request):
 
 
 class IndexView(TemplateView):
+    """トップページのビュー"""
     template_name = 'Survey/index.html'
 
 
 def index(request):
+    """トップページを表示"""
     return render(request, 'Survey/index.html')
