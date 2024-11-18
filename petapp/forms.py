@@ -2,6 +2,7 @@ from django import forms
 from .models import Pet, PetImage
 from django.forms import modelformset_factory
 from django.core.exceptions import ValidationError
+from django.core.files.storage import default_storage
 
 
 class PetCreateForm(forms.ModelForm):
@@ -10,11 +11,17 @@ class PetCreateForm(forms.ModelForm):
         fields = ['id', 'type', 'size', 'color', 'age', 'syu', 'disease',
                   'personality', 'sex', 'phone_number']
 
-    def clean_age(self):
-        age = self.cleaned_data.get('age')
-        if age is not None and (age < 0 or age > 30):
-            raise ValidationError('年齢は0から30の範囲で入力してください。')
-        return age
+    def clean_id(self):
+        """新規登録時にidが空でも許容する"""
+        id = self.cleaned_data.get('id')
+        if not self.instance.pk and not id:  # 新規登録時でidが空
+            return None
+        return id
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:  # 新規登録時
+            self.fields['id'].required = False  # idを非必須にする
 
 
 class PetImageForm(forms.ModelForm):
@@ -24,17 +31,8 @@ class PetImageForm(forms.ModelForm):
 
     image = forms.ImageField(required=False, label='写真')
 
-    def clean_image(self):
-        image = self.cleaned_data.get('image')
-        if not image:
-            raise ValidationError("画像が必要です。")  # エラーを発生させる
-        return image
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # 画像が空の場合、初期値をクリア
-        if not self.instance.image:
-            self.fields['image'].initial = None
 
 
 class RequiredPetImageFormSet(modelformset_factory(PetImage, form=PetImageForm, extra=5)):
@@ -43,6 +41,22 @@ class RequiredPetImageFormSet(modelformset_factory(PetImage, form=PetImageForm, 
         # 少なくとも1つの画像がアップロードされているかチェック
         if not any(form.cleaned_data.get('image') for form in self.forms if form.cleaned_data):
             raise ValidationError("少なくとも1つの画像をアップロードしてください。")
+
+        # 新規登録時に画像が未選択でもエラーを防止
+        for form in self.forms:
+            if not form.cleaned_data.get('image') and form.instance.pk is None:
+                form.cleaned_data['image'] = None  # 空のまま進むための処理
+
+    def save(self, commit=True):
+        # 保存処理を行う前に画像を削除する場合に備えた処理
+        for form in self.forms:
+            # 空の画像が送信されている場合、そのまま進む
+            if not form.cleaned_data.get('image') and not form.instance.pk:
+                continue
+
+            # 保存のためにファイルを管理
+            form.save(commit=commit)
+        return super().save(commit=commit)
 
 
 # 使用するフォームセットを変更
@@ -55,6 +69,19 @@ class PetUpdateForm(forms.ModelForm):
         fields = ['id', 'type', 'size', 'color', 'age', 'syu', 'disease',
                   'personality', 'sex', 'phone_number']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # idは入力可能に保つ（必須ではない）
+        self.fields['id'].required = False
+
+
+        # 更新時に id フィールドを非必須に設定
+        if self.instance.pk:
+            self.fields['id'].required = False  # id フィールドを非必須にする
+            self.fields['id'].widget = forms.HiddenInput()  # idを非表示にする
+        else:
+            self.fields['id'].required = True  # 新規作成時は必須にする
+
     TYPE_CHOICES = [
         ('犬', '犬'),
         ('猫', '猫'),
@@ -66,13 +93,72 @@ class PetUpdateForm(forms.ModelForm):
         ('小型', '小型'),
     ]
 
-    id = forms.IntegerField(widget=forms.HiddenInput())
+    id = forms.IntegerField(widget=forms.HiddenInput(), required=False)  # idは非必須でHiddenInputにする
     type = forms.ChoiceField(choices=TYPE_CHOICES, label='種類', disabled=True)
-    size = forms.ChoiceField(choices=SIZE_CHOICES, label='サイズ')  # サイズを編集可能に変更
+    size = forms.ChoiceField(choices=SIZE_CHOICES, label='サイズ')
     color = forms.CharField(max_length=100, label='毛の色')
-    age = forms.IntegerField(min_value=0, max_value=30, label='年齢')
-    syu = forms.CharField(max_length=100, label='種別')  # 追加
-    disease = forms.CharField(max_length=100, label='病歴', required=False)  # 追加
-    personality = forms.CharField(max_length=100, label='性格', required=False)  # 追加
+    age = forms.IntegerField(min_value=0, max_value=10, label='年齢')
+    syu = forms.CharField(max_length=100, label='種別')
+    disease = forms.CharField(max_length=100, label='病歴', required=False)
+    personality = forms.CharField(max_length=100, label='性格', required=False)
     sex = forms.CharField(label='性別', required=False, disabled=True)
-    phone_number = forms.CharField(max_length=15, label='電話番号', required=False)  # 追加
+    phone_number = forms.CharField(max_length=15, label='電話番号', required=False)
+
+
+class PetImageUpdateForm(forms.ModelForm):
+    image = forms.ImageField(
+        required=False,
+        label='画像を更新する',
+        widget=forms.ClearableFileInput(attrs={'initial_text': '', 'clear_checkbox_label': 'クリア'})
+    )
+
+    class Meta:
+        model = PetImage
+        fields = ['image']
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+
+        # 画像が削除された場合
+        if not image and self.data.get(f'{self.prefix}-image-clear'):
+            return None
+
+        # 新しい画像がない場合、元の画像をそのまま使用
+        if not image:
+            return self.instance.image
+
+        return image
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # 更新時に `id` フィールドが不要であれば削除
+        if 'id' in self.fields:
+            del self.fields['id']
+
+
+class PetImageUpdateFormSet(modelformset_factory(PetImage, form=PetImageForm, extra=0, can_delete=True)):
+    def clean(self):
+        """少なくとも1つの画像があることをチェック"""
+        super().clean()
+
+        # 既存の画像も含めて1つ以上が必須
+        if not any(
+            form.cleaned_data.get('image') for form in self.forms if form.cleaned_data
+        ) and not any(form.instance.image for form in self.forms):
+            raise ValidationError("少なくとも1つの画像をアップロードしてください。")
+
+    def save(self, commit=True):
+        """画像の保存と削除処理"""
+        for form in self.forms:
+            if form.cleaned_data.get('DELETE') and form.instance.pk:
+                # 削除フラグが立っている場合
+                image_path = form.instance.image.path
+                if default_storage.exists(image_path):
+                    default_storage.delete(image_path)  # ファイルシステムから削除
+                form.instance.delete()  # データベースから削除
+            elif form.cleaned_data.get('image'):
+                # 新しい画像がアップロードされた場合
+                pet_image = form.save(commit=False)
+                pet_image.save()
+
+        return super().save(commit=commit)
