@@ -5,6 +5,17 @@
 
 <p>選択したペットの情報が正常に更新されました。</p>
 
+<!-- 変更された項目を表示 -->
+{% if updated_fields %}
+    <ul>
+        {% for field in updated_fields %}
+            <li style="color: red;"><strong>{{ field }}</strong></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>変更はありませんでした。</p>
+{% endif %}
+
 <!-- 戻るリンク -->
 <a href="{% url 'petapp:pet-list' %}">ペット一覧に戻る</a>
 {% endblock %}

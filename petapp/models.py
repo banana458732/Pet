@@ -33,11 +33,11 @@ class Pet(models.Model):
     ]
 
     id = models.IntegerField(primary_key=True)
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='')
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='', verbose_name="種類")
     size = models.CharField(max_length=10, choices=SIZE_CHOICES, default='')
     color = models.CharField(max_length=100, default='')
     age = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(30)]
+        validators=[MinValueValidator(0), MaxValueValidator(10)]
     )
     syu = models.CharField(max_length=100, default='')
     disease = models.CharField(max_length=100, null=True, blank=True, default='')
@@ -80,8 +80,9 @@ class PetImage(models.Model):
 
 @receiver(pre_delete, sender=Pet)
 def delete_pet_images(sender, instance, **kwargs):
-    # 関連する画像を削除
     for pet_image in instance.images.all():
+        if pet_image.image:
+            pet_image.image.delete(save=False)  # ファイルを削除
         if pet_image.image and os.path.isfile(pet_image.image.path):
             os.remove(pet_image.image.path)
 
