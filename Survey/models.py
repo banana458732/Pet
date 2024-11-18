@@ -15,13 +15,10 @@ class SurveyResult(models.Model):
 
 
 class SurveyHistory(models.Model):
-    """ユーザーごとの過去のアンケート結果履歴"""
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='survey_history')  # ユーザーとの関連
-    survey_result = models.ForeignKey('SurveyResult', on_delete=models.CASCADE, related_name='survey_histories')  # SurveyResultとの関連
-    date_created = models.DateTimeField(auto_now_add=True)  # 履歴の作成日時
-
-    # 修正した部分：デフォルト値を設定
-    matched_pet = models.ForeignKey('petapp.Pet', on_delete=models.CASCADE, related_name='survey_histories', default=1)  # デフォルト値（Petインスタンス）
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='survey_history')
+    survey_result = models.ForeignKey('SurveyResult', on_delete=models.CASCADE, related_name='survey_histories')
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Survey by {self.user.username} on {self.date_created}"
+

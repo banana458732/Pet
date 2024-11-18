@@ -1,7 +1,9 @@
+# survey/views.py
 from django.shortcuts import render
-from .forms import SimplePetSurveyForm
 from django.views.generic.base import TemplateView
+from .forms import SimplePetSurveyForm
 from .models import SurveyResult, SurveyHistory
+from petapp.models import Pet
 import pandas as pd
 
 
@@ -129,11 +131,17 @@ def pet_survey(request):
                 # ユーザーの過去のアンケート結果を取得
                 user_history = SurveyHistory.objects.filter(user=request.user).order_by('-date_created')
 
+                # 過去のマッチング履歴をPetテーブルから取得
+                matched_pets = Pet.objects.filter(
+                    id__in=user_history.values_list('matched_pet_id', flat=True)
+                )
+
                 # 結果を表示
                 return render(request, 'survey/results.html', {
                     'matching_pets': matching_pets.to_dict(orient='records'),
                     'survey_result': survey_result,
-                    'user_history': user_history  # ユーザーの過去の履歴を渡す
+                    'user_history': user_history,  # ユーザーの過去の履歴を渡す
+                    'matched_pets': matched_pets  # Petテーブルから取得した過去のマッチングペット情報を渡す
                 })
             else:
                 return render(request, 'survey/no_results.html', {'form': form})
@@ -157,3 +165,15 @@ class IndexView(TemplateView):
 def index(request):
     """トップページを表示"""
     return render(request, 'Survey/index.html')
+
+
+# 過去の履歴詳細ページのビュー
+def history_detail(request, id):
+    """過去のアンケート結果詳細を表示"""
+    # IDに対応する履歴を取得
+    try:
+        history = SurveyHistory.objects.get(id=id)  # IDに該当する履歴データを取得
+    except SurveyHistory.DoesNotExist:
+        history = None  # 履歴が存在しない場合はNoneを返す（エラーハンドリング）
+
+    return render(request, 'survey/history_detail.html', {'history': history})
