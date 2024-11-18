@@ -26,4 +26,5 @@ urlpatterns = [
     path('pets/', include('petapp.urls')),
     path('survey/', views.pet_survey, name='pet_survey'),  # その他のURLパターン
     path('', include('Survey.urls')),
+    path('accounts/', include('accounts.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
