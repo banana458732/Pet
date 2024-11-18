@@ -3,39 +3,69 @@
 {% block title %}アンケート{% endblock %}
 
 {% block contents %}
-<h2>アンケート入力</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">送信</button>
-</form>
+<div class="container survey-container mt-5">
+    <h2 class="survey-title">アンケートフォーム</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- 自由入力フィールド -->
+        <div class="form-group">
+            <label for="id_general_info">求めているペットについて自由にご記入ください。</label>
+            <br>  
+            {{ form.general_info }}
+            <small class="form-text text-muted">(例: ペットの種類、性格、性別など)</small>
+        </div>
+    
+        <!-- 年齢範囲 -->
+        <div class="form-group">
+            <label for="id_age_range">希望するペットの年齢範囲(任意)</label>
+            <div class="age-options">
+                <label>
+                    <input type="checkbox" name="age_range" value="0-3"> 0~3歳
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="age_range" value="4-7"> 4~7歳
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="age_range" value="8-10"> 8~10歳
+                </label>
+            </div>
+        </div>
+    
+        <button type="submit" class="btn btn-primary">送信</button>
+    </form>
 
-<h2>過去のマッチング履歴</h2>
-{% if matching_history %}
-    <table>
-        <thead>
-            <tr>
-                <th>日付</th>
-                <th>ペットの名前</th>
-                <th>タイプ</th>
-                <th>サイズ</th>
-                <th>性格</th>
-                <th>色</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for history in matching_history %}
-            <tr>
-                <td>{{ history.date_created }}</td>
-                <td>{{ history.survey_result.pet_type }}</td>
-                <td>{{ history.survey_result.size }}</td>
-                <td>{{ history.survey_result.personality }}</td>
-                <td>{{ history.survey_result.color }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>過去のマッチング履歴はありません。</p>
-{% endif %}
+    <!-- 過去のマッチング履歴表示 -->
+    <h3 class="mt-5">過去のマッチング履歴</h3>
+    {% if user_history %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>アンケート日時</th>
+                    <th>マッチングしたペット</th>
+                    <th>詳細</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for history in user_history %}
+                <tr>
+                    <td>{{ history.date_created }}</td>
+                    <td>
+                        {% for pet in matched_pets %}
+                            <p>{{ pet.name }} ({{ pet.type }}, {{ pet.age }}歳)</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{% url 'survey:history_detail' history.id %}" class="btn btn-info btn-sm">詳細を見る</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>過去のマッチング履歴はありません。</p>
+    {% endif %}
+</div>
 {% endblock %}
