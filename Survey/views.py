@@ -1,7 +1,9 @@
-import pandas as pd
 from django.shortcuts import render
+from django.contrib.auth.models import User
 from .forms import SimplePetSurveyForm
 from django.views.generic.base import TemplateView
+from .models import SurveyResult, SurveyHistory  # SurveyResultとSurveyHistoryモデルをインポート
+import pandas as pd
 
 
 # pets_data.csvからデータを読み込む
@@ -75,8 +77,8 @@ def pet_survey(request):
         form = SimplePetSurveyForm(request.POST)
         if form.is_valid():
             # フォームからのユーザー入力
-            user_input = form.cleaned_data['general_info']
-            selected_age_ranges = form.cleaned_data['age_range']
+            user_input = form.cleaned_data.get('general_info', '')  # 'general_info'がフォームに存在することを確認
+            selected_age_ranges = form.cleaned_data.get('age_range', [])
 
             # ペット情報のCSVを読み込む
             pet_df = load_pet_data()
@@ -108,16 +110,42 @@ def pet_survey(request):
 
             # 結果を表示
             if not matching_pets.empty:
-                # 画像URLのベースパスをテンプレートに渡す
+                # SurveyResultを作成し、マッチングペットを保存
+                survey_result = SurveyResult.objects.create(
+                    pet_type=conditions['type'] or '',
+                    size=conditions['size'] or '',
+                    color=conditions['color'] or '',
+                    age=','.join(selected_age_ranges) or '',
+                    pet_personality=form.cleaned_data.get('personality', '') or '',
+                    activity_level=form.cleaned_data.get('activity_level', '') or '',
+                    pet_size_preference=form.cleaned_data.get('pet_size_preference', '') or '',
+                    additional_requests=form.cleaned_data.get('additional_requests', '') or '',
+                )
+
+                # ユーザーの履歴としてSurveyHistoryを作成
+                if request.user.is_authenticated:
+                    SurveyHistory.objects.create(
+                        user=request.user,
+                        survey_result=survey_result,
+                    )
+
+                # 結果を表示
                 return render(request, 'survey/results.html', {
                     'matching_pets': matching_pets.to_dict(orient='records'),
+                    'survey_result': survey_result,
                 })
             else:
                 return render(request, 'survey/no_results.html', {'form': form})
     else:
         form = SimplePetSurveyForm()
 
-    return render(request, 'survey/pet_survey.html', {'form': form})
+    # ユーザーが過去に行ったアンケート履歴を表示
+    survey_history = SurveyHistory.objects.filter(user=request.user).order_by('-date_created') if request.user.is_authenticated else []
+
+    return render(request, 'survey/pet_survey.html', {
+        'form': form,
+        'survey_history': survey_history,
+    })
 
 
 class IndexView(TemplateView):

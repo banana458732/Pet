@@ -23,6 +23,9 @@ csv_file_path = file_path
 # CSVデータを最初に読み込んでおく
 data = pd.read_csv(csv_file_path)
 
+# NaNを「なし」に置き換え
+data.fillna('なし', inplace=True)
+
 class PetListView(ListView):
     model = Pet
     template_name = 'petapp/pet_list.html'
@@ -35,6 +38,8 @@ def pet_create_view(request):
 
     # CSVデータを最初に読み込んでおく
     data = pd.read_csv(csv_file_path)
+    # NaNを「なし」に置き換え
+    data.fillna('なし', inplace=True)
 
     if request.method == 'POST':
         pet_form = PetCreateForm(request.POST)
@@ -84,6 +89,7 @@ def pet_create_view(request):
                 data = pd.read_csv(csv_file_path)
                 new_pet_df = pd.DataFrame([new_pet_data])
                 data = pd.concat([data, new_pet_df], ignore_index=True)
+                data.fillna('なし', inplace=True)  # NaNを「なし」に置き換え
                 data.to_csv(csv_file_path, index=False)
 
                 return redirect('petapp:pet-create-comp', pet_id=pet.id)

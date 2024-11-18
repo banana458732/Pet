@@ -21,6 +21,7 @@
 {% block contents %}
 <h1>マッチングしたペット情報</h1>
 
+<!-- マッチングしたペット情報がある場合 -->
 {% if matching_pets %}
     <ul>
         {% for pet in matching_pets %}
@@ -38,7 +39,6 @@
                     </div>
                     <div class="pet-image">
                         {% if pet.image_urls %}
-                            <h3>画像</h3>
                             <img src="{{ pet.image_urls }}" alt="Pet Image" width="200">
                         {% endif %}
                     </div>
@@ -49,4 +49,5 @@
 {% else %}
     <p>現在、登録されているペットはありません。</p>
 {% endif %}
+
 {% endblock %}
