@@ -1,7 +1,18 @@
 {% extends '..base.html' %}
 {% load static %}
 {% block title %}アンケート{% endblock %}
-
+<!-- Masthead-->
+<header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading" style="text-align: center;">
+                    <h1 style="font-size: 60px; white-space: nowrap;">Matching system that connects</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
 {% block contents %}
 <!DOCTYPE html>
 <html lang="ja">
@@ -25,3 +36,7 @@
 </body>
 </html>
 {% endblock %}
+
+<!-- CSS -->
+<style>
+</style>

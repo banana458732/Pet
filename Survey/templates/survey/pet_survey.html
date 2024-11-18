@@ -1,11 +1,55 @@
 {% extends '../base.html' %}
 {% load static %}
 {% block title %}アンケート{% endblock %}
-
+{% block header %}
+<!-- Masthead-->
+<header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading" style="text-align: center;">
+                    <h1 style="font-size: 60px; white-space: nowrap;">Matching system that connects</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{% endblock %}
 {% block contents %}
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">送信</button>
-</form>
+
+<div class="container survey-container mt-5">
+    <h2 class="survey-title">アンケートフォーム</h2>
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- 自由入力フィールド -->
+        <div class="form-group">
+            <label for="id_general_info">求めているペットについて自由にご記入ください。</label>
+            <br>  
+            {{ form.general_info }}
+            <small class="form-text text-muted">(例: ペットの種類、性格、性別など)</small>
+        </div>
+    
+        <!-- 年齢範囲 -->
+        <div class="form-group">
+            <label for="id_age_range">希望するペットの年齢範囲(任意)</label>
+            <div class="age-options">
+                <label>
+                    <input type="checkbox" name="age_range" value="0-3"> 0~3歳
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="age_range" value="4-7"> 4~7歳
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="age_range" value="8-10"> 8~10歳
+                </label>
+            </div>
+        </div>
+    
+        <button type="submit" class="btn btn-primary">送信</button>
+    </form>
+</div>
+
 {% endblock %}
