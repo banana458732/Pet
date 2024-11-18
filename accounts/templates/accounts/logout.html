@@ -1,5 +1,5 @@
 <!-- ベーステンプレートを適用する -->
-{% extends 'messaging/base.html' %}
+{% extends 'base.html' %}
 <!-- ヘッダー情報のページタイトルを設定する -->
 {% load static %}
 {% block title %}Log out{% endblock %}
@@ -61,7 +61,7 @@
           <p><h3 id="logout_message">ログアウト完了</h3></p>
           <p><h5 id="logout_complete_message">ログアウトしました。</h5></p>
           <!-- トップページのリンクテキスト -->
-          <p><a href="{% url 'Petapp:index' %}" id="toppage_button2">トップページへ</a></p>
+          <p><a href="{% url 'accounts:index' %}" id="toppage_button2">トップページへ</a></p>
           <p id="position_room"></p>
 
 

@@ -1,4 +1,24 @@
+
+{% extends 'base.html' %}
+<!-- ヘッダー情報のページタイトルを設定する -->
 {% load static %}
+{% block title %}Login{% endblock %}
+
+  {% block header %}
+  <header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading" style="text-align: center;">
+                    <h1 style="font-size: 60px; white-space: nowrap; ">ログアウト</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+  </header>
+  {% endblock %}
+
+{% block contents %}
 <!doctype html>
 <!-- 言語指定をenからjaに変更 -->
 <html lang="ja">
@@ -86,7 +106,7 @@
               <!-- ログイン直後のリダイレクト先(トップページ)のURLパターンを設定 -->
               <input type="hidden" 
                      name="next" 
-                     value="{% url 'Accounts:login_success' %}">
+                     value="{% url 'accounts:login_success' %}">
             </form>
           </div>
         </div>
@@ -106,3 +126,4 @@
     </script>
   </body>
 </html>
+{% endblock %}
