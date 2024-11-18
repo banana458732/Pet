@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'messaging',
     'petapp',
     'Survey',
+    'accounts',
 ]
 
 

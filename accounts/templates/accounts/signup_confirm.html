@@ -1,0 +1,94 @@
+
+<!-- ヘッダー情報のページタイトルを設定する -->
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Signup_Confirm{% endblock %}
+
+{% block header %}
+<header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading" style="text-align: center;">
+                    <h1 style="font-size: 60px; white-space: nowrap; ">登録内容確認</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{% endblock %}
+
+{% block contents %}
+<style>
+    #accounts_register_confirm{
+        text-align: center;
+        font-size: 50px;
+        margin: 50px 50px 50px 50px;
+    }
+
+    #accounts_register_form{
+        text-align: center;
+    }
+
+    table td {
+        padding: 3px 10px;
+    }
+
+    table {
+        border: solid 1px;
+        margin-bottom: 50px;
+        border-radius: 6px;
+    }
+
+    #accounts_bottom {
+        text-align: center;
+    }
+
+    #back_bottom{
+        color: aliceblue;
+        background:#979797; /*背景色の指定*/
+        border: #a5a5a5 1px solid; /*境界線の指定*/
+        border-radius: 6px; /*角丸の指定*/
+        padding:10px;
+        margin: 10px;
+        margin-right: 0px;
+    }
+
+    #create_bottom {
+        color: aliceblue;
+        background:#4fd208; /*背景色の指定*/
+        border: #82d35a 1px solid; /*境界線の指定*/
+        border-radius: 6px; /*角丸の指定*/
+        padding:10px;
+        margin: 10px;
+        margin-left: 0px;
+    }
+
+</style>
+<div id="accounts_register_confirm">
+    <p>登録内容確認</p>
+</div>
+
+
+<div id="accounts_register_form">
+<table  class="ui celled table table table-hover " align="center">
+    {% csrf_token %}
+    <tr><td>名前</td><td>{{form.username.value}}</td></tr>
+    <tr><td>メールアドレス</td><td>{{form.email.value}}</td></tr>
+    <tr><td>パスワード</td><td>{{form.password.value}}</td></tr>
+</table>
+</div>
+<form class="ui form" action="{% url 'accounts:signup' %}" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+        {{field.as_hidden}}
+    {% endfor %}
+    <div id="accounts_bottom">
+    <button class="ui button grey" id="back_bottom"  type="submit" name="back" value="back">戻る</button>
+    <button class="ui button orange" id="create_bottom" type="submit" name="next" value="create">作成</button>
+
+</form>
+</div>
+<p></p>
+
+{% endblock %}
