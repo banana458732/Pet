@@ -1,70 +1,77 @@
-<h2>{{ view.object.id }} の更新</h2>
+<h2>{{ pet_form.instance.id }} の更新</h2>
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.non_field_errors }}
 
-    <!-- IDの表示 (変更不可) -->
+    <!-- IDと種類は変更不可の表示 -->
     <label>ID:</label>
-    <span>{{ view.object.id }}</span>  <!-- IDは表示のみ -->
-    <input type="hidden" name="id" value="{{ view.object.id }}">
+    <span>{{ pet_form.instance.id }}</span>
+    <input type="hidden" name="id" value="{{ pet_form.instance.id }}">  <!-- idフィールドを隠しフィールドとして追加 -->
+    <br>
+    <label>種類 (犬/猫):</label>
+    <span>{{ pet_form.instance.type }}</span>
     <br>
 
-    <!-- 種類 (犬/猫) (変更不可) -->
-    <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
-    {{ form.type.errors }}
-    <span>{{ view.object.type }}</span>  <!-- 種類は表示のみ -->
+    <!-- サイズ -->
+    <label for="{{ pet_form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
+    {{ pet_form.size }}
     <br>
 
-    <!-- サイズ (大型/中型/小型) (編集可能) -->
-    <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
-    {{ form.size.errors }}
-    {{ form.size }}  <!-- サイズを編集可能にする -->
+    <!-- 色 -->
+    <label for="{{ pet_form.color.id_for_label }}">色:</label>
+    {{ pet_form.color }}
     <br>
 
-    <!-- 色 (変更可能) -->
-    <label for="{{ form.color.id_for_label }}">色:</label>
-    {{ form.color.errors }}
-    {{ form.color }}
+    <!-- 年齢 -->
+    <label for="{{ pet_form.age.id_for_label }}">年齢:</label>
+    {{ pet_form.age }}
     <br>
 
-    <!-- 年齢 (変更可能) -->
-    <label for="{{ form.age.id_for_label }}">年齢:</label>
-    {{ form.age.errors }}
-    {{ form.age }}
-    <br>
-
-    <!-- 性別 (固定表示) -->
+    <!-- 性別 -->
     <label>性別:</label>
-    <span>{{ view.object.sex }}</span>  <!-- 性別はオブジェクトから直接表示 -->
+    <span>{{ pet_form.instance.sex }}</span>
     <br>
 
-    <!-- その他のフィールド (変更可能) -->
-    <label for="{{ form.syu.id_for_label }}">種別:</label>
-    {{ form.syu.errors }}
-    {{ form.syu }}  
+    <!-- その他のフィールド -->
+    <label for="{{ pet_form.syu.id_for_label }}">種別:</label>
+    {{ pet_form.syu }}
     <br>
 
-    <label for="{{ form.disease.id_for_label }}">病歴:</label>
-    {{ form.disease.errors }}
-    {{ form.disease }}  
+    <label for="{{ pet_form.disease.id_for_label }}">病歴:</label>
+    {{ pet_form.disease }}
     <br>
 
-    <label for="{{ form.personality.id_for_label }}">性格:</label>
-    {{ form.personality.errors }}
-    {{ form.personality }}
+    <label for="{{ pet_form.personality.id_for_label }}">性格:</label>
+    {{ pet_form.personality }}
     <br>
 
-    <!-- 電話番号フィールド -->
-    <label for="{{ form.phone_number.id_for_label }}">電話番号:</label>
-    {{ form.phone_number }}  <!-- 電話番号入力欄 -->
-    {% if form.phone_number.errors %}
-        <div class="error">{{ form.phone_number.errors }}</div>  <!-- エラーを下に表示 -->
-    {% endif %}
+    <label for="{{ pet_form.phone_number.id_for_label }}">電話番号:</label>
+    {{ pet_form.phone_number }}
     <br>
 
-    <!-- 更新ボタン -->
+    <h3>画像の更新</h3>
+    {{ image_formset.management_form }}  <!-- 管理フォームを追加 -->
+    
+    {% for form in image_formset %}
+        <div>
+            {% if form.instance.image %}
+                <img src="{{ form.instance.image.url }}" alt="Pet Image" style="width: 150px; height: auto;">
+                {{ form.id.as_hidden }}  <!-- IDを隠しフィールドで保持 -->
+                
+                <!-- 削除チェックボックスを表示（任意） -->
+                <label for="{{ form.prefix }}-DELETE">この画像を削除</label>
+                {{ form.DELETE }}  <!-- DELETEフィールド -->
+                
+                <p style="color: orange;">更新する画像を選択:</p>
+                <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">                
+            {% else %}
+                <p>新しい画像を選択:</p>
+                <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
+            {% endif %}
+        </div>
+    {% endfor %}
+    
+    <br>
     <button type="submit">更新</button>
 </form>
 
-<!-- 戻るリンク -->
 <a href="{% url 'petapp:pet-list' %}">戻る</a>

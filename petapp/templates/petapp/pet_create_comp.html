@@ -17,14 +17,19 @@
 <p>電話番号 : {{ pet.phone_number }}</p>
 
 <!-- 画像表示部分 -->
-{% if pet.petimage_set.exists %}
+{% if pet_images %}
     <h3>ペットの画像</h3>
-    {% for image in pet.petimage_set.all %}
-        <img src="{{ image.image.url }}" alt="ペット画像" width="200">
+    {% for image in pet_images %}
+        {% if image.image %}
+            <img src="{{ image.image.url }}" alt="ペット画像" width="100">
+        {% else %}
+        {% endif %}
     {% endfor %}
 {% else %}
     <p>画像は登録されていません。</p>
 {% endif %}
+
+<br></br>
 
 <a href="{% url 'petapp:pet-list' %}">ペット一覧に戻る</a>
 {% endblock %}

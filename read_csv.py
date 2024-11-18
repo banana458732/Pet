@@ -1,7 +1,7 @@
 import pandas as pd
 
 # CSVファイルのパスを指定
-csv_file_path = 'C:\\Users\\t_koitabashi\\Desktop\\卒業制作\\Pet\\pets_data.csv'
+csv_file_path = 'C:\\Users\\t_yamanoi\\Documents\\卒業制作\\Pet\\pets_data.csv'
 
 # CSVファイルを読み込む
 data = pd.read_csv(csv_file_path)
