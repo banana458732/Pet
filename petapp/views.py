@@ -13,6 +13,23 @@ from django.core.files.storage import default_storage
 # CSVファイルのパスを指定
 CSV_FILE_PATH = 'C:\\Users\\t_yamanoi\\Documents\\卒業制作\\Pet\\pets_data.csv'
 
+# 現在のスクリプトファイルのディレクトリを取得
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# 1つ上の階層のディレクトリパスを取得
+parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
+
+# 1つ上の階層にあるファイルのパスを作成
+file_path = os.path.join(parent_dir, "pets_data.csv")
+
+# CSVファイルのパスを指定
+csv_file_path = file_path
+
+# CSVデータを最初に読み込んでおく
+data = pd.read_csv(csv_file_path)
+
+# NaNを「なし」に置き換え
+data.fillna('なし', inplace=True)
 
 # CSVファイルを読み書きする関数
 def read_csv():
@@ -39,6 +56,11 @@ def pet_create_view(request):
     pet_form = PetCreateForm()
     photo_formset = PetImageFormSet(queryset=PetImage.objects.none())
     error_messages = []
+
+    # CSVデータを最初に読み込んでおく
+    data = pd.read_csv(csv_file_path)
+    # NaNを「なし」に置き換え
+    data.fillna('なし', inplace=True)
 
     if request.method == 'POST':
         pet_form = PetCreateForm(request.POST)
@@ -71,12 +93,30 @@ def pet_create_view(request):
                     })
 
                 # 電話番号保存
+                # 画像の保存
+                image_urls = []
+                for form in photo_formset:
+                    if form.is_valid():
+                        pet_image = form.save(commit=False)
+                        pet_image.pet = pet
+
+                        image = form.cleaned_data.get('image')
+                        if image:
+                            file_extension = os.path.splitext(image.name)[1]
+                            unique_filename = f"uuid_{uuid.uuid4().hex}{file_extension}"
+                            pet_image.image.name = unique_filename
+                            pet_image.save()
+                            # 画像のURLをリストに追加
+                            image_urls.append(pet_image.image.url)
+
+                # 電話番号があれば保存
                 phone_number = request.POST.get('phone_number')
                 if phone_number:
                     PhoneNumber.objects.create(pet=pet, number=phone_number)
 
                 # CSVにデータ追加
                 data = read_csv()
+                # ペットデータをCSVに追加
                 new_pet_data = {
                     'id': pet.id,
                     'type': pet.type,
@@ -87,10 +127,18 @@ def pet_create_view(request):
                     'disease': pet.disease,
                     'personality': pet.personality,
                     'sex': pet.sex,
+                    'image_urls': ', '.join(image_urls)
                 }
                 if pet.id not in data['id'].values:
                     data = pd.concat([data, pd.DataFrame([new_pet_data])], ignore_index=True)
                     write_csv(data)
+
+                # CSVファイルを再読み込みして新しいデータを追加
+                data = pd.read_csv(csv_file_path)
+                new_pet_df = pd.DataFrame([new_pet_data])
+                data = pd.concat([data, new_pet_df], ignore_index=True)
+                data.fillna('なし', inplace=True)  # NaNを「なし」に置き換え
+                data.to_csv(csv_file_path, index=False)
 
                 return redirect('petapp:pet-create-comp', pet_id=pet.id)
 
@@ -101,6 +149,7 @@ def pet_create_view(request):
         'form': pet_form,
         'photo_formset': photo_formset,
         'error_messages': error_messages,
+        'csv_data': data.head()  # CSVデータを渡す
     })
 
 
@@ -199,8 +248,23 @@ class PetDeleteView(DeleteView):
     template_name = 'petapp/pet_confirm_delete.html'
     success_url = reverse_lazy('petapp:pet-delete-comp')
 
+    def delete(self, request, *args, **kwargs):
+        pet = self.get_object()
+        response = super().delete(request, *args, **kwargs)
+
+        try:
+            # CSVファイルを読み込んで指定IDの行を削除
+            data = pd.read_csv(csv_file_path)
+            data = data[data['id'] != pet.id]
+            data.to_csv(csv_file_path, index=False)
+        except Exception as e:
+            print(f"Error updating CSV file after deleting pet: {str(e)}")
+
+        return response
+
 
 # インデックスビュー
 def index(request):
     csv_data = read_csv().head()
     return render(request, 'Survey/index.html', {'csv_data': csv_data})
+    return render(request, 'Survey/index.html', {'csv_data': data.head()})

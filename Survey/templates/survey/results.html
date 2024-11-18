@@ -1,21 +1,53 @@
-<h2>マッチングされたペット</h2>
+{% extends '../base.html' %}
+{% load static %}
 
-{% if matched_pets %}
+{% block title %}ペット情報一覧{% endblock %}
+
+{% block header %}
+<!-- Masthead-->
+<header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading" style="text-align: center;">
+                    <h1 style="font-size: 60px; white-space: nowrap;">Matching system that connects</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{% endblock %}
+
+{% block contents %}
+<h1>マッチングしたペット情報</h1>
+
+<!-- マッチングしたペット情報がある場合 -->
+{% if matching_pets %}
     <ul>
-        {% for pet in matched_pets %}
+        {% for pet in matching_pets %}
             <li>
-                <strong>ペットの種類:</strong> {{ pet.type }}<br>
-                <strong>年齢:</strong> {{ pet.age }}歳<br>
-                <strong>サイズ:</strong> {{ pet.size }}<br>
-                <strong>毛の色:</strong> {{ pet.color }}<br>
-                <strong>適合度スコア:</strong> {{ pet.score|floatformat:2 }}<br>  <!-- petにスコアが含まれている場合 -->
-                {% if pet.image %}
-                    <img src="{{ pet.image.url }}" alt="{{ pet.type }}" width="200">
-                {% endif %}
+                <div class="pet-info">
+                    <div class="pet-details">
+                        <strong>ペットの種類:</strong> {{ pet.type }}<br>
+                        <strong>サイズ:</strong> {{ pet.size }}<br>
+                        <strong>色:</strong> {{ pet.color }}<br>
+                        <strong>年齢:</strong> {{ pet.age }}歳<br>
+                        <strong>性別:</strong> {{ pet.sex }}<br>
+                        <strong>種類:</strong> {{ pet.syu }}<br>
+                        <strong>病歴:</strong> {{ pet.disease }}<br>
+                        <strong>性格:</strong> {{ pet.personality }}<br>
+                    </div>
+                    <div class="pet-image">
+                        {% if pet.image_urls %}
+                            <img src="{{ pet.image_urls }}" alt="Pet Image" width="200">
+                        {% endif %}
+                    </div>
+                </div>
             </li>
         {% endfor %}
-
     </ul>
 {% else %}
-    <p>条件に合うペットは見つかりませんでした。</p>
+    <p>現在、登録されているペットはありません。</p>
 {% endif %}
+
+{% endblock %}
