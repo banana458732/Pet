@@ -31,6 +31,7 @@ data = pd.read_csv(csv_file_path)
 # NaNを「なし」に置き換え
 data.fillna('なし', inplace=True)
 
+
 # CSVファイルを読み書きする関数
 def read_csv():
     """CSVファイルを読み込んでDataFrameを返す"""
@@ -51,6 +52,31 @@ class PetListView(ListView):
     template_name = 'petapp/pet_list.html'
 
 
+def save_image(image):
+    """画像を保存して、そのパスまたはURLを返す処理"""
+    # 画像を保存するパスを指定
+    image_dir = 'media/pet_images/'
+    if not os.path.exists(image_dir):
+        os.makedirs(image_dir)  # ディレクトリが存在しない場合は作成
+
+    image_path = os.path.join(image_dir, image.name)
+
+    # 画像を保存
+    with open(image_path, 'wb') as f:
+        for chunk in image.chunks():
+            f.write(chunk)
+
+    return image_path  # 保存した画像のパスを返す
+
+# CSVファイルの読み込み
+def read_csv():
+    return pd.read_csv(csv_file_path)
+
+# CSVファイルへの書き込み
+def write_csv(data):
+    data.to_csv(csv_file_path, index=False)
+
+
 # ペット新規作成ビュー
 def pet_create_view(request):
     pet_form = PetCreateForm()
@@ -58,9 +84,12 @@ def pet_create_view(request):
     error_messages = []
 
     # CSVデータを最初に読み込んでおく
-    data = pd.read_csv(csv_file_path)
-    # NaNを「なし」に置き換え
-    data.fillna('なし', inplace=True)
+    data = read_csv()
+
+    # 'id'列が存在しない場合、'id'列を作成
+    if 'id' not in data.columns:
+        data['id'] = pd.Series(dtype=int)  # 'id'列がない場合は空の整数列を作成
+    data.fillna('なし', inplace=True)  # 欠損値を'なし'に埋める
 
     if request.method == 'POST':
         pet_form = PetCreateForm(request.POST)
@@ -72,6 +101,8 @@ def pet_create_view(request):
 
                 # 画像保存処理
                 photo_uploaded = False
+                image_urls = []  # 画像URLを格納するリスト
+
                 for form in photo_formset:
                     pet_image = form.save(commit=False)
                     pet_image.pet = pet
@@ -79,13 +110,19 @@ def pet_create_view(request):
                     image = form.cleaned_data.get('image')
                     if image:
                         photo_uploaded = True
+                        # ユニークなファイル名を生成
                         unique_filename = f"uuid_{uuid.uuid4().hex}{os.path.splitext(image.name)[1]}"
                         pet_image.image.name = unique_filename
                         pet_image.save()
 
+                        # 画像URLをリストに追加
+                        image_url = save_image(image)
+                        image_urls.append(image_url)
+
+                # 画像がアップロードされていない場合の処理
                 if not photo_uploaded:
                     error_messages.append("少なくとも1つの画像をアップロードしてください。")
-                    pet.delete()
+                    pet.delete()  # ペット作成を取り消し
                     return render(request, 'petapp/pet_create.html', {
                         'form': pet_form,
                         'photo_formset': photo_formset,
@@ -93,30 +130,11 @@ def pet_create_view(request):
                     })
 
                 # 電話番号保存
-                # 画像の保存
-                image_urls = []
-                for form in photo_formset:
-                    if form.is_valid():
-                        pet_image = form.save(commit=False)
-                        pet_image.pet = pet
-
-                        image = form.cleaned_data.get('image')
-                        if image:
-                            file_extension = os.path.splitext(image.name)[1]
-                            unique_filename = f"uuid_{uuid.uuid4().hex}{file_extension}"
-                            pet_image.image.name = unique_filename
-                            pet_image.save()
-                            # 画像のURLをリストに追加
-                            image_urls.append(pet_image.image.url)
-
-                # 電話番号があれば保存
                 phone_number = request.POST.get('phone_number')
                 if phone_number:
                     PhoneNumber.objects.create(pet=pet, number=phone_number)
 
-                # CSVにデータ追加
-                data = read_csv()
-                # ペットデータをCSVに追加
+                # CSVデータに新しいペットの情報を追加
                 new_pet_data = {
                     'id': pet.id,
                     'type': pet.type,
@@ -127,19 +145,15 @@ def pet_create_view(request):
                     'disease': pet.disease,
                     'personality': pet.personality,
                     'sex': pet.sex,
-                    'image_urls': ', '.join(image_urls)
+                    'image_urls': ', '.join(image_urls)  # 画像URLをカンマ区切りで保存
                 }
+
+                # 新しいペットがCSVに存在しない場合は追加
                 if pet.id not in data['id'].values:
                     data = pd.concat([data, pd.DataFrame([new_pet_data])], ignore_index=True)
                     write_csv(data)
 
-                # CSVファイルを再読み込みして新しいデータを追加
-                data = pd.read_csv(csv_file_path)
-                new_pet_df = pd.DataFrame([new_pet_data])
-                data = pd.concat([data, new_pet_df], ignore_index=True)
-                data.fillna('なし', inplace=True)  # NaNを「なし」に置き換え
-                data.to_csv(csv_file_path, index=False)
-
+                # 作成完了後、完了ページにリダイレクト
                 return redirect('petapp:pet-create-comp', pet_id=pet.id)
 
             except ValidationError as e:
@@ -149,7 +163,7 @@ def pet_create_view(request):
         'form': pet_form,
         'photo_formset': photo_formset,
         'error_messages': error_messages,
-        'csv_data': data.head()  # CSVデータを渡す
+        'csv_data': data.head()  # CSVデータを表示
     })
 
 
