@@ -1,8 +1,7 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
 from .forms import SimplePetSurveyForm
 from django.views.generic.base import TemplateView
-from .models import SurveyResult, SurveyHistory  # SurveyResultとSurveyHistoryモデルをインポート
+from .models import SurveyResult, SurveyHistory
 import pandas as pd
 
 
@@ -53,7 +52,6 @@ def parse_user_input(user_input, pet_df):
     return conditions
 
 
-# 年齢範囲のフィルタリング条件を作成
 def age_filter(age_ranges, pet_df):
     """選択された年齢範囲に基づいてフィルタリング"""
     if not age_ranges:
@@ -68,7 +66,13 @@ def age_filter(age_ranges, pet_df):
         elif age_range == '8-10':
             filters.append((pet_df['age'] >= 8) & (pet_df['age'] <= 10))
 
-    return filters
+    if filters:
+        # 複数の条件をORで結合して返す
+        combined_filter = filters[0]
+        for filter_cond in filters[1:]:
+            combined_filter |= filter_cond  # 各条件をORで結合
+        return combined_filter
+    return None
 
 
 def pet_survey(request):
@@ -94,8 +98,8 @@ def pet_survey(request):
 
             # 年齢範囲のフィルタを追加
             age_conditions = age_filter(selected_age_ranges, pet_df)
-            if age_conditions:
-                filters.extend(age_conditions)
+            if age_conditions is not None:
+                filters.append(age_conditions)  # 複数の年齢範囲条件を追加
 
             # フィルタリング条件を全てANDで結合
             if filters:
@@ -122,29 +126,26 @@ def pet_survey(request):
                     additional_requests=form.cleaned_data.get('additional_requests', '') or '',
                 )
 
-                # ユーザーの履歴としてSurveyHistoryを作成
-                if request.user.is_authenticated:
-                    SurveyHistory.objects.create(
-                        user=request.user,
-                        survey_result=survey_result,
-                    )
+                # ユーザーの過去のアンケート結果を取得
+                user_history = SurveyHistory.objects.filter(user=request.user).order_by('-date_created')
 
                 # 結果を表示
                 return render(request, 'survey/results.html', {
                     'matching_pets': matching_pets.to_dict(orient='records'),
                     'survey_result': survey_result,
+                    'user_history': user_history  # ユーザーの過去の履歴を渡す
                 })
             else:
                 return render(request, 'survey/no_results.html', {'form': form})
     else:
         form = SimplePetSurveyForm()
 
-    # ユーザーが過去に行ったアンケート履歴を表示
-    survey_history = SurveyHistory.objects.filter(user=request.user).order_by('-date_created') if request.user.is_authenticated else []
+    # ユーザーの過去のアンケート結果を取得
+    user_history = SurveyHistory.objects.filter(user=request.user).order_by('-date_created')
 
     return render(request, 'survey/pet_survey.html', {
         'form': form,
-        'survey_history': survey_history,
+        'user_history': user_history  # ユーザーの過去の履歴を渡す
     })
 
 
