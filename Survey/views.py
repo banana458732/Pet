@@ -7,6 +7,7 @@ from petapp.models import Pet
 import pandas as pd
 
 
+
 # pets_data.csvからデータを読み込む
 def load_pet_data():
     """CSVファイルからペット情報を読み込む"""

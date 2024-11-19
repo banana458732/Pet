@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, CreateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 # from .forms import CustomUserCreationForm
 
@@ -71,5 +71,6 @@ def LoginView(request):
     return render(request, 'accounts/login.html', {})
 
 
-class IndexView(LoginRequiredMixin, TemplateView):
+
+class IndexView(TemplateView):
     template_name = 'accounts/index.html'
