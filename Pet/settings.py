@@ -156,3 +156,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PET_IMAGES_FOLDER = os.path.join(MEDIA_ROOT, 'pet_images')
+
+LOGIN_URL = '/accounts/login/'
