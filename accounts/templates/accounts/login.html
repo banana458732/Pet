@@ -59,8 +59,8 @@
               {% csrf_token %}
               <!-- Bootstrapのロゴを表示 -->
               <!-- 「static/img/bootstrap-logo.svg」の読み込み -->
-              <img class="mb-4" src="{% static 'img/Image1.jpg' %}" alt="" width="72" height="57">
               <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+              <p class="mt-3"><a href="{% url 'accounts:signup' %}">アカウントを作成</a></p>
 
               <!-- Usernameのラベル(非表示) -->
               <label for="Username" class="visually-hidden">
