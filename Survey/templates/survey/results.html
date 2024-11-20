@@ -35,13 +35,12 @@
     </div>
 </nav>
 
-
 <h1>マッチングしたペット情報</h1>
 
 <!-- マッチングしたペット情報がある場合 -->
-{% if matching_pets %}
+{% if pets %}
     <ul>
-        {% for pet in matching_pets %}
+        {% for pet, image_url in pets %}
             <li>
                 <div class="pet-info">
                     <div class="pet-details">
@@ -50,13 +49,13 @@
                         <strong>色:</strong> {{ pet.color }}<br>
                         <strong>年齢:</strong> {{ pet.age }}歳<br>
                         <strong>性別:</strong> {{ pet.sex }}<br>
-                        <strong>種類:</strong> {{ pet.syu }}<br>
+                        <strong>種類:</strong> {{ pet.kinds }}<br>
                         <strong>病歴:</strong> {{ pet.disease }}<br>
                         <strong>性格:</strong> {{ pet.personality }}<br>
                     </div>
                     <div class="pet-image">
-                        {% if pet.image_urls %}
-                            <img src="{{ pet.image_urls }}" alt="Pet Image" width="200">
+                        {% if image_url %}
+                            <img src="{{ MEDIA_URL }}{{ image_url }}" alt="Pet Image" width="200">
                         {% endif %}
                     </div>
                 </div>

@@ -35,38 +35,65 @@
     </div>
 </nav>
 
-
 <div class="container survey-container mt-5">
     <h2 class="survey-title">アンケートフォーム</h2>
     <form method="POST">
         {% csrf_token %}
         
-        <!-- 自由入力フィールド -->
+        <!-- ペットの種類 -->
         <div class="form-group">
-            <label for="id_general_info">求めているペットについて自由にご記入ください。</label>
-            <br>  
-            {{ form.general_info }}
-            <small class="form-text text-muted">(例: ペットの種類、性格、性別など)</small>
+            <label for="id_pet_type">ペットの種類</label>
+            {{ form.pet_type }}
         </div>
-    
+
+        <!-- ペットのサイズ -->
+        <div class="form-group">
+            <label for="id_size">ペットのサイズ</label>
+            {{ form.size }}
+        </div>
+
+        <!-- 色 -->
+        <div class="form-group">
+            <label for="id_color">色</label>
+            {{ form.color }}
+        </div>
+
+        <!-- 年齢 -->
+        <div class="form-group">
+            <label for="id_age">年齢</label>
+            {{ form.age }}
+        </div>
+
+        <!-- 種別 -->
+        <div class="form-group">
+            <label for="id_kinds">種別 (任意)</label>
+            {{ form.kinds }}
+        </div>
+
+        <!-- 病気 -->
+        <div class="form-group">
+            <label for="id_disease">病気 (任意)</label>
+            {{ form.disease }}
+        </div>
+
+        <!-- 性格 -->
+        <div class="form-group">
+            <label for="id_pet_personality">性格</label>
+            {{ form.pet_personality }}
+        </div>
+
+        <!-- 性別 -->
+        <div class="form-group">
+            <label for="id_sex">性別</label>
+            {{ form.sex }}
+        </div>
+
         <!-- 年齢範囲 -->
         <div class="form-group">
-            <label for="id_age_range">希望するペットの年齢範囲(任意)</label>
-            <div class="age-options">
-                <label>
-                    <input type="checkbox" name="age_range" value="0-3"> 0~3歳
-                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name="age_range" value="4-7"> 4~7歳
-                </label>
-                <br>
-                <label>
-                    <input type="checkbox" name="age_range" value="8-10"> 8~10歳
-                </label>
-            </div>
+            <label for="id_age_range">希望するペットの年齢範囲 (任意)</label>
+            {{ form.age_range }}
         </div>
-    
+
         <button type="submit" class="btn btn-primary">送信</button>
     </form>
 
