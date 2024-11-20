@@ -1,17 +1,22 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 class AuthMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
-        rp = request.path
-        if rp != '/accounts/login/' and not request.user.is_authenticated:
-            if rp == '/accounts/signup/':
-                return response
-            elif rp == '/accounts/signup_confirm':
-                return response
-            elif rp == 'accounts/signup_success':
-                return response
-            elif rp == 'accounts/logout':
-                return response
-            return HttpResponseRedirect('/accounts/login/')
+        if request.user.is_authenticated:
+            return response
+        login_url = reverse('accounts:login')
+        allowed_paths = [
+            reverse('accounts:signup'),
+            reverse('accounts:signup_confirm'),
+            reverse('accounts:signup_success'),
+            reverse('accounts:logout'),
+            reverse('top'),
+
+            login_url,
+        ]
+        if request.path not in allowed_paths:
+            return HttpResponseRedirect(login_url)
+        
         return response

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from petapp.models import Pet  # Pet モデルをインポート
 
+
 class SurveyResult(models.Model):
     """アンケート結果を格納するモデル"""
     pet_type = models.CharField(max_length=255, blank=True)

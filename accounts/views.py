@@ -7,13 +7,13 @@ from django.views.generic import TemplateView, CreateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # from .forms import CustomUserCreationForm
 
 
 
-class SignUpView(CreateView):
+class SignUpView(LoginRequiredMixin, CreateView):
 
     template_name = "accounts/signup.html"
     form_class = CustomUserCreationForm
@@ -51,9 +51,6 @@ class SignUpSuccessView(TemplateView):
 
     template_name = "accounts/signup_success.html"
 
-class LoginSuccessView(TemplateView):
-    template_name = "accounts/login_success.html"
-
 def LoginView(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -63,7 +60,7 @@ def LoginView(request):
         if user is not None:
         # ログインする。
             login(request, user)
-            return redirect('accounts:login_success')
+            return redirect('accounts:index')
         # ユーザーがオブジェクトが存在しないなら。
         else:
             return render(request, 'accounts/login.html', {'error': 'そのユーザーは存在しません。'})
@@ -74,3 +71,4 @@ def LoginView(request):
 
 class IndexView(TemplateView):
     template_name = 'accounts/index.html'
+

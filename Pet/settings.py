@@ -54,16 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'accounts.middleware.auth.AuthMiddleware',
-    'global_login_required.GlobalLoginRequiredMiddleware',
 ]
 
-PUBLIC_PATHS = [
-    '/accounts/login/',
-    '/accounts/signup',
-    '/accounts/signup_confirm',
-    '/accounts/signup_success',
-]
 
 ROOT_URLCONF = 'Pet.urls'
 
