@@ -14,16 +14,37 @@
     <!-- サイズ -->
     <label for="{{ pet_form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
     {{ pet_form.size }}
+    {% if pet_form.size.errors %}
+        <ul style="color: red;">
+            {% for error in pet_form.size.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br>
 
     <!-- 色 -->
     <label for="{{ pet_form.color.id_for_label }}">色:</label>
     {{ pet_form.color }}
+    {% if pet_form.color.errors %}
+        <ul style="color: red;">
+            {% for error in pet_form.color.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br>
 
     <!-- 年齢 -->
     <label for="{{ pet_form.age.id_for_label }}">年齢:</label>
     {{ pet_form.age }}
+    {% if pet_form.age.errors %}
+        <ul style="color: red;">
+            {% for error in pet_form.age.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br>
 
     <!-- 性別 -->
@@ -34,22 +55,58 @@
     <!-- その他のフィールド -->
     <label for="{{ pet_form.kinds.id_for_label }}">種別:</label>
     {{ pet_form.kinds }}
+    {% if pet_form.kinds.errors %}
+        <ul style="color: red;">
+            {% for error in pet_form.kinds.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br>
 
     <label for="{{ pet_form.disease.id_for_label }}">病歴:</label>
     {{ pet_form.disease }}
+    {% if pet_form.disease.errors %}
+        <ul style="color: red;">
+            {% for error in pet_form.disease.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br>
 
     <label for="{{ pet_form.personality.id_for_label }}">性格:</label>
     {{ pet_form.personality }}
+    {% if pet_form.personality.errors %}
+        <ul style="color: red;">
+            {% for error in pet_form.personality.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br>
 
     <label for="{{ pet_form.phone_number.id_for_label }}">電話番号:</label>
     {{ pet_form.phone_number }}
+    {% if pet_form.phone_number.errors %}
+        <ul style="color: red;">
+            {% for error in pet_form.phone_number.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <br>
 
     <h3>画像の更新</h3>
     {{ image_formset.management_form }}  <!-- 管理フォームを追加 -->
+
+    {% if image_formset.non_field_errors %}
+        <ul style="color: red;">
+            {% for error in image_formset.non_field_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     {% for form in image_formset %}
         <div>
