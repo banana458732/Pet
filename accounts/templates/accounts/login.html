@@ -1,4 +1,24 @@
+
+{% extends 'base.html' %}
+<!-- ヘッダー情報のページタイトルを設定する -->
 {% load static %}
+{% block title %}Login{% endblock %}
+
+  {% block header %}
+  <header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
+    <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-md-10 col-lg-8 col-xl-7">
+                <div class="site-heading" style="text-align: center;">
+                    <h1 style="font-size: 60px; white-space: nowrap; ">ログアウト</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+  </header>
+  {% endblock %}
+
+{% block contents %}
 <!doctype html>
 <!-- 言語指定をenからjaに変更 -->
 <html lang="ja">
@@ -31,16 +51,16 @@
         <div class="col-md-6 col-lg-5">
           <div class="form-container text-center">
             <!-- ユーザー名とパスワードが一致しない場合のメッセージ -->
-            {% if form.errors %}
-              <p style="color: red">ユーザー名とパスワードが一致しません。</p>
+            {% if errors %}
+              <p style="color: red">{{ error }}ユーザー名とパスワードが一致しません。</p>
             {% endif %}
             <!-- ログインのフォームを配置 -->
             <form method="post">
               {% csrf_token %}
               <!-- Bootstrapのロゴを表示 -->
               <!-- 「static/img/bootstrap-logo.svg」の読み込み -->
-              <img class="mb-4" src="{% static 'img/Image1.jpg' %}" alt="" width="72" height="57">
               <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+              <p class="mt-3"><a href="{% url 'accounts:signup' %}">アカウントを作成</a></p>
 
               <!-- Usernameのラベル(非表示) -->
               <label for="Username" class="visually-hidden">
@@ -82,27 +102,16 @@
                      value="ログイン">
               
               <!-- パスワードリセットページのリンクテキスト -->
-              <p class="mt-3"><a href="{% url 'accounts:index' %}">パスワードを忘れましたか?</a></p>
+              <p class="mt-3"><a href="{% url 'survey:index' %}">パスワードを忘れましたか?</a></p>
               <!-- ログイン直後のリダイレクト先(トップページ)のURLパターンを設定 -->
               <input type="hidden" 
-                     name="next" 
-                     value="{% url 'Accounts:login_success' %}">
+                     value="{% url 'accounts:login_success' %}">
             </form>
           </div>
         </div>
       </div>
     </div>
 
-    <script>
-      // パスワード表示/非表示の切り替え機能
-      function togglePassword() {
-        var passwordField = document.getElementById("id_password");
-        if (passwordField.type === "password") {
-          passwordField.type = "text";
-        } else {
-          passwordField.type = "password";
-        }
-      }
-    </script>
   </body>
 </html>
+{% endblock %}

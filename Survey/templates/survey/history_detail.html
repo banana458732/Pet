@@ -12,25 +12,27 @@
         <section>
             <h2>マッチングされたペットの詳細</h2>
 
-            <!-- ペットの詳細情報を表示 -->
-            <p><strong>種類:</strong> {{ pet.type }}</p>
-            <p><strong>年齢:</strong> {{ pet.age }}歳</p>
-            <p><strong>サイズ:</strong> {{ pet.size }}</p>
-            <p><strong>毛の色:</strong> {{ pet.color }}</p>
-            <p><strong>性格:</strong> {{ pet.personality }}</p>
-            <p><strong>性別:</strong> {{ pet.sex }}</p>
-            <p><strong>病気:</strong> {% if pet.disease %}{{ pet.disease }}{% else %}なし{% endif %}</p>
-            <p><strong>種類の詳細:</strong> {{ pet.syu }}</p>
+            <!-- matching_petsのデータをループして各ペットの詳細情報を表示 -->
+            {% for pet in matching_pets %}
+                <p><strong>種類:</strong> {{ pet.type }}</p>
+                <p><strong>年齢:</strong> {{ pet.age }}歳</p>
+                <p><strong>サイズ:</strong> {{ pet.size }}</p>
+                <p><strong>毛の色:</strong> {{ pet.color }}</p>
+                <p><strong>性格:</strong> {{ pet.personality }}</p>
+                <p><strong>性別:</strong> {{ pet.sex }}</p>
+                <p><strong>病気:</strong> {% if pet.disease %}{{ pet.disease }}{% else %}なし{% endif %}</p>
+                <p><strong>種類の詳細:</strong> {{ pet.syu }}</p>
 
-            <!-- ペットの画像があれば表示 -->
-            {% if pet.images.all %}
-                <p><strong>画像:</strong></p>
-                <ul>
-                    {% for image in pet.images.all %}
-                        <li><img src="{{ image.image.url }}" alt="{{ pet.type }}" width="300"></li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
+                <!-- ペットの画像があれば表示 -->
+                {% if pet.images %}
+                    <p><strong>画像:</strong></p>
+                    <ul>
+                        {% for image in pet.images %}
+                            <li><img src="{{ image.image.url }}" alt="{{ pet.type }}" width="300"></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
         </section>
 
         <!-- 戻るボタン -->

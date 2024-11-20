@@ -1,5 +1,3 @@
-from django.forms import BaseModelForm
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 # Create your views here.
@@ -9,6 +7,8 @@ from django.views.generic import TemplateView, CreateView
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+
+
 # from .forms import CustomUserCreationForm
 
 
@@ -69,6 +69,7 @@ def LoginView(request):
             return render(request, 'accounts/login.html', {'error': 'そのユーザーは存在しません。'})
         
     return render(request, 'accounts/login.html', {})
+
 
 
 class IndexView(TemplateView):

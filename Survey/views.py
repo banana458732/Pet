@@ -7,6 +7,7 @@ from petapp.models import Pet
 import pandas as pd
 
 
+
 # pets_data.csvからデータを読み込む
 def load_pet_data():
     """CSVファイルからペット情報を読み込む"""
@@ -133,7 +134,7 @@ def pet_survey(request):
 
                 # 過去のマッチング履歴をPetテーブルから取得
                 matched_pets = Pet.objects.filter(
-                    id__in=user_history.values_list('matched_pet_id', flat=True)
+                    id__in=user_history.values_list('matched_pet', flat=True)
                 )
 
                 # 結果を表示

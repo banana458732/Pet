@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from petapp.models import Pet  # Pet モデルをインポート
 
 class SurveyResult(models.Model):
     """アンケート結果を格納するモデル"""
@@ -17,6 +17,7 @@ class SurveyResult(models.Model):
 class SurveyHistory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='survey_history')
     survey_result = models.ForeignKey('SurveyResult', on_delete=models.CASCADE, related_name='survey_histories')
+    matched_pet = models.ManyToManyField(Pet, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

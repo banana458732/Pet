@@ -54,6 +54,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'accounts.middleware.auth.AuthMiddleware',
+    'global_login_required.GlobalLoginRequiredMiddleware',
+]
+
+PUBLIC_PATHS = [
+    '/accounts/login/',
+    '/accounts/signup',
+    '/accounts/signup_confirm',
+    '/accounts/signup_success',
 ]
 
 ROOT_URLCONF = 'Pet.urls'
@@ -156,3 +165,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 PET_IMAGES_FOLDER = os.path.join(MEDIA_ROOT, 'pet_images')
+
+LOGIN_URL = '/accounts/login/'
