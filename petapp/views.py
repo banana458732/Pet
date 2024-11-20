@@ -9,6 +9,9 @@ from .models import Pet, PetImage, PhoneNumber
 from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm, PetImageForm
 from django.forms import modelformset_factory
 from django.core.files.storage import default_storage
+from django.db import transaction
+import logging
+
 
 # CSVファイルのパスを指定
 CSV_FILE_PATH = 'C:\\Users\\t_yamanoi\\Documents\\卒業制作\\Pet\\pets_data.csv'
@@ -38,7 +41,7 @@ def read_csv():
     if os.path.exists(CSV_FILE_PATH):
         return pd.read_csv(CSV_FILE_PATH)
     else:
-        return pd.DataFrame(columns=['id', 'type', 'size', 'color', 'age', 'syu', 'disease', 'personality', 'sex'])
+        return pd.DataFrame(columns=['id', 'type', 'size', 'color', 'age', 'kinds', 'disease', 'personality', 'sex'])
 
 
 def write_csv(data):
@@ -97,67 +100,68 @@ def pet_create_view(request):
 
         if pet_form.is_valid() and photo_formset.is_valid():
             try:
-                pet = pet_form.save()
+                # トランザクション開始
+                with transaction.atomic():
+                    pet = pet_form.save()  # ペット情報を保存
 
-                # 画像保存処理
-                photo_uploaded = False
-                image_urls = []  # 画像URLを格納するリスト
+                    # 画像保存処理
+                    photo_uploaded = False
+                    image_urls = []  # 画像URLを格納するリスト
 
-                for form in photo_formset:
-                    pet_image = form.save(commit=False)
-                    pet_image.pet = pet
+                    for form in photo_formset:
+                        pet_image = form.save(commit=False)
+                        pet_image.pet = pet
 
-                    image = form.cleaned_data.get('image')
-                    if image:
-                        photo_uploaded = True
-                        # ユニークなファイル名を生成
-                        unique_filename = f"uuid_{uuid.uuid4().hex}{os.path.splitext(image.name)[1]}"
-                        pet_image.image.name = unique_filename
-                        pet_image.save()
+                        image = form.cleaned_data.get('image')
+                        if image:
+                            photo_uploaded = True
+                            # ユニークなファイル名を生成
+                            unique_filename = f"uuid_{uuid.uuid4().hex}{os.path.splitext(image.name)[1]}"
+                            pet_image.image.name = unique_filename
+                            pet_image.save()
+                            image_urls.append(pet_image.image.url)  # 保存した画像のURLをリストに追加
 
-                        # 画像URLをリストに追加
-                        image_url = save_image(image)
-                        image_urls.append(image_url)
+                    # 画像がアップロードされていない場合の処理
+                    if not photo_uploaded:
+                        error_messages.append("少なくとも1つの画像をアップロードしてください。")
+                        pet.delete()  # ペット作成を取り消し
+                        return render(request, 'petapp/pet_create.html', {
+                            'form': pet_form,
+                            'photo_formset': photo_formset,
+                            'error_messages': error_messages,
+                            'csv_data': data.head()  # CSVデータを表示
+                        })
 
-                # 画像がアップロードされていない場合の処理
-                if not photo_uploaded:
-                    error_messages.append("少なくとも1つの画像をアップロードしてください。")
-                    pet.delete()  # ペット作成を取り消し
-                    return render(request, 'petapp/pet_create.html', {
-                        'form': pet_form,
-                        'photo_formset': photo_formset,
-                        'error_messages': error_messages,
-                    })
+                    # 電話番号保存
+                    phone_number = request.POST.get('phone_number')
+                    if phone_number:
+                        PhoneNumber.objects.create(pet=pet, number=phone_number)
 
-                # 電話番号保存
-                phone_number = request.POST.get('phone_number')
-                if phone_number:
-                    PhoneNumber.objects.create(pet=pet, number=phone_number)
+                    # CSVデータに新しいペットの情報を追加
+                    new_pet_data = {
+                        'id': pet.id,
+                        'type': pet.type,
+                        'size': pet.size,
+                        'color': pet.color,
+                        'age': pet.age,
+                        'kinds': pet.kinds,
+                        'disease': pet.disease,
+                        'personality': pet.personality,
+                        'sex': pet.sex,
+                        'image_urls': ', '.join(image_urls)  # 画像URLをカンマ区切りで保存
+                    }
 
-                # CSVデータに新しいペットの情報を追加
-                new_pet_data = {
-                    'id': pet.id,
-                    'type': pet.type,
-                    'size': pet.size,
-                    'color': pet.color,
-                    'age': pet.age,
-                    'syu': pet.syu,
-                    'disease': pet.disease,
-                    'personality': pet.personality,
-                    'sex': pet.sex,
-                    'image_urls': ', '.join(image_urls)  # 画像URLをカンマ区切りで保存
-                }
+                    # 新しいペットがCSVに存在しない場合は追加
+                    if pet.id not in data['id'].values:
+                        data = pd.concat([data, pd.DataFrame([new_pet_data])], ignore_index=True)
+                        write_csv(data)
 
-                # 新しいペットがCSVに存在しない場合は追加
-                if pet.id not in data['id'].values:
-                    data = pd.concat([data, pd.DataFrame([new_pet_data])], ignore_index=True)
-                    write_csv(data)
-
-                # 作成完了後、完了ページにリダイレクト
-                return redirect('petapp:pet-create-comp', pet_id=pet.id)
+                    # 作成完了後、完了ページにリダイレクト
+                    return redirect('petapp:pet-create-comp', pet_id=pet.id)
 
             except ValidationError as e:
                 error_messages.append(f"Validation error: {str(e)}")
+                # トランザクションがロールバックされると、何もデータベースに保存されません
 
     return render(request, 'petapp/pet_create.html', {
         'form': pet_form,
@@ -177,82 +181,170 @@ def pet_create_comp_view(request, pet_id):
     })
 
 
+# ロガーを設定
+logger = logging.getLogger(__name__)
+
+
 def pet_update_view(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
     existing_images = PetImage.objects.filter(pet=pet)
 
+    # ペット画像のフォームセットを作成
     PetImageFormSet = modelformset_factory(
         PetImage,
         form=PetImageForm,
-        extra=5 - existing_images.count(),
-        max_num=5,
-        can_delete=True,
+        extra=5 - existing_images.count(),  # 既存画像数に基づいて追加するフォーム数を決定
+        max_num=5,  # 最大5枚まで画像をアップロード可能
+        can_delete=True,  # 画像の削除を許可
     )
 
-    updated_fields = []
-    old_pet_data = {}
+    old_pet_data = {}  # 更新前のデータを保存
 
     if request.method == 'POST':
+        # 更新前のペットデータを保存
+        old_pet_data = {
+            'type': pet.type,
+            'size': pet.size,
+            'color': pet.color,
+            'age': pet.age,
+            'kinds': pet.kinds,
+            'disease': pet.disease,
+            'personality': pet.personality,
+            'sex': pet.sex,
+        }
+
         pet_form = PetUpdateForm(request.POST, instance=pet)
         image_formset = PetImageFormSet(request.POST, request.FILES, queryset=existing_images)
 
+        errors = False  # エラーフラグ
+        deleted_images = []  # 削除された画像を記録
+        added_images = []  # 追加された画像を記録
+
         if pet_form.is_valid() and image_formset.is_valid():
-            # 変更前の値を保存
-            old_pet_data = {
-                'type': pet.type,
-                'size': pet.size,
-                'color': pet.color,
-                'age': pet.age,
-                'syu': pet.syu,
-                'disease': pet.disease,
-                'personality': pet.personality,
-                'sex': pet.sex,
-            }
+            # バリデーション: 削除後の画像数が1枚以上であることを確認
+            remaining_images = existing_images.count() - sum(
+                1 for form in image_formset if form.cleaned_data.get('DELETE', False)
+            )
+            if remaining_images < 1:
+                for form in image_formset:
+                    form.add_error(None, "画像は1枚以上登録されている必要があります。")
+                errors = True
 
-            pet_form.save()
+            # エラーがない場合、削除処理と追加処理を実行
+            if not errors:
+                # トランザクション開始
+                with transaction.atomic():
+                    pet = pet_form.save()  # ペット情報を更新
 
-            # フィールドの比較と更新内容をリストに追加
-            for field, old_value in old_pet_data.items():
-                new_value = getattr(pet, field)
-                if old_value != new_value:
-                    updated_fields.append(f"{field}: {old_value} → {new_value}")
+                    updated_fields = []
+                    for field, old_value in old_pet_data.items():
+                        new_value = getattr(pet, field)
+                        if old_value != new_value:
+                            updated_field = f"{field}: {old_value} → {new_value}"
+                        else:
+                            updated_field = f"{field}: {old_value} （変更なし）"
+                        updated_fields.append(updated_field)
 
-            # 画像の保存・削除
-            for form in image_formset:
-                if form.cleaned_data.get('DELETE') and form.instance.pk:
-                    if default_storage.exists(form.instance.image.path):
-                        default_storage.delete(form.instance.image.path)
-                    form.instance.delete()
-                elif form.cleaned_data.get('image'):
-                    pet_image = form.save(commit=False)
-                    pet_image.pet = pet
-                    pet_image.save()
+                    print("新しい画像の保存処理を開始します")
 
-            # 変更されたフィールドをセッションに保存
-            if updated_fields:
-                request.session['updated_fields'] = updated_fields
+                    for form in image_formset:
+                        delete_flag = form.cleaned_data.get('DELETE', False)
+                        image = form.cleaned_data.get('image', None)
+                        print(f"削除フラグ: {delete_flag}, 新しい画像: {image}, フォームID: {form.cleaned_data.get('id')}")
 
-            return redirect('petapp:pet-update-comp', pet_id=pet.id)
+                        if delete_flag:  # 削除フラグがTrueの場合
+                            image_instance = form.instance
+                            if image_instance.pk:  # インスタンスのIDが存在する場合のみ削除処理を実行
+                                if image_instance.image:
+                                    image_path = image_instance.image.path
+                                    if default_storage.exists(image_path):
+                                        print(f"画像 {image_path} を削除します")
+                                        default_storage.delete(image_path)
+                                        deleted_images.append(image_path)
+                                image_instance.delete()  # 画像インスタンス自体を削除
 
-    else:
+                        elif image:  # 新しい画像が選択されている場合
+                            if form.cleaned_data.get('id'):  # 既存画像を更新
+                                existing_image = PetImage.objects.get(id=form.cleaned_data.get('id').id)
+                                if existing_image.image and existing_image.image != image:
+                                    image_path = existing_image.image.path
+                                    if default_storage.exists(image_path):
+                                        print(f"新しい画像が選択されたため、既存画像 {image_path} を削除します")
+                                        default_storage.delete(image_path)
+                                existing_image.image = image
+                                existing_image.save()
+                                added_images.append(existing_image.image.url)
+                            else:  # 新規画像を追加
+                                pet_image = form.save(commit=False)
+                                pet_image.pet = pet
+                                pet_image.save()
+                                added_images.append(pet_image.image.url)
+
+                    # 変更されたフィールドをセッションに保存
+                    request.session['updated_fields'] = updated_fields
+                    request.session['added_images'] = added_images
+                    request.session['deleted_images'] = deleted_images
+                    request.session.modified = True
+
+                # 更新後の画面にリダイレクト
+                print(f"ペット情報が正常に更新されました: {pet.id}")
+                return redirect('petapp:pet-update-comp', pet_id=pet.id)
+
+        else:
+            # フォームが無効の場合
+            print("フォームにエラーがあります")
+            print(f"ペットフォームエラー: {pet_form.errors}")
+            print(f"画像フォームセットエラー: {image_formset.errors}")
+
+        # エラーがある場合、フォームを再表示
+        return render(request, 'petapp/pet_update.html', {
+            'pet_form': pet_form,
+            'image_formset': image_formset,
+        })
+
+    else:  # GETリクエストの場合
         pet_form = PetUpdateForm(instance=pet)
         image_formset = PetImageFormSet(queryset=existing_images)
 
-    return render(request, 'petapp/pet_update.html', {
-        'pet_form': pet_form,
-        'image_formset': image_formset,
-    })
+        # フォームとフォームセットを表示
+        return render(request, 'petapp/pet_update.html', {
+            'pet_form': pet_form,
+            'image_formset': image_formset,
+        })
 
 
 def pet_update_comp_view(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
 
-    # セッションから更新されたフィールドを取得
-    updated_fields = request.session.get('updated_fields', [])
+    # セッションから更新されたフィールドを取得し、取得後に削除
+    updated_fields = request.session.pop('updated_fields', [])
+
+    # ラベル変換辞書
+    field_labels = {
+        'age': '歳',
+        'type': '種類',
+        'size': 'サイズ',
+        'color': '色',
+        'kinds': '種別',
+        'disease': '病歴',
+        'personality': '性格',
+        'sex': '性別',
+    }
+
+    # updated_fieldsを日本語ラベルに変換
+    localized_updated_fields = []
+    for field in updated_fields:
+        field_name, changes = field.split(": ", 1)
+        localized_field_name = field_labels.get(field_name, field_name)  # 日本語ラベルに変換
+        localized_updated_fields.append(f"{localized_field_name}: {changes}")
+
+    # 画像のURLを取得
+    pet_images = PetImage.objects.filter(pet=pet)
 
     return render(request, 'petapp/pet_update_comp.html', {
         'pet': pet,
-        'updated_fields': updated_fields,  # 変更されたフィールドを渡す
+        'updated_fields': localized_updated_fields,  # 日本語ラベルのフィールドを渡す
+        'pet_images': pet_images,  # 画像の情報を渡す
     })
 
 

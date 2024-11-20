@@ -34,25 +34,26 @@ class Pet(models.Model):
 
     id = models.IntegerField(primary_key=True)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='', verbose_name="種類")
-    size = models.CharField(max_length=10, choices=SIZE_CHOICES, default='')
-    color = models.CharField(max_length=100, default='')
+    size = models.CharField(max_length=10, choices=SIZE_CHOICES, default='', verbose_name="サイズ")
+    color = models.CharField(max_length=100, default='', verbose_name="色")
     age = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(10)]
+        validators=[MinValueValidator(0), MaxValueValidator(10)], verbose_name="歳"
     )
-    syu = models.CharField(max_length=100, default='')
-    disease = models.CharField(max_length=100, null=True, blank=True, default='')
-    personality = models.CharField(max_length=500, null=False, default='')
+    kinds = models.CharField(max_length=100, default='', verbose_name="種別")
+    disease = models.CharField(max_length=100, null=True, blank=True, default='', verbose_name="病気")
+    personality = models.CharField(max_length=500, null=False, default='', verbose_name="性格")
     sex = models.CharField(
         max_length=10,
         choices=[('男の子', '男の子'), ('女の子', '女の子')],
-        default=''
+        default='', verbose_name="性別"
     )
 
     phone_number = models.CharField(
         max_length=15,
         blank=False,
         null=True,
-        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')]
+        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')],
+        verbose_name="電話番号"
     )
 
     def __str__(self):
@@ -63,7 +64,8 @@ class PhoneNumber(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='phone_numbers')
     number = models.CharField(
         max_length=15,
-        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')]
+        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')],
+        verbose_name="電話番号"
     )
 
     def __str__(self):

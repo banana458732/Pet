@@ -54,7 +54,7 @@ def pet_detail(request, pet_id):
                 comment.content = comment.content
 
             comment.save()
-            return redirect('pet_detail', pet_id=pet.id)  # コメント後にリロード
+            return redirect('pet_detail', pet_id=pet.id)
     else:
         form = CommentForm()
 

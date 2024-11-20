@@ -32,8 +32,8 @@
     <br>
 
     <!-- その他のフィールド -->
-    <label for="{{ pet_form.syu.id_for_label }}">種別:</label>
-    {{ pet_form.syu }}
+    <label for="{{ pet_form.kinds.id_for_label }}">種別:</label>
+    {{ pet_form.kinds }}
     <br>
 
     <label for="{{ pet_form.disease.id_for_label }}">病歴:</label>
@@ -50,7 +50,7 @@
 
     <h3>画像の更新</h3>
     {{ image_formset.management_form }}  <!-- 管理フォームを追加 -->
-    
+
     {% for form in image_formset %}
         <div>
             {% if form.instance.image %}
@@ -60,16 +60,40 @@
                 <!-- 削除チェックボックスを表示（任意） -->
                 <label for="{{ form.prefix }}-DELETE">この画像を削除</label>
                 {{ form.DELETE }}  <!-- DELETEフィールド -->
+
+                {% if form.DELETE.errors %}
+                    <ul>
+                        {% for error in form.DELETE.errors %}
+                            <li style="color: red;">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
                 
                 <p style="color: orange;">更新する画像を選択:</p>
-                <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">                
+                <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
+
+                {% if form.image.errors %}
+                    <ul>
+                        {% for error in form.image.errors %}
+                            <li style="color: red;">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% else %}
                 <p>新しい画像を選択:</p>
                 <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
+
+                {% if form.image.errors %}
+                    <ul>
+                        {% for error in form.image.errors %}
+                            <li style="color: red;">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             {% endif %}
         </div>
     {% endfor %}
-    
+
     <br>
     <button type="submit">更新</button>
 </form>

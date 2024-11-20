@@ -8,7 +8,7 @@ from django.core.files.storage import default_storage
 class PetCreateForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['id', 'type', 'size', 'color', 'age', 'syu', 'disease',
+        fields = ['id', 'type', 'size', 'color', 'age', 'kinds', 'disease',
                   'personality', 'sex', 'phone_number']
 
     def clean_id(self):
@@ -66,14 +66,13 @@ PetImageFormSet = RequiredPetImageFormSet
 class PetUpdateForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['id', 'type', 'size', 'color', 'age', 'syu', 'disease',
+        fields = ['id', 'type', 'size', 'color', 'age', 'kinds', 'disease',
                   'personality', 'sex', 'phone_number']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # idは入力可能に保つ（必須ではない）
         self.fields['id'].required = False
-
 
         # 更新時に id フィールドを非必須に設定
         if self.instance.pk:
@@ -98,7 +97,7 @@ class PetUpdateForm(forms.ModelForm):
     size = forms.ChoiceField(choices=SIZE_CHOICES, label='サイズ')
     color = forms.CharField(max_length=100, label='毛の色')
     age = forms.IntegerField(min_value=0, max_value=10, label='年齢')
-    syu = forms.CharField(max_length=100, label='種別')
+    kinds = forms.CharField(max_length=100, label='種別')
     disease = forms.CharField(max_length=100, label='病歴', required=False)
     personality = forms.CharField(max_length=100, label='性格', required=False)
     sex = forms.CharField(label='性別', required=False, disabled=True)
@@ -118,47 +117,45 @@ class PetImageUpdateForm(forms.ModelForm):
 
     def clean_image(self):
         image = self.cleaned_data.get('image')
-
-        # 画像が削除された場合
-        if not image and self.data.get(f'{self.prefix}-image-clear'):
-            return None
-
-        # 新しい画像がない場合、元の画像をそのまま使用
-        if not image:
-            return self.instance.image
-
         return image
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # 更新時に `id` フィールドが不要であれば削除
-        if 'id' in self.fields:
-            del self.fields['id']
+    def save(self, commit=True):
+        old_image = self.instance.image
+        new_image = self.cleaned_data.get('image')
+
+        # 新しい画像がアップロードされた場合、古い画像を削除
+        if old_image and new_image and old_image != new_image:
+            image_path = old_image.path
+            if default_storage.exists(image_path):
+                # 古い画像ファイルを削除
+                default_storage.delete(image_path)
+        
+        # 新しい画像を保存
+        return super().save(commit=commit)
 
 
-class PetImageUpdateFormSet(modelformset_factory(PetImage, form=PetImageForm, extra=0, can_delete=True)):
+class PetImageUpdateFormSet(modelformset_factory(PetImage, form=PetImageUpdateForm, extra=0, can_delete=True)):
     def clean(self):
-        """少なくとも1つの画像があることをチェック"""
         super().clean()
 
-        # 既存の画像も含めて1つ以上が必須
-        if not any(
-            form.cleaned_data.get('image') for form in self.forms if form.cleaned_data
-        ) and not any(form.instance.image for form in self.forms):
+        # 削除された画像が1枚もない場合エラー
+        remaining_images = [
+            form.cleaned_data.get('image') or form.instance.image
+            for form in self.forms
+            if not form.cleaned_data.get('DELETE')
+        ]
+
+        # 画像が1枚も残らない場合
+        if not remaining_images:
             raise ValidationError("少なくとも1つの画像をアップロードしてください。")
 
     def save(self, commit=True):
-        """画像の保存と削除処理"""
+        # 画像削除時の処理
         for form in self.forms:
             if form.cleaned_data.get('DELETE') and form.instance.pk:
-                # 削除フラグが立っている場合
                 image_path = form.instance.image.path
                 if default_storage.exists(image_path):
-                    default_storage.delete(image_path)  # ファイルシステムから削除
-                form.instance.delete()  # データベースから削除
-            elif form.cleaned_data.get('image'):
-                # 新しい画像がアップロードされた場合
-                pet_image = form.save(commit=False)
-                pet_image.save()
+                    default_storage.delete(image_path)  # 画像ファイルを削除
+                form.instance.delete()  # モデルのインスタンスを削除
 
         return super().save(commit=commit)
