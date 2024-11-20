@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}Top Page{% endblock %}
 
 {% block header %}
@@ -15,8 +16,8 @@
         </div>
     </div>
 </header>
-
 {% endblock %}
+
 {% block contents %}
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
@@ -27,8 +28,8 @@
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
                 <li class="nav-item"><a class="nav-link" href="#about">ログイン・登録</a></li>
                 <li class="nav-item"><a class="nav-link" href="#services">サービス内容</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about2">アンケートに回答</a></li>
-                <li class="nav-item"><a class="nav-link" href="#call">お問い合わせ</a></li>
+                <li class="nav-item"><a class="nav-link" href="survey/">アンケートに回答</a></li>
+                <li class="nav-item"><a class="nav-link" href="send/">お問い合わせ</a></li>
             </ul>
         </div>
     </div>
@@ -42,8 +43,8 @@
                 <h2 class="text-white mt-0">ログイン・登録</h2>
                 <hr class="divider divider-light" />
                 <h3 class="text-white-75 mb-4">  </h3>
-                <a class="btn btn-light btn-xl rounded-btn" href="#">ログイン</a>
-                <a class="btn btn-light btn-xl rounded-btn" href="#">登録する</a>
+                <a class="btn btn-light btn-xl rounded-btn" href="accounts/login/">ログイン</a>
+                <a class="btn btn-light btn-xl rounded-btn" href="accounts/signup/">登録する</a>
             </div>
         </div>
     </div>
@@ -113,14 +114,6 @@
     </div>
 </section>
 
-<!-- カスタムCSS -->
-<style>
-    .rounded-btn {
-        border-radius: 50px; /* 角を丸くする */
-        padding: 15px 30px;  /* ボタンのパディングを調整 */
-    }
-</style>
-
 <!-- Portfolio-->
 <div id="portfolio">
     <div class="container-fluid p-0" style="padding-top: 30px;">
@@ -162,14 +155,5 @@
         <a class="btn btn-light btn-xl rounded-btn" href="send/">お問い合わせをする</a>
     </div>
 </section>
-
-<!-- カスタムCSS -->
-<style>
-    .rounded-btn {
-        border-radius: 50px; /* 角を丸くする */
-        padding: 15px 30px;  /* ボタンのパディングを調整 */
-    }
-</style>
-
 
 {% endblock %}
