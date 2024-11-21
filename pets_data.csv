@@ -1,5 +1,2 @@
-id,type,size,color,age,kinds,disease,personality,sex,image_urls,Unnamed: 10
-1,犬,大型,白,4,スコティッシュフォールド,,おとなしい,男の子,/media/pet_images/images_1.jpeg,
-32,犬,小型,茶,2,雑種,なし,明るい,男の子,/media/pet_images/uuid_c59c5eee7399431f984256506e99631b.jpg,
-54,猫,小型,白,6,雑種,なし,明るい,女の子,/media/pet_images/uuid_0c0ca40498ea46c093b585ec17e065f1.jpg,
-67,犬,小型,白,1,コーギー,なし,元気,男の子,/media/pet_images/uuid_640be583518e4d9e97cca791ed6fc342.jpg,
+id,type,size,color,age,kinds,disease,personality,sex,image_urls,
+65,犬,小型,茶,5,コーギー,,明るい,男の子,/media/pet_images/uuid_4e12f810cd0b4be3b6ab326cf07903be.jpg,

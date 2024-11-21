@@ -2,7 +2,7 @@ import pandas as pd
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from .forms import SimplePetSurveyForm
-from .models import SurveyResult, SurveyHistory
+from .models import SurveyResult
 from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
@@ -92,15 +92,3 @@ class IndexView(TemplateView):
 def index(request):
     """トップページを表示"""
     return render(request, 'Survey/index.html')
-
-
-# 過去の履歴詳細ページのビュー
-def history_detail(request, id):
-    """過去のアンケート結果詳細を表示"""
-    # IDに対応する履歴を取得
-    try:
-        history = SurveyHistory.objects.get(id=id)  # IDに該当する履歴データを取得
-    except SurveyHistory.DoesNotExist:
-        history = None  # 履歴が存在しない場合はNoneを返す（エラーハンドリング）
-
-    return render(request, 'survey/history_detail.html', {'history': history})
