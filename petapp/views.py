@@ -95,7 +95,7 @@ def pet_create_view(request):
     # 不要な列（Unnamed: 10）を削除
     data = data.drop(columns=['Unnamed: 10'], errors='ignore')
 
-    data.fillna('なし', inplace=True)  # 欠損値を'なし'に埋める
+    # data.fillna('なし', inplace=True)  # 欠損値を'なし'に埋める
 
     if request.method == 'POST':
         pet_form = PetCreateForm(request.POST)
