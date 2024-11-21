@@ -109,7 +109,7 @@
     {% endif %}
 
     {% for form in image_formset %}
-        <div>
+        <div class="image-form">
             {% if form.instance.image %}
                 <img src="{{ form.instance.image.url }}" alt="Pet Image" style="width: 150px; height: auto;">
                 {{ form.id.as_hidden }}  <!-- IDを隠しフィールドで保持 -->
@@ -119,20 +119,20 @@
                 {{ form.DELETE }}  <!-- DELETEフィールド -->
 
                 {% if form.DELETE.errors %}
-                    <ul>
+                    <ul style="color: red;">
                         {% for error in form.DELETE.errors %}
-                            <li style="color: red;">{{ error }}</li>
+                            <li>{{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
-                
+
                 <p style="color: orange;">更新する画像を選択:</p>
                 <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
 
                 {% if form.image.errors %}
-                    <ul>
+                    <ul style="color: red;">
                         {% for error in form.image.errors %}
-                            <li style="color: red;">{{ error }}</li>
+                            <li>{{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -141,9 +141,9 @@
                 <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
 
                 {% if form.image.errors %}
-                    <ul>
+                    <ul style="color: red;">
                         {% for error in form.image.errors %}
-                            <li style="color: red;">{{ error }}</li>
+                            <li>{{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -156,3 +156,34 @@
 </form>
 
 <a href="{% url 'petapp:pet-list' %}">戻る</a>
+
+<script type="text/javascript">
+    // ページロード時に、削除と更新が両方選択されている場合の制御
+    document.addEventListener("DOMContentLoaded", function() {
+        let imageForms = document.querySelectorAll(".image-form");  // 画像フォームを取得
+
+        imageForms.forEach(function(form) {
+            let deleteCheckbox = form.querySelector("[name$='-DELETE']");  // 削除チェックボックス
+            let imageInput = form.querySelector("input[type='file']");  // 画像入力フィールド
+
+            // 削除チェックボックスが変更されたときの処理
+            deleteCheckbox.addEventListener("change", function() {
+                if (deleteCheckbox.checked) {
+                    imageInput.disabled = true;  // 画像更新フィールドを無効化
+                } else {
+                    imageInput.disabled = false;  // 画像更新フィールドを有効化
+                }
+            });
+
+            // 画像入力が変更されたときの処理
+            imageInput.addEventListener("change", function() {
+                if (imageInput.files.length > 0) {
+                    deleteCheckbox.checked = false;  // 削除チェックボックスをオフにする
+                    deleteCheckbox.disabled = true;  // 削除チェックボックスを無効化
+                } else {
+                    deleteCheckbox.disabled = false;  // 画像が選択されていない場合は削除チェックボックスを有効化
+                }
+            });
+        });
+    });
+</script>
