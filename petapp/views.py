@@ -92,6 +92,9 @@ def pet_create_view(request):
     # 'id'列が存在しない場合、'id'列を作成
     if 'id' not in data.columns:
         data['id'] = pd.Series(dtype=int)  # 'id'列がない場合は空の整数列を作成
+    # 不要な列（Unnamed: 10）を削除
+    data = data.drop(columns=['Unnamed: 10'], errors='ignore')
+
     data.fillna('なし', inplace=True)  # 欠損値を'なし'に埋める
 
     if request.method == 'POST':
