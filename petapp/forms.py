@@ -138,24 +138,21 @@ class PetImageUpdateFormSet(modelformset_factory(PetImage, form=PetImageUpdateFo
     def clean(self):
         super().clean()
 
-        # 削除された画像が1枚もない場合エラー
+        # 画像の削除と追加が同時に選ばれていないか確認
+        for form in self.forms:
+            delete_flag = form.cleaned_data.get('DELETE', False)
+            image = form.cleaned_data.get('image', None)
+
+            # 削除フラグが立っているのに、画像が設定されている場合はエラー
+            if delete_flag and image:
+                form.add_error(None, "画像の削除と追加は同時に行えません。どちらか一方を選んでください。")
+
+        # 少なくとも1つの画像が残っていることを確認
         remaining_images = [
             form.cleaned_data.get('image') or form.instance.image
             for form in self.forms
             if not form.cleaned_data.get('DELETE')
         ]
 
-        # 画像が1枚も残らない場合
         if not remaining_images:
             raise ValidationError("少なくとも1つの画像をアップロードしてください。")
-
-    def save(self, commit=True):
-        # 画像削除時の処理
-        for form in self.forms:
-            if form.cleaned_data.get('DELETE') and form.instance.pk:
-                image_path = form.instance.image.path
-                if default_storage.exists(image_path):
-                    default_storage.delete(image_path)  # 画像ファイルを削除
-                form.instance.delete()  # モデルのインスタンスを削除
-
-        return super().save(commit=commit)
