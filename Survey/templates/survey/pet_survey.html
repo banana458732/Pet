@@ -96,36 +96,5 @@
 
         <button type="submit" class="btn btn-primary">送信</button>
     </form>
-
-    <!-- 過去のマッチング履歴表示 -->
-    <h3 class="mt-5">過去のマッチング履歴</h3>
-    {% if user_history %}
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>アンケート日時</th>
-                    <th>マッチングしたペット</th>
-                    <th>詳細</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for history in user_history %}
-                <tr>
-                    <td>{{ history.date_created }}</td>
-                    <td>
-                        {% for pet in matched_pets %}
-                            <p>{{ pet.name }} ({{ pet.type }}, {{ pet.age }}歳)</p>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        <a href="{% url 'survey:history_detail' history.id %}" class="btn btn-info btn-sm">詳細を見る</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>過去のマッチング履歴はありません。</p>
-    {% endif %}
 </div>
 {% endblock %}

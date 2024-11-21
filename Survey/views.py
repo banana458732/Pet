@@ -2,18 +2,24 @@ import pandas as pd
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from .forms import SimplePetSurveyForm
-from .models import SurveyResult, SurveyHistory
+from .models import SurveyResult
 from django.http import HttpResponse
 from django.conf import settings
+from django.shortcuts import render, get_object_or_404
+from .models import Pet
 
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
     # CSVファイルの読み込み
     try:
-        pets_data = pd.read_csv('pets_data.csv')  # pets_data.csvを読み込む
+        pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')  # pets_data.csvを読み込む
+        print("CSVファイルの内容:", pets_data.head())  # ターミナルに最初の5行を表示
+
     except Exception as e:
         return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
+
+    pets_data = pets_data.fillna('')  # この位置で全体の欠損値を処理
 
     # フォームが送信された場合、マッチ率に基づいてペットをフィルタリング
     if request.method == 'POST' and form.is_valid():
@@ -26,6 +32,7 @@ def pet_survey(request):
         personality = form.cleaned_data.get('pet_personality')  # 修正: pet_personality → personality
         sex = form.cleaned_data.get('sex')
         age_range = form.cleaned_data.get('age_range')  # age_rangeを取得
+        print("フォームから取得したデータ:", pet_type, size, color, kinds, disease, personality, sex, age_range)
 
         # フィルタリング条件に一致するペットを取得
         filtered_pets = pets_data.copy()
@@ -53,10 +60,12 @@ def pet_survey(request):
                 filtered_pets = filtered_pets[(filtered_pets['age'] >= 4) & (filtered_pets['age'] <= 7)]
             if '8-10' in age_range:
                 filtered_pets = filtered_pets[(filtered_pets['age'] >= 8) & (filtered_pets['age'] <= 10)]
+        print("フィルタリング後のペットデータ:", filtered_pets)
 
         # マッチング結果をリスト化
         sorted_pets = filtered_pets.to_dict('records')  # フィルタリング後のデータを辞書形式で取得
         pet_with_images = [(pet, pet['image_urls']) for pet in sorted_pets]
+        print("マッチング結果:", pet_with_images)  # マッチング結果をターミナルに表示
 
         # SurveyResultを作成し、マッチング結果を保存
         survey_result = SurveyResult.objects.create(
@@ -69,6 +78,7 @@ def pet_survey(request):
             sex=sex or '',
             age_range=", ".join(age_range) if age_range else ''  # age_rangeも保存
         )
+        print("SurveyResultが作成されました:", survey_result)
 
         # 結果ページをレンダリングして返す
         return render(request, 'survey/results.html', {
@@ -90,15 +100,3 @@ class IndexView(TemplateView):
 def index(request):
     """トップページを表示"""
     return render(request, 'Survey/index.html')
-
-
-# 過去の履歴詳細ページのビュー
-def history_detail(request, id):
-    """過去のアンケート結果詳細を表示"""
-    # IDに対応する履歴を取得
-    try:
-        history = SurveyHistory.objects.get(id=id)  # IDに該当する履歴データを取得
-    except SurveyHistory.DoesNotExist:
-        history = None  # 履歴が存在しない場合はNoneを返す（エラーハンドリング）
-
-    return render(request, 'survey/history_detail.html', {'history': history})
