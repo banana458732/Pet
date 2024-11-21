@@ -20,10 +20,10 @@ urlpatterns = [
          ),
 
     path('logout/',
-         auth_views.LogoutView.as_view(template_name='accounts/logout.html'),
+         views.LogoutView.as_view(),
          name='logout'
          ),
-         
+
     path('',
          views.IndexView.as_view(template_name='accounts/index.html'),
          name='index')

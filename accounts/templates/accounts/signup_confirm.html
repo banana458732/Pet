@@ -74,7 +74,7 @@
     {% csrf_token %}
     <tr><td>名前</td><td>{{form.username.value}}</td></tr>
     <tr><td>メールアドレス</td><td>{{form.email.value}}</td></tr>
-    <tr><td>パスワード</td><td>{{form.password.value}}</td></tr>
+    <tr><td>パスワード</td><td>{{form.password1.value}}</td></tr>
 </table>
 </div>
 <form class="ui form" action="{% url 'accounts:signup' %}" method="POST">
