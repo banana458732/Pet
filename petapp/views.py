@@ -92,7 +92,10 @@ def pet_create_view(request):
     # 'id'列が存在しない場合、'id'列を作成
     if 'id' not in data.columns:
         data['id'] = pd.Series(dtype=int)  # 'id'列がない場合は空の整数列を作成
-    data.fillna('なし', inplace=True)  # 欠損値を'なし'に埋める
+    # 不要な列（Unnamed: 10）を削除
+    data = data.drop(columns=['Unnamed: 10'], errors='ignore')
+
+    # data.fillna('なし', inplace=True)  # 欠損値を'なし'に埋める
 
     if request.method == 'POST':
         pet_form = PetCreateForm(request.POST)
@@ -223,7 +226,9 @@ def pet_update_view(request, pet_id):
 
             # 新しい画像が追加されている場合、残り画像数にカウント
             if any(form.cleaned_data.get('image') for form in image_formset):
-                remaining_images += 1
+                remaining_images += sum(
+                    1 for form in image_formset if form.cleaned_data.get('image') is not None and not form.cleaned_data.get('DELETE', False)
+                )
 
             # バリデーション: 削除後に残る画像数が1枚以上であることを確認
             if remaining_images < 1:
