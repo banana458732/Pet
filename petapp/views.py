@@ -223,7 +223,9 @@ def pet_update_view(request, pet_id):
 
             # 新しい画像が追加されている場合、残り画像数にカウント
             if any(form.cleaned_data.get('image') for form in image_formset):
-                remaining_images += 1
+                remaining_images += sum(
+                    1 for form in image_formset if form.cleaned_data.get('image') is not None and not form.cleaned_data.get('DELETE', False)
+                )
 
             # バリデーション: 削除後に残る画像数が1枚以上であることを確認
             if remaining_images < 1:
