@@ -129,7 +129,7 @@ class PetImageUpdateForm(forms.ModelForm):
             if default_storage.exists(image_path):
                 # 古い画像ファイルを削除
                 default_storage.delete(image_path)
-        
+
         # 新しい画像を保存
         return super().save(commit=commit)
 

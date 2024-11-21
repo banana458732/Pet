@@ -10,7 +10,6 @@ from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm, PetImageForm
 from django.forms import modelformset_factory
 from django.core.files.storage import default_storage
 from django.db import transaction
-import logging
 
 
 # CSVファイルのパスを指定
@@ -181,10 +180,6 @@ def pet_create_comp_view(request, pet_id):
     })
 
 
-# ロガーを設定
-logger = logging.getLogger(__name__)
-
-
 def pet_update_view(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
     existing_images = PetImage.objects.filter(pet=pet)
@@ -219,16 +214,22 @@ def pet_update_view(request, pet_id):
         errors = False  # エラーフラグ
         deleted_images = []  # 削除された画像を記録
         added_images = []  # 追加された画像を記録
+        error_message = None  # エラーメッセージ用
 
         if pet_form.is_valid() and image_formset.is_valid():
             # バリデーション: 削除後の画像数が1枚以上であることを確認
             remaining_images = existing_images.count() - sum(
                 1 for form in image_formset if form.cleaned_data.get('DELETE', False)
             )
+            print(f"残りの画像数: {remaining_images}")
+
             if remaining_images < 1:
+                error_message = "画像は1枚以上登録されている必要があります。"
                 for form in image_formset:
-                    form.add_error(None, "画像は1枚以上登録されている必要があります。")
+                    form.add_error(None, error_message)
                 errors = True
+                image_formset.is_valid = False  # フォームセットが無効になり、エラーメッセージが表示されます
+                print(error_message)
 
             # エラーがない場合、削除処理と追加処理を実行
             if not errors:
@@ -280,6 +281,23 @@ def pet_update_view(request, pet_id):
                                 pet_image.save()
                                 added_images.append(pet_image.image.url)
 
+                    # CSVファイルを更新
+                    data = read_csv()  # CSVファイルのデータを読み込む
+                    for index, row in data.iterrows():
+                        if row['id'] == pet.id:  # 更新対象のペットを見つけた場合
+                            data.at[index, 'type'] = pet.type
+                            data.at[index, 'size'] = pet.size
+                            data.at[index, 'color'] = pet.color
+                            data.at[index, 'age'] = pet.age
+                            data.at[index, 'kinds'] = pet.kinds
+                            data.at[index, 'disease'] = pet.disease
+                            data.at[index, 'personality'] = pet.personality
+                            data.at[index, 'sex'] = pet.sex
+                            data.at[index, 'image_urls'] = ', '.join(added_images)  # 更新された画像URLを保存
+                            break
+
+                    write_csv(data)  # CSVファイルを更新する
+
                     # 変更されたフィールドをセッションに保存
                     request.session['updated_fields'] = updated_fields
                     request.session['added_images'] = added_images
@@ -300,6 +318,7 @@ def pet_update_view(request, pet_id):
         return render(request, 'petapp/pet_update.html', {
             'pet_form': pet_form,
             'image_formset': image_formset,
+            'error_message': error_message,  # エラーメッセージをテンプレートに渡す
         })
 
     else:  # GETリクエストの場合
