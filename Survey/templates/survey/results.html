@@ -22,7 +22,7 @@
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="#page-top">Top page</a>
+        <a class="navbar-brand" href="#" onclick="history.back()">Top page</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto my-2 my-lg-0">
@@ -35,13 +35,12 @@
     </div>
 </nav>
 
-
 <h1>マッチングしたペット情報</h1>
 
 <!-- マッチングしたペット情報がある場合 -->
-{% if matching_pets %}
+{% if pets %}
     <ul>
-        {% for pet in matching_pets %}
+        {% for pet, image_url in pets %}
             <li>
                 <div class="pet-info">
                     <div class="pet-details">
@@ -50,13 +49,13 @@
                         <strong>色:</strong> {{ pet.color }}<br>
                         <strong>年齢:</strong> {{ pet.age }}歳<br>
                         <strong>性別:</strong> {{ pet.sex }}<br>
-                        <strong>種類:</strong> {{ pet.syu }}<br>
+                        <strong>種類:</strong> {{ pet.kinds }}<br>
                         <strong>病歴:</strong> {{ pet.disease }}<br>
                         <strong>性格:</strong> {{ pet.personality }}<br>
                     </div>
                     <div class="pet-image">
-                        {% if pet.image_urls %}
-                            <img src="{{ pet.image_urls }}" alt="Pet Image" width="200">
+                        {% if image_url %}
+                            <img src="{{ image_url }}" alt="Pet Image" width="200">
                         {% endif %}
                     </div>
                 </div>
