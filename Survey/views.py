@@ -5,13 +5,15 @@ from .forms import SimplePetSurveyForm
 from .models import SurveyResult, SurveyHistory
 from django.http import HttpResponse
 from django.conf import settings
+from django.shortcuts import render, get_object_or_404
+from .models import Pet
 
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
     # CSVファイルの読み込み
     try:
-        pets_data = pd.read_csv('pets_data.csv')  # pets_data.csvを読み込む
+        pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')  # pets_data.csvを読み込む
     except Exception as e:
         return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
 

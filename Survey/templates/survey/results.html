@@ -44,15 +44,7 @@
             <li>
                 <div class="pet-info">
                     <div class="pet-details">
-                        <strong>ペットの種類:</strong> {{ pet.type }}<br>
-                        <strong>サイズ:</strong> {{ pet.size }}<br>
-                        <strong>色:</strong> {{ pet.color }}<br>
-                        <strong>年齢:</strong> {{ pet.age }}歳<br>
-                        <strong>性別:</strong> {{ pet.sex }}<br>
-                        <strong>種類:</strong> {{ pet.kinds }}<br>
-                        <strong>病歴:</strong> {{ pet.disease }}<br>
-                        <strong>性格:</strong> {{ pet.personality }}<br>
-                    </div>
+                        <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
                     <div class="pet-image">
                         {% if image_url %}
                             <img src="{{ image_url }}" alt="Pet Image" width="200">
