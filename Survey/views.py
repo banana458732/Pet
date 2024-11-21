@@ -6,7 +6,6 @@ from .models import SurveyResult, SurveyHistory
 from django.http import HttpResponse
 from django.conf import settings
 
-
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
@@ -22,12 +21,11 @@ def pet_survey(request):
         pet_type = form.cleaned_data.get('pet_type')
         size = form.cleaned_data.get('size')
         color = form.cleaned_data.get('color')
-        age = form.cleaned_data.get('age')
         kinds = form.cleaned_data.get('kinds')
         disease = form.cleaned_data.get('disease')
-        pet_personality = form.cleaned_data.get('pet_personality')
+        personality = form.cleaned_data.get('pet_personality')  # 修正: pet_personality → personality
         sex = form.cleaned_data.get('sex')
-        age_range = form.cleaned_data.get('age_range')
+        age_range = form.cleaned_data.get('age_range')  # age_rangeを取得
 
         # フィルタリング条件に一致するペットを取得
         filtered_pets = pets_data.copy()
@@ -38,18 +36,23 @@ def pet_survey(request):
             filtered_pets = filtered_pets[filtered_pets['size'] == size]
         if color:
             filtered_pets = filtered_pets[filtered_pets['color'] == color]
-        if age:
-            filtered_pets = filtered_pets[filtered_pets['age'] == age]
         if kinds:
             filtered_pets = filtered_pets[filtered_pets['kinds'] == kinds]
         if disease:
             filtered_pets = filtered_pets[filtered_pets['disease'] == disease]
-        if pet_personality:
-            filtered_pets = filtered_pets[filtered_pets['pet_personality'] == pet_personality]
+        if personality:  # 修正: pet_personality → personality
+            filtered_pets = filtered_pets[filtered_pets['personality'] == personality]  # 修正: pet_personality → personality
         if sex:
             filtered_pets = filtered_pets[filtered_pets['sex'] == sex]
+
+        # 年齢範囲に基づくフィルタリング
         if age_range:
-            filtered_pets = filtered_pets[filtered_pets['age_range'] == age_range]
+            if '0-3' in age_range:
+                filtered_pets = filtered_pets[filtered_pets['age'] <= 3]
+            if '4-7' in age_range:
+                filtered_pets = filtered_pets[(filtered_pets['age'] >= 4) & (filtered_pets['age'] <= 7)]
+            if '8-10' in age_range:
+                filtered_pets = filtered_pets[(filtered_pets['age'] >= 8) & (filtered_pets['age'] <= 10)]
 
         # マッチング結果をリスト化
         sorted_pets = filtered_pets.to_dict('records')  # フィルタリング後のデータを辞書形式で取得
@@ -60,12 +63,11 @@ def pet_survey(request):
             pet_type=pet_type or '',
             size=size or '',
             color=color or '',
-            age=age or '',
             kinds=kinds or '',
             disease=disease or '',
-            pet_personality=pet_personality or '',
+            pet_personality=personality or '',  # 修正: pet_personality → personality
             sex=sex or '',
-            age_range=",".join(age_range) if age_range else ''
+            age_range=", ".join(age_range) if age_range else ''  # age_rangeも保存
         )
 
         # 結果ページをレンダリングして返す
@@ -79,7 +81,6 @@ def pet_survey(request):
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
-
 
 class IndexView(TemplateView):
     """トップページのビュー"""
