@@ -1,4 +1,4 @@
-import os, csv
+import os
 import uuid
 import pandas as pd
 from django.shortcuts import render, redirect, get_object_or_404
@@ -10,8 +10,6 @@ from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm, PetImageForm
 from django.forms import modelformset_factory
 from django.core.files.storage import default_storage
 from django.db import transaction
-from django.conf import settings
-
 
 # CSVファイルのパスを指定
 CSV_FILE_PATH = 'C:\\Users\\t_yamanoi\\Documents\\卒業制作\\Pet\\pets_data.csv'
@@ -244,26 +242,34 @@ def pet_update_view(request, pet_id):
                 with transaction.atomic():
                     pet = pet_form.save()  # ペット情報を更新
 
-                    updated_fields = []
-                    for field, old_value in old_pet_data.items():
-                        new_value = getattr(pet, field)
-                        updated_field = f"{field}: {old_value} → {new_value}" if old_value != new_value else f"{field}: {old_value} （変更なし）"
-                        updated_fields.append(updated_field)
+                updated_fields = []
+                for field, old_value in old_pet_data.items():
+                    # None を空文字列に変換
+                    old_value = old_value if old_value is not None else ""
+                    new_value = getattr(pet, field) if getattr(pet, field) is not None else ""
+
+                    if old_value != new_value:
+                        updated_field = f"{field}: {old_value} → {new_value}"
+                    else:
+                        updated_field = f"{field}: {old_value} （変更なし）"
+
+                    updated_fields.append(updated_field)
 
                     for form in image_formset:
                         delete_flag = form.cleaned_data.get('DELETE', False)
                         image = form.cleaned_data.get('image', None)
 
                         if delete_flag:
+                            # 画像のIDが存在する場合にのみ削除を実行
                             image_instance = form.instance
-                            if image_instance.pk and image_instance.image:
-                                image_path = image_instance.image.path
-                                if default_storage.exists(image_path):
-                                    print(f"画像 {image_path} を削除します")
-                                    default_storage.delete(image_path)
+                            if image_instance.pk:  # IDが存在する場合のみ削除
+                                if image_instance.image:
+                                    image_path = image_instance.image.path
+                                    if default_storage.exists(image_path):
+                                        print(f"画像 {image_path} を削除します")
+                                        default_storage.delete(image_path)
                                     deleted_images.append(image_path)
-                            image_instance.delete()  # 画像インスタンス自体を削除
-
+                                image_instance.delete()  # 画像インスタンス自体を削除
                         elif image:  # 新規画像を追加
                             if form.cleaned_data.get('id'):  # 既存画像の更新
                                 existing_image = PetImage.objects.get(id=form.cleaned_data.get('id').id)
@@ -284,6 +290,21 @@ def pet_update_view(request, pet_id):
                     data = read_csv()  # CSVファイルのデータを読み込み
                     for index, row in data.iterrows():
                         if row['id'] == pet.id:
+                            # 新しい画像URLリストを作成
+                            existing_image_urls = [
+                                image.image.url for image in existing_images
+                                if image.image and image.pk not in [img.instance.pk for img in image_formset if img.cleaned_data.get('DELETE', False)]
+                            ]
+
+                            # 既存の画像URLリストと新しい画像URLリストをマージし、重複を排除（順序を保つ）
+                            final_image_urls = []
+                            all_urls = existing_image_urls + added_images  # 既存と新規画像URLを結合
+
+                            for url in all_urls:
+                                if url not in final_image_urls:
+                                    final_image_urls.append(url)
+
+                            # 行データを更新
                             data.at[index, 'type'] = pet.type
                             data.at[index, 'size'] = pet.size
                             data.at[index, 'color'] = pet.color
@@ -292,10 +313,11 @@ def pet_update_view(request, pet_id):
                             data.at[index, 'disease'] = pet.disease
                             data.at[index, 'personality'] = pet.personality
                             data.at[index, 'sex'] = pet.sex
-                            data.at[index, 'image_urls'] = ', '.join(added_images)
+                            data.at[index, 'image_urls'] = ', '.join(final_image_urls)  # 更新された画像URLを設定
+
                             break
 
-                    write_csv(data)
+                    write_csv(data)  # 更新後のデータを書き込み
 
                     request.session['updated_fields'] = updated_fields
                     request.session['added_images'] = added_images

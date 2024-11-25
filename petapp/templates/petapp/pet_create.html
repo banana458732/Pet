@@ -1,3 +1,5 @@
+
+{% block contents %}
 <h2>新しい犬・猫の登録</h2>
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -89,3 +91,4 @@
 </form>
 
 <a href="{% url 'petapp:pet-list' %}" class="btn">戻る</a>
+{% endblock %}
