@@ -1,5 +1,6 @@
 from django import forms
 
+
 class SimplePetSurveyForm(forms.Form):
     # ペットの種類
     TYPE_CHOICES = [
