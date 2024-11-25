@@ -30,17 +30,6 @@ class SignUpView(LoginRequiredMixin, CreateView):
             return render(self.request, 'accounts/signup.html', ctx)
 
         if self.request.POST.get('next', '') == 'create':
-            cleaned_data = form.cleaned_data
-            at_username = cleaned_data['username']
-            at_email = cleaned_data['email']
-            at_password = cleaned_data['password']
-
-            user_db = User(
-                username=at_username,
-                email=at_email,
-                password=at_password,
-            )
-            user_db.save()
             return super().form_valid(form)
             # フォームからデータを取得
             # モデルインスタンスの作成
@@ -71,4 +60,3 @@ def LoginView(request):
 
 class IndexView(TemplateView):
     template_name = 'accounts/index.html'
-

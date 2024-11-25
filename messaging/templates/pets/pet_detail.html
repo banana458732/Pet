@@ -53,9 +53,9 @@
 {% endif %}
 
 {% if pet.type == '犬' %}
-    <p>犬種 : {{ pet.syu }}</p>
+    <p>犬種 : {{ pet.kinds }}</p>
 {% else %}
-    <p>猫種 : {{ pet.syu }}</p>
+    <p>猫種 : {{ pet.kinds }}</p>
 {% endif %}
 <p>性格 : {{ pet.personality }}</p>
 
@@ -69,6 +69,26 @@
     {% endif %}
 </div>
 
+<!-- 仮契約フォームリンク -->
+<div>
+    <h2>仮契約について</h2>
+    <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
+
+    {% if other_user_karikeiyaku %}
+        <!-- 他のユーザーが仮契約中 -->
+        <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
+    {% elif user_karikeiyaku %}
+        <!-- 自分が仮契約中 -->
+        <button class="btn btn-primary" disabled>仮契約中</button>
+        <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+    {% else %}
+        <!-- 仮契約していない -->
+        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
+    {% endif %}
+
+</div>
+
+
 <!-- コメントセクション -->
 <h2>コメント</h2>
 <ul>
@@ -81,6 +101,15 @@
         </strong> 
         {{ comment.content }}
         <br><small>{{ comment.timestamp }}</small>
+        
+        <!-- 管理者のみ削除ボタンを表示 -->
+        {% if user.is_superuser %}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                <button type="submit" name="delete_comment" style="color: red;">削除</button>
+            </form>
+        {% endif %}
     </li>
     {% empty %}
     <p>まだコメントはありません。</p>

@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Pet
+from .models import Pet, Comment
 from django.contrib.auth.decorators import login_required
 from .forms import MessageForm, CommentForm
 from django.core.mail import send_mail
 from django.views.generic.base import TemplateView
+from karikeiyaku.models import Karikeiyaku  # 仮契約モデルをインポート
 
 
 def send_message(request):
@@ -54,7 +55,15 @@ def pet_detail(request, pet_id):
                 comment.content = comment.content
 
             comment.save()
-            return redirect('pet_detail', pet_id=pet.id)
+            return redirect('messaging:pet_detail', pet_id=pet.id)
+
+        # コメント削除処理 (管理者のみ)
+        if 'delete_comment' in request.POST:
+            comment_id = request.POST.get('comment_id')
+            comment = get_object_or_404(Comment, id=comment_id)
+            if request.user.is_superuser:  # 管理者のみ削除可能
+                comment.delete()
+                return redirect('messaging:pet_detail', pet_id=pet.id)
     else:
         form = CommentForm()
 
@@ -62,6 +71,31 @@ def pet_detail(request, pet_id):
         'pet': pet,
         'comments': comments,  # ペットのコメントをテンプレートに渡す
         'form': form
+    })
+
+
+# データベースにデータが保存されてるか
+def pet_detail(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+
+    # デバック用
+    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).first()
+    other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).first()
+
+    print(f"ユーザー: {request.user.username}, 仮契約: {user_karikeiyaku}")
+    print(f"他のユーザーの仮契約: {other_user_karikeiyaku}")
+    # /デバック用
+
+    # 現在のユーザーの仮契約を取得
+    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).first()
+
+    # 他のユーザーが仮契約中かを確認
+    other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).first()
+
+    return render(request, 'pets/pet_detail.html', {
+        'pet': pet,
+        'user_karikeiyaku': user_karikeiyaku,
+        'other_user_karikeiyaku': other_user_karikeiyaku,
     })
 
 

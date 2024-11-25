@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 <!-- ヘッダー情報のページタイトルを設定する -->
 {% load static %}
@@ -10,46 +9,34 @@
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="site-heading" style="text-align: center;">
-                    <h1 style="font-size: 60px; white-space: nowrap; ">ログアウト</h1>
+                    <h1 style="font-size: 60px; white-space: nowrap; ">ログイン</h1>
                 </div>
             </div>
         </div>
     </div>
   </header>
   {% endblock %}
+ <style>
+  .signin {
+    text-align: center;
+    padding-top: 40px
+  }
+
+  .accounts_signup {
+    position: relative;
+    left: 400px;
+    
+    padding: 30px;
+  }
+  
+
+ </style>
 
 {% block contents %}
 <!doctype html>
 <!-- 言語指定をenからjaに変更 -->
 <html lang="ja">
-  <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- タイトル変更 -->
-    <title>Log in</title>
-    <!-- <link rel="canonical"...>を削除 -->    
-    <link rel="icon" type="image/x-icon" href={% static 'assets/favicon.ico' %} />
-    <!-- Bootstrap core CSS -->
-    <!-- Bootstrap core CSSを読み込むコードをBootstrapからコピーして<link>タグを書き換え -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous">
-    
-    <style>
-      .form-container {
-        background-color: #f8f9fa;
-        padding: 40px;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
-    </style>
-  </head>
-  <body class="d-flex align-items-center justify-content-center vh-100">    
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-          <div class="form-container text-center">
             <!-- ユーザー名とパスワードが一致しない場合のメッセージ -->
             {% if errors %}
               <p style="color: red">{{ error }}ユーザー名とパスワードが一致しません。</p>
@@ -59,47 +46,12 @@
               {% csrf_token %}
               <!-- Bootstrapのロゴを表示 -->
               <!-- 「static/img/bootstrap-logo.svg」の読み込み -->
-              <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-              <p class="mt-3"><a href="{% url 'accounts:signup' %}">アカウントを作成</a></p>
-
-              <!-- Usernameのラベル(非表示) -->
-              <label for="Username" class="visually-hidden">
-                User name</label>
-              <!-- usernameの<input>タグを出力-->
-              <!-- name属性の値はLoginViewで定義されているフィールド名username -->
-              {% csrf_token %}
-              <input type="text"
-                     name="username" 
-                     id="id_username" 
-                     maxlength="150" 
-                     autocapitalize="none"
-                     autocomplete="username" 
-                     class="form-control mb-2" 
-                     placeholder="ユーザー名" 
-                     required autofocus>
-
-              <!-- Passwordのラベル(非表示) -->
-              <label for="Password" class="visually-hidden">
-                Password</label>
-              <!-- passwordの<input>タグを出力-->
-              <!-- name属性の値はLoginViewで定義されているフィールド名password -->
-               {% csrf_token %}
-              <input type="password" 
-                     name="password" 
-                     id="id_password" 
-                     autocomplete="current-password"
-                     class="form-control mb-2" 
-                     placeholder="パスワード" 
-                     required autofocus>
-
-              <!-- パスワードの表示/非表示チェックボックス -->
-              <div class="form-check mt-2">
-                <input class="form-check-input" type="checkbox" id="showPasswordCheck" onclick="togglePassword()">
-                <label class="form-check-label" for="showPasswordCheck">パスワードを表示</label>
-              </div>
-
+              <h1 class="signin">Please sign in</h1>
+              <p id = accounts_signup ><a href="{% url 'accounts:signup' %}">アカウントを作成</a></p>
+              <input type="text" id="username" name="username" required size="10" placeholder="ユーザー名"/>
+              <input type="password" id="password_input" name="password" required minlength="8" size="10" placeholder="パスワード"/>
               <!-- ログインボタン -->
-              <input class="w-100 btn btn-lg btn-primary mt-3" 
+              <input id = "login_buttom" 
                      type="submit" 
                      value="ログイン">
               
@@ -107,13 +59,7 @@
               <p class="mt-3"><a href="{% url 'survey:index' %}">パスワードを忘れましたか?</a></p>
               <!-- ログイン直後のリダイレクト先(トップページ)のURLパターンを設定 -->
               <input type="hidden" 
-                     value="{% url 'accounts:index' %}">
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </body>
+                     value="{% url 'survey:index' %}">
+            </form>  
 </html>
 {% endblock %}

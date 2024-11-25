@@ -1,6 +1,5 @@
 from django import forms
 
-
 class SimplePetSurveyForm(forms.Form):
     # ペットの種類
     TYPE_CHOICES = [
@@ -33,14 +32,6 @@ class SimplePetSurveyForm(forms.Form):
         required=False,
         label="色",
         widget=forms.TextInput(attrs={'placeholder': '例: 白, 黒, 茶色'})
-    )
-
-    # 年齢
-    age = forms.IntegerField(
-        min_value=0,
-        max_value=15,
-        required=False,
-        label="年齢"
     )
 
     # 種別
@@ -79,7 +70,7 @@ class SimplePetSurveyForm(forms.Form):
         label="性別"
     )
 
-    # 年齢の範囲（自由入力）
+    # 年齢の範囲（チェックボックス選択）
     AGE_CHOICES = [
         ('0-3', '0~3歳'),
         ('4-7', '4~7歳'),

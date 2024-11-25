@@ -14,7 +14,7 @@ class SurveyResult(models.Model):
     pet_size_preference = models.CharField(max_length=255, blank=True)
     additional_requests = models.TextField(blank=True)
     kinds = models.CharField(max_length=255, blank=True)  
-    disease = models.CharField(max_length=255, blank=True)  
+    disease = models.CharField(max_length=255, blank=True, default='')
     sex = models.CharField(max_length=255, blank=True)  
     image_urls = models.TextField(blank=True)  
     age_range = models.CharField(max_length=255, blank=True)  # 追加

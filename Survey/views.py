@@ -5,16 +5,21 @@ from .forms import SimplePetSurveyForm
 from .models import SurveyResult, SurveyHistory
 from django.http import HttpResponse
 from django.conf import settings
-
+from django.shortcuts import render, get_object_or_404
+from .models import Pet
 
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
     # CSVファイルの読み込み
     try:
-        pets_data = pd.read_csv('pets_data.csv')  # pets_data.csvを読み込む
+        pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')  # pets_data.csvを読み込む
+        print("CSVファイルの内容:", pets_data.head())  # ターミナルに最初の5行を表示
+
     except Exception as e:
         return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
+
+    pets_data = pets_data.fillna('')  # この位置で全体の欠損値を処理
 
     # フォームが送信された場合、マッチ率に基づいてペットをフィルタリング
     if request.method == 'POST' and form.is_valid():
@@ -22,12 +27,12 @@ def pet_survey(request):
         pet_type = form.cleaned_data.get('pet_type')
         size = form.cleaned_data.get('size')
         color = form.cleaned_data.get('color')
-        age = form.cleaned_data.get('age')
         kinds = form.cleaned_data.get('kinds')
         disease = form.cleaned_data.get('disease')
-        pet_personality = form.cleaned_data.get('pet_personality')
+        personality = form.cleaned_data.get('pet_personality')  # 修正: pet_personality → personality
         sex = form.cleaned_data.get('sex')
-        age_range = form.cleaned_data.get('age_range')
+        age_range = form.cleaned_data.get('age_range')  # age_rangeを取得
+        print("フォームから取得したデータ:", pet_type, size, color, kinds, disease, personality, sex, age_range)
 
         # フィルタリング条件に一致するペットを取得
         filtered_pets = pets_data.copy()
@@ -38,35 +43,42 @@ def pet_survey(request):
             filtered_pets = filtered_pets[filtered_pets['size'] == size]
         if color:
             filtered_pets = filtered_pets[filtered_pets['color'] == color]
-        if age:
-            filtered_pets = filtered_pets[filtered_pets['age'] == age]
         if kinds:
             filtered_pets = filtered_pets[filtered_pets['kinds'] == kinds]
         if disease:
             filtered_pets = filtered_pets[filtered_pets['disease'] == disease]
-        if pet_personality:
-            filtered_pets = filtered_pets[filtered_pets['pet_personality'] == pet_personality]
+        if personality:  # 修正: pet_personality → personality
+            filtered_pets = filtered_pets[filtered_pets['personality'] == personality]  # 修正: pet_personality → personality
         if sex:
             filtered_pets = filtered_pets[filtered_pets['sex'] == sex]
+
+        # 年齢範囲に基づくフィルタリング
         if age_range:
-            filtered_pets = filtered_pets[filtered_pets['age_range'] == age_range]
+            if '0-3' in age_range:
+                filtered_pets = filtered_pets[filtered_pets['age'] <= 3]
+            if '4-7' in age_range:
+                filtered_pets = filtered_pets[(filtered_pets['age'] >= 4) & (filtered_pets['age'] <= 7)]
+            if '8-10' in age_range:
+                filtered_pets = filtered_pets[(filtered_pets['age'] >= 8) & (filtered_pets['age'] <= 10)]
+        print("フィルタリング後のペットデータ:", filtered_pets)
 
         # マッチング結果をリスト化
         sorted_pets = filtered_pets.to_dict('records')  # フィルタリング後のデータを辞書形式で取得
         pet_with_images = [(pet, pet['image_urls']) for pet in sorted_pets]
+        print("マッチング結果:", pet_with_images)  # マッチング結果をターミナルに表示
 
         # SurveyResultを作成し、マッチング結果を保存
         survey_result = SurveyResult.objects.create(
             pet_type=pet_type or '',
             size=size or '',
             color=color or '',
-            age=age or '',
             kinds=kinds or '',
             disease=disease or '',
-            pet_personality=pet_personality or '',
+            pet_personality=personality or '',  # 修正: pet_personality → personality
             sex=sex or '',
-            age_range=",".join(age_range) if age_range else ''
+            age_range=", ".join(age_range) if age_range else ''  # age_rangeも保存
         )
+        print("SurveyResultが作成されました:", survey_result)
 
         # 結果ページをレンダリングして返す
         return render(request, 'survey/results.html', {
@@ -79,7 +91,6 @@ def pet_survey(request):
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
-
 
 class IndexView(TemplateView):
     """トップページのビュー"""
