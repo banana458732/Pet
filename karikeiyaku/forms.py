@@ -6,15 +6,24 @@ class KarikeiyakuForm(forms.ModelForm):
     agreement = forms.BooleanField(
         required=True, 
         label="上記について同意します",
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})  # 見た目を整える
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
 
     class Meta:
         model = Karikeiyaku
-        fields = ['end_date']  # end_date のみ保存対象
+        fields = ['end_date']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # ページを開いた日を元に二週間後の日付を設定
-        self.fields['end_date'].initial = date.today() + timedelta(weeks=2)
-        self.fields['end_date'].widget.attrs['readonly'] = 'readonly'
+        # 初期値を2週間後に設定し、YYYY-MM-DD形式で入力・表示
+        if not self.instance.pk:  # 新規作成時のみ
+            self.fields['end_date'].initial = date.today() + timedelta(weeks=2)
+
+        self.fields['end_date'].widget = forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={
+                'readonly': 'readonly',
+                'class': 'form-control',
+                'placeholder': 'YYYY-MM-DD'
+            }
+        )

@@ -21,14 +21,3 @@ class SurveyResult(models.Model):
 
     def __str__(self):
         return f"{self.pet_type} - {self.size}"
-
-
-class SurveyHistory(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='survey_history')
-    survey_result = models.ForeignKey('SurveyResult', on_delete=models.CASCADE, related_name='survey_histories')
-    matched_pet = models.ManyToManyField(Pet, blank=True)
-    date_created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Survey by {self.user.username} on {self.date_created}"
-

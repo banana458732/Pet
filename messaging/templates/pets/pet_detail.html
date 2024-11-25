@@ -79,8 +79,8 @@
         <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
     {% elif user_karikeiyaku %}
         <!-- 自分が仮契約中 -->
-        <button class="btn btn-primary" disabled>仮契約中</button>
-        <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
+    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
     {% else %}
         <!-- 仮契約していない -->
         <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>

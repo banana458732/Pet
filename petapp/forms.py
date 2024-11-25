@@ -21,7 +21,7 @@ class PetCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if not self.instance.pk:  # 新規登録時
-            self.fields['id'].required = False  # idを非必須にする
+            self.fields['id'].required = True  # idを非必須にする
 
 
 class PetImageForm(forms.ModelForm):

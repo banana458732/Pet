@@ -126,7 +126,7 @@
 
         <div class="form-group">
             <label>契約終了日:</label>
-            <input type="text" name="end_date" value="{{ form.end_date.value }}" readonly>
+            <input type="text" name="end_date" value="{{ form.end_date.value|date:'Y-m-d' }}" readonly>
         </div>
         
         <div class="form-group">
@@ -135,15 +135,16 @@
         </div>
 
         {% if user_karikeiyaku %}
-        <button class="btn btn-warning" disabled>仮契約中</button>
-        <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+            <!-- 仮契約中の場合、「契約する」ボタンを無効化し、「キャンセル」ボタンを表示 -->
+            <button class="btn btn-primary" disabled>契約中</button>
+            <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
         {% else %}
-        <button type="submit" class="btn btn-success">契約する</button>
-        <a href="#" class="btn btn-secondary" onclick="history.back()">戻る</a>
+            <!-- 契約がまだの場合 -->
+            <button type="submit" class="btn btn-success">契約する</button>
+            <a class="navbar-brand" href="#" onclick="history.back()">戻る</a>
         {% endif %}
             
-        </form>       
-        
     </form>
 </body>
-</html>
+</html>      
+        
