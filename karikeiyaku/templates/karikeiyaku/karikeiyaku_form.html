@@ -72,7 +72,7 @@
     <p>仮契約の期間内にキャンセルすることができ、キャンセルの際には所定の手続きを行うことを理解しています。</p>
     <p>仮契約期間内に本契約をしなかった場合、自動的にキャンセルと扱うことを理解しています。</p>
 
-    {% if pet.disease and pet.disease != 'なし' %}
+    {% if pet.disease %}
     <p class="highlight">このペットには<strong>{{ pet.disease }}</strong>の病気があります。私は、このペットが過去または現在において<strong>{{ pet.disease }}</strong>の病歴を持っていることを認識し、その健康状態に基づく必要なケアを行う責任を負うことを理解しています。</p>
     {% endif %}
 
@@ -100,7 +100,7 @@
         </div>
         <div class="form-group">
             <label>病歴:</label>
-            <input type="text" value="{{ pet.disease }}" readonly>
+            <input type="text" value="{% if pet.disease %}{{ pet.disease }}{% else %}なし{% endif %}" readonly>
         </div>
         <div class="form-group">
             <label>性格:</label>
@@ -124,10 +124,26 @@
             <input type="tel" value="{{ user.phone }}" readonly>
         </div>
 
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" class="btn">同意する</button>
-        </form>
+        <div class="form-group">
+            <label>契約終了日:</label>
+            <input type="text" name="end_date" value="{{ form.end_date.value }}" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label>契約内容を確認し、同意しますか？</label>
+            <input type="checkbox" name="agreement" required> 同意します
+        </div>
+
+        {% if user_karikeiyaku %}
+        <button class="btn btn-warning" disabled>仮契約中</button>
+        <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+        {% else %}
+        <button type="submit" class="btn btn-success">契約する</button>
+        <a href="#" class="btn btn-secondary" onclick="history.back()">戻る</a>
+        {% endif %}
+            
+        </form>       
+        
     </form>
 </body>
 </html>

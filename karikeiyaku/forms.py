@@ -1,13 +1,20 @@
 from django import forms
 from .models import Karikeiyaku
+from datetime import date, timedelta
 
 class KarikeiyakuForm(forms.ModelForm):
+    agreement = forms.BooleanField(
+        required=True, 
+        label="上記について同意します",
+        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})  # 見た目を整える
+    )
+
     class Meta:
         model = Karikeiyaku
-        fields = ['price', 'end_date', 'has_appropriate_space', 'understands_responsibility', 'status', 'cancellation_policy']
+        fields = ['end_date']  # end_date のみ保存対象
 
-    # 病歴を表示
-    disease = forms.CharField(widget=forms.Textarea(attrs={'readonly': 'readonly'}), required=False)
-
-    # 同意チェックボックスを追加
-    agreement = forms.BooleanField(required=True, label="上記の仮契約内容を確認し、同意します。")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # ページを開いた日を元に二週間後の日付を設定
+        self.fields['end_date'].initial = date.today() + timedelta(weeks=2)
+        self.fields['end_date'].widget.attrs['readonly'] = 'readonly'
