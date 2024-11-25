@@ -1,16 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
 from petapp.models import Pet
+from accounts.models import CustomUser
 
 
 class Message(models.Model):
     sender = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='sent_messages'
     )
     recipient = models.ForeignKey(
-        User,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='received_messages'
     )
@@ -33,7 +34,7 @@ class Message(models.Model):
 
 class Comment(models.Model):
     pet = models.ForeignKey(Pet, related_name='comments', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
