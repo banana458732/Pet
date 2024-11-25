@@ -8,6 +8,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from .models import Pet
 
+
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
@@ -64,8 +65,17 @@ def pet_survey(request):
 
         # マッチング結果をリスト化
         sorted_pets = filtered_pets.to_dict('records')  # フィルタリング後のデータを辞書形式で取得
-        pet_with_images = [(pet, pet['image_urls']) for pet in sorted_pets]
+
+        # 最初の画像URLを取得
+        pet_with_images = []
+        for pet in sorted_pets:
+            image_urls = pet.get('image_urls', '')
+            # 画像URLがカンマで区切られている場合、最初のURLを取得
+            first_image = image_urls.split(',')[0] if image_urls else None
+            pet_with_images.append((pet, first_image))  # 最初の画像URLをセット
+
         print("マッチング結果:", pet_with_images)  # マッチング結果をターミナルに表示
+        print("フィルタリング後のペットデータ（重複確認）:", sorted_pets)
 
         # SurveyResultを作成し、マッチング結果を保存
         survey_result = SurveyResult.objects.create(
@@ -91,6 +101,7 @@ def pet_survey(request):
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
+
 
 class IndexView(TemplateView):
     """トップページのビュー"""
