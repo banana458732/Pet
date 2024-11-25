@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm
 from django.views.generic import TemplateView, CreateView
 from django.views.generic.edit import FormView
+from django.contrib.auth.views import LogoutView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,17 +14,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
-class SignUpView(LoginRequiredMixin, CreateView):
+class SignUpView(CreateView):
 
     template_name = "accounts/signup.html"
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('accounts:signup_success')
-
+    print("aaa")
         
     def form_valid(self, form):
         ctx = {'form': form}
 
         if self.request.POST.get('next', '') == 'confirm':
+            print("test")
             return render(self.request, 'accounts/signup_confirm.html', ctx)
 
         if self.request.POST.get('next', '') == 'back':
@@ -60,3 +62,8 @@ def LoginView(request):
 
 class IndexView(TemplateView):
     template_name = 'accounts/index.html'
+
+
+class LogoutView(LoginRequiredMixin, LogoutView):
+    template_name = 'accounts/login.html'
+

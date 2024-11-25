@@ -16,7 +16,11 @@
     </div>
   </header>
   {% endblock %}
- <style>
+
+
+{% block contents %}
+
+<style>
   .signin {
     text-align: center;
     padding-top: 40px
@@ -25,14 +29,18 @@
   .accounts_signup {
     position: relative;
     left: 400px;
-    
-    padding: 30px;
+    margin: 40px;
   }
+
+  .login_input_form {
+    position: relative;
+    left: 40px;
+    padding: 40px;
+  }
+
   
 
  </style>
-
-{% block contents %}
 <!doctype html>
 <!-- 言語指定をenからjaに変更 -->
 <html lang="ja">
@@ -46,17 +54,34 @@
               {% csrf_token %}
               <!-- Bootstrapのロゴを表示 -->
               <!-- 「static/img/bootstrap-logo.svg」の読み込み -->
-              <h1 class="signin">Please sign in</h1>
-              <p id = accounts_signup ><a href="{% url 'accounts:signup' %}">アカウントを作成</a></p>
-              <input type="text" id="username" name="username" required size="10" placeholder="ユーザー名"/>
-              <input type="password" id="password_input" name="password" required minlength="8" size="10" placeholder="パスワード"/>
-              <!-- ログインボタン -->
-              <input id = "login_buttom" 
-                     type="submit" 
-                     value="ログイン">
-              
+              <h1 class="signin" style="margin-bottom: 30px;margin-top: 30px; text-align: center;">ログイン情報を入力</h1>
+              <p id = accounts_signup style="font-size: 14px; text-align: center;" >アカウントが未登録の方はこちら<a href="{% url 'accounts:signup' %}">アカウントを作成</a></p>
+              <div style="text-align: center;" >
+                <input type="text" id="username" style="margin: 20px;" 
+                  
+                  name="username" placeholder="ユーザー名"/>
+              </div>
+              <div style="text-align: center;">
+                <input type="password" id="password_input"  style="margin-bottom: 30px; "  name="password" required minlength="8" placeholder="パスワード"/>
+              </div>
+                <!-- ログインボタン -->
+              <div style="text-align: center; margin-bottom: 20px;
+              border-radius: 1px; ">
+              <input id = "login_buttom"
+                    style="background-color: #3cb371
+                    padding-top: 5px;
+                    padding-bottom: 5px;
+                    padding-left: 30px;
+                    padding-right: 30px;" 
+
+                    type="submit" 
+                    value="ログイン">
+              </div>
               <!-- パスワードリセットページのリンクテキスト -->
-              <p class="mt-3"><a href="{% url 'survey:index' %}">パスワードを忘れましたか?</a></p>
+              <p style="text-align: center; margin-top:">
+              <a href="{% url 'survey:index' %}" style="font-size:
+               14px; ">トップページに戻る</a></p>
+              
               <!-- ログイン直後のリダイレクト先(トップページ)のURLパターンを設定 -->
               <input type="hidden" 
                      value="{% url 'survey:index' %}">
