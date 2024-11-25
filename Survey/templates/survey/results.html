@@ -45,6 +45,7 @@
                 <div class="pet-info">
                     <div class="pet-details">
                         <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
+                    </div>
                     <div class="pet-image">
                         {% if image_url %}
                             <img src="{{ image_url }}" alt="Pet Image" width="200">
@@ -58,5 +59,9 @@
     <p>現在、登録されているペットはありません。</p>
 {% endif %}
 
+<!-- pet_survey.htmlに戻るボタン -->
+<div class="text-center">
+    <a href="{% url 'pet_survey' %}" class="btn btn-primary">アンケートに戻る</a>
+</div>
 
 {% endblock %}
