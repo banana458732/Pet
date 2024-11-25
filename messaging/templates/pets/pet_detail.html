@@ -12,60 +12,60 @@
             <div id="selectedImage" class="main-image"></div>
         </div>
 
-            <!-- JavaScriptによる画像表示制御 -->
-            <script>
-                function showSelectedImage(imageUrl) {
-                    const selectedImageContainer = document.getElementById('selectedImage');
-                    selectedImageContainer.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = imageUrl;
-                    img.alt = '選択された画像';
-                    img.style.width = '100%';  // 画像を幅いっぱいに表示
-                    img.style.height = 'auto';
-                    img.style.margin = '10px';
-                    selectedImageContainer.appendChild(img);
+        <!-- JavaScriptによる画像表示制御 -->
+        <script>
+            function showSelectedImage(imageUrl) {
+                const selectedImageContainer = document.getElementById('selectedImage');
+                selectedImageContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.alt = '選択された画像';
+                img.style.width = '100%';  // 画像を幅いっぱいに表示
+                img.style.height = 'auto';
+                img.style.margin = '10px';
+                selectedImageContainer.appendChild(img);
+            }
+
+            // ページ読み込み時に最初の画像を表示
+            window.onload = function() {
+                const firstImage = "{{ pet.images.first.image.url|default:'' }}";
+                if (firstImage) {
+                    showSelectedImage(firstImage);
                 }
 
-                // ページ読み込み時に最初の画像を表示
-                window.onload = function() {
-                    const firstImage = "{{ pet.images.first.image.url|default:'' }}";
-                    if (firstImage) {
-                        showSelectedImage(firstImage);
-                    }
+                // 20文字ごとに改行を挿入する処理
+                let personalityText = "{{ pet.personality|escapejs }}";  // JavaScriptに安全に渡すためにescapejsを使用
+                const maxLength = 40;  // 1行あたりの最大文字数
+                let formattedText = '';
 
-                    // 20文字ごとに改行を挿入する処理
-                    let personalityText = "{{ pet.personality|escapejs }}";  // JavaScriptに安全に渡すためにescapejsを使用
-                    const maxLength = 40;  // 1行あたりの最大文字数
-                    let formattedText = '';
+                // 文字列を20文字ごとに分割して改行を挿入
+                while (personalityText.length > maxLength) {
+                    formattedText += personalityText.substring(0, maxLength) + '<br>';
+                    personalityText = personalityText.substring(maxLength);
+                }
+                // 残りの文字列も追加
+                formattedText += personalityText;
 
-                    // 文字列を20文字ごとに分割して改行を挿入
-                    while (personalityText.length > maxLength) {
-                        formattedText += personalityText.substring(0, maxLength) + '<br>';
-                        personalityText = personalityText.substring(maxLength);
-                    }
-                    // 残りの文字列も追加
-                    formattedText += personalityText;
+                // 結果をHTMLに設定 (innerHTMLでHTMLを直接挿入)
+                document.getElementById('formatted-personality').innerHTML = formattedText;
+            };
+        </script>
 
-                    // 結果をHTMLに設定 (innerHTMLでHTMLを直接挿入)
-                    document.getElementById('formatted-personality').innerHTML = formattedText;
-                };
-            </script>
-
-            <!-- サムネイル画像セクション -->
-            <div class="thumbnail-images-section">
-                <div class="thumbnail-images">
-                    {% if pet.images.count > 0 %}
-                        {% for pet_image in pet.images.all %}
-                            <img src="{{ pet_image.image.url }}" alt="{{ pet.id }}の画像" 
-                                style="width:100px;height:auto;margin:10px;cursor:pointer;" 
-                                onclick="showSelectedImage('{{ pet_image.image.url }}')">
-                        {% endfor %}
-                    {% else %}
-                        <p>画像が登録されていません。</p>
-                    {% endif %}
-                </div>
+        <!-- サムネイル画像セクション -->
+        <div class="thumbnail-images-section">
+            <div class="thumbnail-images">
+                {% if pet.images.count > 0 %}
+                    {% for pet_image in pet.images.all %}
+                        <img src="{{ pet_image.image.url }}" alt="{{ pet.id }}の画像" 
+                            style="width:100px;height:auto;margin:10px;cursor:pointer;" 
+                            onclick="showSelectedImage('{{ pet_image.image.url }}')">
+                    {% endfor %}
+                {% else %}
+                    <p>画像が登録されていません。</p>
+                {% endif %}
             </div>
         </div>
+    </div>
 
     <!-- 情報セクション -->
     <div class="pet-info-section">
@@ -119,37 +119,38 @@
         </div>
     </div>
 
-<!-- コメントセクション -->
-<div class="comments-section">
-    <h2>コメント</h2>
-    <div class="comment-container">
-        <ul>
-            {% for comment in comments %}
-            <li class="{% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
-                <strong>{{ comment.user.username }}:
-                    {% if comment.user.is_superuser %}
-                        <span style="color: red;">[管理者]</span>
+    <div class="comments-section">
+        <h2>コメント</h2>
+        <div class="comment-container">
+            <ul>
+                {% for comment in comments %}
+                <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
+                    <strong>{{ comment.user.username }}:
+                        {% if comment.user.is_superuser %}
+                            <span style="color: red;">[管理者]</span>
+                        {% endif %}
+                    </strong>
+                    <div class="comment-content">
+                        {{ comment.content }}
+                        <br><small>{{ comment.timestamp }}</small>
+                    </div>
+                    
+                    <!-- 管理者のみ削除ボタンを表示 -->
+                    {% if user.is_superuser %}
+                        <form method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                            <button type="submit" name="delete_comment" style="color: red;">削除</button>
+                        </form>
                     {% endif %}
-                </strong> 
-                {{ comment.content }}
-                <br><small>{{ comment.timestamp }}</small>
-                
-                <!-- 管理者のみ削除ボタンを表示 -->
-                {% if user.is_superuser %}
-                    <form method="POST" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                        <button type="submit" name="delete_comment" style="color: red;">削除</button>
-                    </form>
-                {% endif %}
-            </li>
-            {% empty %}
-            <p>まだコメントはありません。</p>
-            {% endfor %}
-        </ul>
+                </li>
+                {% empty %}
+                <p>まだコメントはありません。</p>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
-</div>
-
+    
         <!-- コメントフォーム -->
         {% if user.is_superuser %}
             <h3>管理者としてコメントを追加</h3>

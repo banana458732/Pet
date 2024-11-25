@@ -11297,59 +11297,118 @@ ul {
   margin-bottom: 40px;
 }
 
+/* コメント全体 */
 .comments-section {
-  margin-top: 40px;
-}
-
-.comment-container ul li {
-  font-size: 18px; /* コメントの文字サイズを変更 */
-  line-height: 1; /* 行間を広げて読みやすくする */
-}
-
-.comment-container ul li strong {
-  font-size: 16px; /* ユーザー名の文字サイズを変更 */
-}
-
-.comment-container ul li small {
-  font-size: 10px; /* タイムスタンプの文字サイズを変更 */
-  color: #666; /* タイムスタンプの色を薄くする */
-}
-
-/* 管理者のコメントは左側 */
-.admin-comment {
-  padding: 10px;
-  border-radius: 5px;
-  width: 100%;
-}
-
-/* ユーザーのコメントを右側に配置 */
-.user-comment {
-  justify-content: flex-end; /* ユーザーのコメントを右側に配置 */
-  padding: 10px;
-  border-radius: 5px;
-  width: 100%;
-}
-
-.comment-form {
+  text-align: center; /* テキストを中央に配置 */
   margin-top: 20px;
 }
 
-.comment-form textarea {
-  width: 100%;
-  height: 100px;
-  margin-bottom: 10px;
+.comment-container ul {
+  list-style: none;
+  padding: 0;
 }
 
-.comment-form button {
-  padding: 10px 15px;
-  background-color: #007BFF;
-  color: white;
+/* コメントアイテム */
+.comment {
+  display: flex;
+  flex-direction: column; /* コメント内容を縦に配置 */
+  align-items: flex-start; /* 左側に配置 */
+  margin-bottom: 1px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+/* 管理者・ユーザー共通のスタイル */
+.comment-content {
+  max-width: 400px; /* コメントの幅を調整 */
+  margin-top: 5px; /* コメント内容と名前を分ける */
+  font-size: 18px; /* コメント内容の文字サイズを変更 */
+}
+
+/* コメント者の名前 */
+.comment strong {
+  font-weight: bold;
+  font-size: 20px; /* コメント者の名前の文字サイズを変更 */
+}
+
+/* コメントのタイムスタンプ */
+.comment small {
+  font-size: 14px;
+  color: #888;
+  margin-top: 5px; /* タイムスタンプと内容を分ける */
+}
+
+/* コメントの削除ボタン（管理者用） */
+button[type="submit"] {
+  background-color: transparent;
   border: none;
+  color: red;
   cursor: pointer;
+  font-size: 14px;
+  margin-top: 5px;
+  align-self: flex-end; /* 右側に配置 */
 }
 
-.comment-form button:hover {
-  background-color: #0056b3;
+button[type="submit"]:hover {
+  text-decoration: underline;
+}
+
+/* 画面が600px以下の場合のスタイル変更（モバイルビュー） */
+@media screen and (max-width: 600px) {
+  /* コメント内容のフォントサイズを小さく */
+  .comment-content {
+    font-size: 14px;
+    max-width: 300px; /* コメントの最大幅を小さく */
+  }
+
+  /* コメント者の名前のフォントサイズを小さく */
+  .comment strong {
+    font-size: 16px;
+  }
+
+  /* コメントのタイムスタンプのフォントサイズを小さく */
+  .comment small {
+    font-size: 12px;
+  }
+
+  /* コメントアイテムのパディングを小さく */
+  .comment {
+    padding: 8px;
+  }
+
+  /* コメントの削除ボタンを少し小さく */
+  button[type="submit"] {
+    font-size: 12px;
+  }
+}
+
+/* 画面が1024px以上の場合のスタイル変更（タブレットまたはデスクトップビュー） */
+@media screen and (min-width: 1024px) {
+  /* コメント内容のフォントサイズを大きく */
+  .comment-content {
+    font-size: 20px;
+    max-width: 500px; /* コメントの最大幅を広く */
+  }
+
+  /* コメント者の名前のフォントサイズを大きく */
+  .comment strong {
+    font-size: 22px;
+  }
+
+  /* コメントのタイムスタンプのフォントサイズを大きく */
+  .comment small {
+    font-size: 16px;
+  }
+
+  /* コメントアイテムのパディングを広く */
+  .comment {
+    padding: 12px;
+  }
+
+  /* コメントの削除ボタンを大きく */
+  button[type="submit"] {
+    font-size: 16px;
+  }
 }
 
 /* 画面が大きい時（幅800px以上）のレイアウト */
@@ -11424,8 +11483,10 @@ ul {
 
   .thumbnail-images {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; /* 左寄せに変更（オプション） */
     gap: 1px;
+    overflow-x: auto; /* 横スクロールを追加 */
+    flex-wrap: nowrap; /* サムネイル画像が折り返さずに横並び */
   }
 
   /* サムネイル画像のスタイル */
