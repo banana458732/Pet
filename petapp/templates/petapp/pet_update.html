@@ -1,4 +1,8 @@
-<h2>{{ pet_form.instance.id }} の更新</h2>
+{% extends '../base.html' %}
+
+{% block title %}{{ pet_form.instance.id }}更新{% endblock %}
+
+{% block contents %}
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
@@ -187,3 +191,4 @@
         });
     });
 </script>
+{% endblock %}
