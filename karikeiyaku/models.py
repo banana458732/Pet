@@ -1,9 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from petapp.models import Pet
+from django.conf import settings
 
 class Karikeiyaku(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="ユーザー")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="ユーザー")
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name="ペット")
     end_date = models.DateField(null=True, blank=True, verbose_name="契約終了日")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="作成日時")
@@ -18,4 +19,3 @@ class Karikeiyaku(models.Model):
 
     def __str__(self):
         return f"{self.pet}の仮契約"
-
