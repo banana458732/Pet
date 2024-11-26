@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from petapp.models import Pet
+from django.conf import settings
 
 
 class Karikeiyaku(models.Model):
@@ -19,4 +20,3 @@ class Karikeiyaku(models.Model):
 
     def __str__(self):
         return f"{self.pet}の仮契約"
-
