@@ -25,7 +25,6 @@ class SurveyResult(models.Model):
 
 class MatchingHistory(models.Model):
     """マッチング履歴を格納するモデル"""
-    survey_result = models.ForeignKey(SurveyResult, on_delete=models.CASCADE, related_name='matching_histories')
     matched_pet = models.ForeignKey(Pet, on_delete=models.SET_NULL, null=True, blank=True, related_name='match_histories')
     matched_at = models.DateTimeField(auto_now_add=True)
 
