@@ -107,16 +107,6 @@
                 <td id="formatted-personality">{{ pet.personality }}</td>
             </tr>
         </table>
-
-        <!-- 電話番号の表示 -->
-        <div>
-            <p>ご購入を検討中の方は以下の電話番号までご連絡ください</p>
-            {% if pet.phone_number %}
-                <p class="pet-phone-number">{{ pet.phone_number }}</p>
-            {% else %}
-                <p>電話番号が登録されていません。</p>
-            {% endif %}
-        </div>
     </div>
 
     <div class="comments-section">
@@ -187,8 +177,13 @@
     <!-- 仮契約について -->
     <div class="karikeiyaku-section">
         <h2>仮契約について</h2>
-        <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
 
+
+        {% if user.is_authenticated %}
+        <!-- ログインしている場合に表示する文 -->
+        <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
+        {% endif %}
+        
         {% if not user.is_authenticated %}
             <!-- ログインしていない場合 -->
             <p>仮契約を進めるには、ログインが必要です。<a href="{% url 'accounts:login' %}">ログイン</a>してください。</p>

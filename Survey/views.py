@@ -5,7 +5,7 @@ from .forms import SimplePetSurveyForm
 from .models import SurveyResult, MatchingHistory
 from django.http import HttpResponse
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 from petapp.models import Pet
 
 
@@ -15,14 +15,10 @@ def pet_survey(request):
     # CSVファイルの読み込み
     try:
         pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')  # pets_data.csvを読み込む
-        print("CSVファイルの内容:", pets_data.head())  # ターミナルに最初の5行を表示
-
+        pets_data = pets_data.fillna('')  # 欠損値を空文字で埋める
     except Exception as e:
         return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
 
-    pets_data = pets_data.fillna('')  # この位置で全体の欠損値を処理
-
-    # フォームが送信された場合、マッチ率に基づいてペットをフィルタリング
     if request.method == 'POST' and form.is_valid():
         # フォームから取得するフィールド
         pet_type = form.cleaned_data.get('pet_type')
@@ -30,95 +26,113 @@ def pet_survey(request):
         color = form.cleaned_data.get('color')
         kinds = form.cleaned_data.get('kinds')
         disease = form.cleaned_data.get('disease')
-        personality = form.cleaned_data.get('pet_personality')  # 修正: pet_personality → personality
+        personality = form.cleaned_data.get('pet_personality')
         sex = form.cleaned_data.get('sex')
-        age_range = form.cleaned_data.get('age_range')  # age_rangeを取得
+        age_range = form.cleaned_data.get('age_range')
+
         print("フォームから取得したデータ:", pet_type, size, color, kinds, disease, personality, sex, age_range)
 
-        # フィルタリング条件に一致するペットを取得
-        filtered_pets = pets_data.copy()
-
+        # **ここでフィルタリング処理を追加**
         if pet_type:
-            filtered_pets = filtered_pets[filtered_pets['type'] == pet_type]
+            pets_data = pets_data[pets_data['type'] == pet_type]
+
+        # スコア方式で一致項目を計算
+        pets_data['score'] = 0  # 初期スコアを0に設定
+
+        # 各フィールドについて一致項目に応じてスコアを加算
         if size:
-            filtered_pets = filtered_pets[filtered_pets['size'] == size]
+            pets_data['score'] += (pets_data['size'] == size).astype(int)
         if color:
-            filtered_pets = filtered_pets[filtered_pets['color'] == color]
+            pets_data['score'] += (pets_data['color'] == color).astype(int)
         if kinds:
-            filtered_pets = filtered_pets[filtered_pets['kinds'] == kinds]
+            pets_data['score'] += (pets_data['kinds'] == kinds).astype(int)
         if disease:
-            filtered_pets = filtered_pets[filtered_pets['disease'] == disease]
-        if personality:  # 修正: pet_personality → personality
-            filtered_pets = filtered_pets[filtered_pets['personality'] == personality]  # 修正: pet_personality → personality
+            pets_data['score'] += (pets_data['disease'] == disease).astype(int)
+        if personality:
+            pets_data['score'] += (pets_data['personality'] == personality).astype(int)
+        # 性別でフィルタリング
         if sex:
-            filtered_pets = filtered_pets[filtered_pets['sex'] == sex]
+            pets_data = pets_data[pets_data['sex'] == sex]
+            pets_data['score'] += 1  # 性別が一致した場合スコア加算
 
-        # 年齢範囲に基づくフィルタリング
+        # 年齢範囲のフィルタリング（年齢条件だけ追加）
         if age_range:
-            if '0-3' in age_range:
-                filtered_pets = filtered_pets[filtered_pets['age'] <= 3]
-            if '4-7' in age_range:
-                filtered_pets = filtered_pets[(filtered_pets['age'] >= 4) & (filtered_pets['age'] <= 7)]
-            if '8-10' in age_range:
-                filtered_pets = filtered_pets[(filtered_pets['age'] >= 8) & (filtered_pets['age'] <= 10)]
-        print("フィルタリング後のペットデータ:", filtered_pets)
+            selected_age_ranges = age_range.split(',')  # カンマで分割して選ばれた範囲をリストに
 
-        # マッチング結果をリスト化
-        sorted_pets = filtered_pets.to_dict('records')  # フィルタリング後のデータを辞書形式で取得
+            # 年齢範囲内のペットを抽出
+            age_filtered_pets = pd.DataFrame()  # 空のデータフレームを初期化
+            if '0-3' in selected_age_ranges:
+                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[pets_data['age'] <= 3]])
+            if '4-7' in selected_age_ranges:
+                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 4) & (pets_data['age'] <= 7)]])
+            if '8-10' in selected_age_ranges:
+                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 8) & (pets_data['age'] <= 10)]])
 
-        # 最初の画像URLを取得
+            # 年齢範囲内のペットを若い順に並べる
+            age_filtered_pets = age_filtered_pets.sort_values(by='age', ascending=True)
+
+            # 年齢範囲内のペットと年齢範囲外のペットを分ける
+            pets_data_outside_range = pets_data[~pets_data.index.isin(age_filtered_pets.index)]
+
+            # まず年齢範囲内のペットを若い順に表示し、その後に年齢範囲外のペットをそのままの順番で表示
+            final_sorted_pets = pd.concat([age_filtered_pets, pets_data_outside_range])
+
+        else:
+            # 年齢範囲が選択されていない場合は元のデータを使用
+            final_sorted_pets = pets_data
+
+        print("スコア計算後のペットデータ:", pets_data[['score']])  # デバッグ用
+
+        # 年齢範囲が選ばれている場合、その範囲内で若い順に並べる
+        sorted_pets = final_sorted_pets.to_dict('records')
+
+        # 画像URLの処理
         pet_with_images = []
         for pet in sorted_pets:
             image_urls = pet.get('image_urls', '')
-            # 画像URLがカンマで区切られている場合、最初のURLを取得
             first_image = image_urls.split(',')[0] if image_urls else None
-            pet_with_images.append((pet, first_image))  # 最初の画像URLをセット
+            pet_with_images.append((pet, first_image))
 
-        print("マッチング結果:", pet_with_images)  # マッチング結果をターミナルに表示
-        print("フィルタリング後のペットデータ（重複確認）:", sorted_pets)
+        print("マッチング結果:", pet_with_images)
 
-        # SurveyResultを作成し、マッチング結果を保存
+        # SurveyResultを保存
         survey_result = SurveyResult.objects.create(
             pet_type=pet_type or '',
             size=size or '',
             color=color or '',
             kinds=kinds or '',
             disease=disease or '',
-            pet_personality=personality or '',  # 修正: pet_personality → personality
+            pet_personality=personality or '',
             sex=sex or '',
-            age_range=", ".join(age_range) if age_range else ''  # age_rangeも保存
+            age_range=", ".join(age_range) if age_range else ''
         )
         print("SurveyResultが作成されました:", survey_result)
 
-        # 結果ページをレンダリングして返す
         return render(request, 'survey/results.html', {
             'survey_result': survey_result,
-            'pets': pet_with_images,  # 修正: 'pets' という名前で渡す
-            'MEDIA_URL': settings.MEDIA_URL,  # 画像URLに対応
+            'pets': pet_with_images,
+            'MEDIA_URL': settings.MEDIA_URL,
         })
 
-    # 初期表示用（フィルタリングしないすべてのペット）
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
 
 
 def save_matching_result(request):
-    # リクエストからIDを取得
-    survey_id = request.GET.get('survey_id') or request.POST.get('survey_id')
+
+    # リクエストからペットのIDを取得
     pet_id = request.GET.get('pet_id') or request.POST.get('pet_id')
 
     # IDの存在確認
-    if not survey_id or not pet_id:
-        return render(request, 'error.html', {'message': 'IDが正しくありません。'})
+    if not pet_id:
+        return render(request, 'error.html', {'message': 'ペットIDが正しくありません。'})
 
-    # 該当するオブジェクトを取得
-    survey = get_object_or_404(SurveyResult, id=survey_id)
+    # 該当するペットを取得
     pet = get_object_or_404(Pet, id=pet_id)
 
     # マッチング履歴を保存
     matching_history = MatchingHistory.objects.create(
-        survey_result=survey,
         matched_pet=pet
     )
 

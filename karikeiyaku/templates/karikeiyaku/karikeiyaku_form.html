@@ -12,23 +12,35 @@
             padding: 20px;
             background-color: #f9f9f9;
         }
+
         h1 {
             text-align: center;
             color: #333;
         }
+
         p {
             margin-bottom: 15px;
         }
+
         .highlight {
             color: red;
             font-weight: bold;
         }
-        .form-group {
-            margin-bottom: 15px;
+
+        table {
+            width: 100%; 
+            border-collapse: collapse; /* 枠線を一つにする */
+            margin-top: 20px;
         }
-        label {
-            display: block;
-            margin-bottom: 5px;
+
+        th, td {
+            padding: 10px; 
+            border: 1px solid #ccc; /* 枠線 */
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2; /* ヘッダーの背景色 */
             font-weight: bold;
         }
         input[type="text"], input[type="email"], input[type="address"],input[type="tel"] {
@@ -38,6 +50,12 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
+        span {
+            font-size: 16px;
+            color: #333;
+        }
+
         .btn {
             display: inline-block;
             background-color: #f4623a;
@@ -51,9 +69,11 @@
             text-decoration: none;
             margin-top: 20px;
         }
+
         .btn:hover {
             background-color: #c34e2e;
         }
+
         .btn-disabled {
             background-color: #ccc;
             cursor: not-allowed;
@@ -72,7 +92,7 @@
     <p>仮契約の期間内にキャンセルすることができ、キャンセルの際には所定の手続きを行うことを理解しています。</p>
     <p>仮契約期間内に本契約をしなかった場合、自動的にキャンセルと扱うことを理解しています。</p>
 
-    {% if pet.disease %}
+    {% if pet.disease and pet.disease not in exclusion_list %}
     <p class="highlight">このペットには<strong>{{ pet.disease }}</strong>の病気があります。私は、このペットが過去または現在において<strong>{{ pet.disease }}</strong>の病歴を持っていることを認識し、その健康状態に基づく必要なケアを行う責任を負うことを理解しています。</p>
     {% endif %}
 
@@ -95,13 +115,13 @@
             <input type="text" value="{{ pet.age }}" readonly>
         </div>
         <div class="form-group">
-            <label>犬種/猫種:</label>
+            <label>品種:</label>
             <input type="text" value="{{ pet.kinds }}" readonly>
         </div>
         <div class="form-group">
             <label>病歴:</label>
-            <input type="text" value="{% if pet.disease %}{{ pet.disease }}{% else %}なし{% endif %}" readonly>
-        </div>
+            <input type="text" value="{% if pet.disease and pet.disease not in exclusion_list %}{{ pet.disease }}{% else %}なし{% endif %}" readonly>
+        </div>        
         <div class="form-group">
             <label>性格:</label>
             <input type="text" value="{{ pet.personality }}" readonly>
