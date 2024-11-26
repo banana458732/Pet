@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仮契約フォーム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .highlight {
+            color: red;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #f4623a;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #c34e2e;
+        }
+        .btn-disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>仮契約書</h1>
+    <p>以下の内容をご確認の上、同意いただける場合は「同意する」をクリックしてください。</p>
+
+    <p>飼育場所には十分なスペースがあり、ペットに必要な生活環境を提供できることを保証します。</p>
+    <p>飼育に必要な時間、手間、経済的な責任を負うことができることを理解しています。</p>
+    <p>私はペットに適切な食事、運動、医療ケアを提供し、ペットの健康と福祉に配慮する責任を負います。</p>
+    <p>この仮契約は、正式な契約に移行するための準備段階であり、契約が成立することを保証するものではありません。</p>
+    <p>仮契約に基づき、正式な契約に進む意思を確認した後、最終的な契約を結びます。</p>
+    <p>仮契約の期間内にキャンセルすることができ、キャンセルの際には所定の手続きを行うことを理解しています。</p>
+    <p>仮契約期間内に本契約をしなかった場合、自動的にキャンセルと扱うことを理解しています。</p>
+
+    {% if pet.disease %}
+    <p class="highlight">このペットには<strong>{{ pet.disease }}</strong>の病気があります。私は、このペットが過去または現在において<strong>{{ pet.disease }}</strong>の病歴を持っていることを認識し、その健康状態に基づく必要なケアを行う責任を負うことを理解しています。</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>種類:</label>
+            <input type="text" value="{{ pet.type }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>大きさ:</label>
+            <input type="text" value="{{ pet.size }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>色:</label>
+            <input type="text" value="{{ pet.color }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>年齢:</label>
+            <input type="text" value="{{ pet.age }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>犬種/猫種:</label>
+            <input type="text" value="{{ pet.kinds }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>病歴:</label>
+            <input type="text" value="{% if pet.disease %}{{ pet.disease }}{% else %}なし{% endif %}" readonly>
+        </div>
+        <div class="form-group">
+            <label>性格:</label>
+            <input type="text" value="{{ pet.personality }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>性別:</label>
+            <input type="text" value="{{ pet.sex }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>氏名:</label>
+            <input type="text" value="{{ user.name }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>メールアドレス:</label>
+            <input type="email" value="{{ user.email }}" readonly>
+        </div>
+        <div class="form-group">
+            <label>電話番号:</label>
+            <input type="tel" value="{{ user.phone }}" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>契約終了日:</label>
+            <input type="text" name="end_date" value="{{ form.end_date.value|date:'Y-m-d' }}" readonly>
+        </div>
+        
+        <div class="form-group">
+            <label>契約内容を確認し、同意しますか？</label>
+            <input type="checkbox" name="agreement" required> 同意します
+        </div>
+
+        {% if user_karikeiyaku %}
+            <!-- 仮契約中の場合、「契約する」ボタンを無効化し、「キャンセル」ボタンを表示 -->
+            <button class="btn btn-primary" disabled>契約中</button>
+            <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+        {% else %}
+            <!-- 契約がまだの場合 -->
+            <button type="submit" class="btn btn-success">契約する</button>
+            <a class="navbar-brand" href="#" onclick="history.back()">戻る</a>
+        {% endif %}
+            
+    </form>
+</body>
+</html>      
+        

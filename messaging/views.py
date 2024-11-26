@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import MessageForm, CommentForm
 from django.core.mail import send_mail
 from django.views.generic.base import TemplateView
+from karikeiyaku.models import Karikeiyaku  # 仮契約モデルをインポート
 
 
 def send_message(request):
@@ -70,6 +71,31 @@ def pet_detail(request, pet_id):
         'pet': pet,
         'comments': comments,  # ペットのコメントをテンプレートに渡す
         'form': form
+    })
+
+
+# データベースにデータが保存されてるか
+def pet_detail(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+
+    # デバック用
+    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).first()
+    other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).first()
+
+    print(f"ユーザー: {request.user.username}, 仮契約: {user_karikeiyaku}")
+    print(f"他のユーザーの仮契約: {other_user_karikeiyaku}")
+    # /デバック用
+
+    # 現在のユーザーの仮契約を取得
+    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).first()
+
+    # 他のユーザーが仮契約中かを確認
+    other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).first()
+
+    return render(request, 'pets/pet_detail.html', {
+        'pet': pet,
+        'user_karikeiyaku': user_karikeiyaku,
+        'other_user_karikeiyaku': other_user_karikeiyaku,
     })
 
 
