@@ -2,7 +2,7 @@ import pandas as pd
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from .forms import SimplePetSurveyForm
-from .models import SurveyResult, MatchingHistory
+from .models import SurveyResult
 from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -117,26 +117,6 @@ def pet_survey(request):
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
-
-
-def save_matching_result(request):
-    # リクエストからペットのIDを取得
-    pet_id = request.GET.get('pet_id') or request.POST.get('pet_id')
-
-    # IDの存在確認
-    if not pet_id:
-        return render(request, 'error.html', {'message': 'ペットIDが正しくありません。'})
-
-    # 該当するペットを取得
-    pet = get_object_or_404(Pet, id=pet_id)
-
-    # マッチング履歴を保存
-    matching_history = MatchingHistory.objects.create(
-        matched_pet=pet
-    )
-
-    # 成功時のページを表示
-    return render(request, 'matching_success.html', {'history': matching_history})
 
 
 class IndexView(TemplateView):
