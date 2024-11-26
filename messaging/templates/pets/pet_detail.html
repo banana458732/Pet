@@ -67,6 +67,36 @@
         </div>
     </div>
 
+
+<!-- 仮契約フォームリンク -->
+<div>
+    <h2>仮契約について</h2>
+    <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
+
+    {% if other_user_karikeiyaku %}
+        <!-- 他のユーザーが仮契約中 -->
+        <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
+    {% elif user_karikeiyaku %}
+        <!-- 自分が仮契約中 -->
+        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
+    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+    {% else %}
+        <!-- 仮契約していない -->
+        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
+    {% endif %}
+
+</div>
+
+
+<!-- コメントセクション -->
+<h2>コメント</h2>
+<ul>
+    {% for comment in comments %}
+    <li>
+        <strong>{{ comment.user.username }}:
+            {% if comment.user.is_superuser %}
+                <span style="color: red;">[管理者]</span>
+
     <!-- 情報セクション -->
     <div class="pet-info-section">
         <table class="pet-info-table">
@@ -91,6 +121,7 @@
                     <td><strong>病歴</strong></td>
                     <td>{{ pet.disease }}</td>
                 </tr>
+
             {% endif %}
             <tr>
                 <td><strong>品種</strong></td>
