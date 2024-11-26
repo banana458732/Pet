@@ -21,3 +21,13 @@ class SurveyResult(models.Model):
 
     def __str__(self):
         return f"{self.pet_type} - {self.size}"
+
+
+class MatchingHistory(models.Model):
+    """マッチング履歴を格納するモデル"""
+    survey_result = models.ForeignKey(SurveyResult, on_delete=models.CASCADE, related_name='matching_histories')
+    matched_pet = models.ForeignKey(Pet, on_delete=models.SET_NULL, null=True, blank=True, related_name='match_histories')
+    matched_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"MatchingHistory: {self.survey_result} -> {self.matched_pet}"

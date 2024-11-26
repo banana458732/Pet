@@ -2,11 +2,11 @@ import pandas as pd
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from .forms import SimplePetSurveyForm
-from .models import SurveyResult
+from .models import SurveyResult, MatchingHistory
 from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
-from .models import Pet
+from petapp.models import Pet
 
 
 def pet_survey(request):
@@ -101,6 +101,19 @@ def pet_survey(request):
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
+
+
+def save_matching_result(request, survey_id, pet_id):
+    survey = get_object_or_404(SurveyResult, id=survey_id)
+    pet = get_object_or_404(Pet, id=pet_id)
+
+    # マッチング履歴を保存
+    matching_history = MatchingHistory.objects.create(
+        survey_result=survey,
+        matched_pet=pet
+    )
+
+    return render(request, 'matching_success.html', {'history': matching_history})
 
 
 class IndexView(TemplateView):
