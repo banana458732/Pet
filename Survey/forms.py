@@ -1,5 +1,6 @@
 from django import forms
 
+
 class SimplePetSurveyForm(forms.Form):
     # ペットの種類
     TYPE_CHOICES = [
@@ -76,9 +77,9 @@ class SimplePetSurveyForm(forms.Form):
         ('4-7', '4~7歳'),
         ('8-10', '8~10歳'),
     ]
-    age_range = forms.MultipleChoiceField(
+    age_range = forms.ChoiceField(
         choices=AGE_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.RadioSelect,
         required=False,
         label="年齢の範囲"
     )
