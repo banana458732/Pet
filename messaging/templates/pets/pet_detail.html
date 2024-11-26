@@ -3,71 +3,90 @@
 {% block title %}{{ pet.id }}の詳細{% endblock %}
 
 {% block contents %}
-<h2>{{ pet.id }}の詳細</h2>
 
-<!-- 選択された画像表示用のセクション -->
-<div id="selectedImage"></div>
+<div class="pet-details-container">
+    <!-- 画像セクション -->
+    <div class="pet-images-section">
+        <!-- メイン画像セクション -->
+        <div class="main-image-section">
+            <div id="selectedImage" class="main-image"></div>
+        </div>
 
-<!-- JavaScriptによる画像表示制御 -->
-<script>
-    function showSelectedImage(imageUrl) {
-        const selectedImageContainer = document.getElementById('selectedImage');
-        selectedImageContainer.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.alt = '選択された画像';
-        img.style.width = '300px';
-        img.style.height = 'auto';
-        img.style.margin = '10px';
-        selectedImageContainer.appendChild(img);
-    }
+        <!-- JavaScriptによる画像表示制御 -->
+        <script>
+            function showSelectedImage(imageUrl) {
+                const selectedImageContainer = document.getElementById('selectedImage');
+                selectedImageContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                img.alt = '選択された画像';
+                img.style.width = '100%';  // 画像を幅いっぱいに表示
+                img.style.height = 'auto';
+                img.style.margin = '10px';
+                selectedImageContainer.appendChild(img);
+            }
 
-    // ページ読み込み時に最初の画像を表示
-    window.onload = function() {
-        const firstImage = "{{ pet.images.first.image.url|default:'' }}";
-        if (firstImage) {
-            showSelectedImage(firstImage);
-        }
-    };
-</script>
+            // ページ読み込み時に最初の画像を表示
+            window.onload = function() {
+                const firstImage = "{{ pet.images.first.image.url|default:'' }}";
+                if (firstImage) {
+                    showSelectedImage(firstImage);
+                }
 
-<!-- 画像一覧表示 -->
+                // 20文字ごとに改行を挿入する処理
+                let personalityText = "{{ pet.personality|escapejs }}";  // JavaScriptに安全に渡すためにescapejsを使用
+                const maxLength = 40;  // 1行あたりの最大文字数
+                let formattedText = '';
+
+                // 文字列を20文字ごとに分割して改行を挿入
+                while (personalityText.length > maxLength) {
+                    formattedText += personalityText.substring(0, maxLength) + '<br>';
+                    personalityText = personalityText.substring(maxLength);
+                }
+                // 残りの文字列も追加
+                formattedText += personalityText;
+
+                // 結果をHTMLに設定 (innerHTMLでHTMLを直接挿入)
+                document.getElementById('formatted-personality').innerHTML = formattedText;
+            };
+        </script>
+
+        <!-- サムネイル画像セクション -->
+        <div class="thumbnail-images-section">
+            <div class="thumbnail-images">
+                {% if pet.images.count > 0 %}
+                    {% for pet_image in pet.images.all %}
+                        <img src="{{ pet_image.image.url }}" alt="{{ pet.id }}の画像" 
+                            style="width:100px;height:auto;margin:10px;cursor:pointer;" 
+                            onclick="showSelectedImage('{{ pet_image.image.url }}')">
+                    {% endfor %}
+                {% else %}
+                    <p>画像が登録されていません。</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+<!-- 仮契約フォームリンク -->
 <div>
-    {% if pet.images.count > 0 %}
-        {% for pet_image in pet.images.all %}
-            <img src="{{ pet_image.image.url }}" alt="{{ pet.id }}の画像" 
-                 style="width:100px;height:auto;margin:10px;cursor:pointer;" 
-                 onclick="showSelectedImage('{{ pet_image.image.url }}')">
-        {% endfor %}
+    <h2>仮契約について</h2>
+    <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
+
+    {% if other_user_karikeiyaku %}
+        <!-- 他のユーザーが仮契約中 -->
+        <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
+    {% elif user_karikeiyaku %}
+        <!-- 自分が仮契約中 -->
+        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
+    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
     {% else %}
-        <p>画像が登録されていません。</p>
+        <!-- 仮契約していない -->
+        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
     {% endif %}
+
 </div>
 
-<p>年齢 : {{ pet.age }}</p>
-<p>性別 : {{ pet.sex }}</p>
-<p>サイズ : {{ pet.size }}</p>
-<p>色 : {{ pet.color }}</p>
-{% if pet.disease %}
-    <p>病歴 : {{ pet.disease }}</p>
-{% endif %}
-
-{% if pet.type == '犬' %}
-    <p>犬種 : {{ pet.kinds }}</p>
-{% else %}
-    <p>猫種 : {{ pet.kinds }}</p>
-{% endif %}
-<p>性格 : {{ pet.personality }}</p>
-
-<!-- 電話番号の表示 -->
-<div>
-    <p>ご購入を検討中の方は以下の電話番号までご連絡ください</p>
-    {% if pet.phone_number %}
-        <p style="font-weight: bold; color: blue;">{{ pet.phone_number }}</p>
-    {% else %}
-        <p>電話番号が登録されていません。</p>
-    {% endif %}
-</div>
 
 <!-- コメントセクション -->
 <h2>コメント</h2>
@@ -77,40 +96,130 @@
         <strong>{{ comment.user.username }}:
             {% if comment.user.is_superuser %}
                 <span style="color: red;">[管理者]</span>
+
+    <!-- 情報セクション -->
+    <div class="pet-info-section">
+        <table class="pet-info-table">
+            <tr>
+                <td><strong>年齢</strong></td>
+                <td>{{ pet.age }}歳</td>
+            </tr>
+            <tr>
+                <td><strong>性別</strong></td>
+                <td>{{ pet.sex }}</td>
+            </tr>
+            <tr>
+                <td><strong>サイズ</strong></td>
+                <td>{{ pet.size }}</td>
+            </tr>
+            <tr>
+                <td><strong>毛色</strong></td>
+                <td>{{ pet.color }}</td>
+            </tr>
+            {% if pet.disease %}
+                <tr>
+                    <td><strong>病歴</strong></td>
+                    <td>{{ pet.disease }}</td>
+                </tr>
+
             {% endif %}
-        </strong> 
-        {{ comment.content }}
-        <br><small>{{ comment.timestamp }}</small>
-        
-        <!-- 管理者のみ削除ボタンを表示 -->
-        {% if user.is_superuser %}
-            <form method="POST" style="display:inline;">
+            <tr>
+                <td><strong>品種</strong></td>
+                <td>
+                    {% if pet.type == '犬' %}
+                        {{ pet.kinds }}
+                    {% else %}
+                        {{ pet.kinds }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>性格</strong></td>
+                <td id="formatted-personality">{{ pet.personality }}</td>
+            </tr>
+        </table>
+
+        <!-- 電話番号の表示 -->
+        <div>
+            <p>ご購入を検討中の方は以下の電話番号までご連絡ください</p>
+            {% if pet.phone_number %}
+                <p class="pet-phone-number">{{ pet.phone_number }}</p>
+            {% else %}
+                <p>電話番号が登録されていません。</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="comments-section">
+        <h2>コメント</h2>
+        <div class="comment-container">
+            <ul>
+                {% for comment in comments %}
+                <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
+                    <strong>{{ comment.user.username }}:
+                        {% if comment.user.is_superuser %}
+                            <span style="color: red;">[管理者]</span>
+                        {% endif %}
+                    </strong>
+                    <div class="comment-content">
+                        {{ comment.content }}
+                        <br><small>{{ comment.timestamp }}</small>
+                    </div>
+                    
+                    <!-- 管理者のみ削除ボタンを表示 -->
+                    {% if user.is_superuser %}
+                        <form method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                            <button type="submit" class="delete-button" name="delete_comment" style="color: red;">削除</button>
+                        </form>
+                    {% endif %}
+                </li>
+                {% empty %}
+                <p>まだコメントはありません。</p>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <!-- コメントフォーム -->
+    <div class="comment-form-container">
+    {% if user.is_superuser %}
+        <h3>管理者としてコメントを追加</h3>
+        <div class="comment-form">
+            <form method="post">
                 {% csrf_token %}
-                <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                <button type="submit" name="delete_comment" style="color: red;">削除</button>
+                <textarea id="admin_comment" name="content" required></textarea>
+                <button type="submit" class="submit-button">コメントを投稿する</button>
             </form>
-        {% endif %}
-    </li>
-    {% empty %}
-    <p>まだコメントはありません。</p>
-    {% endfor %}
-</ul>
+        </div>
+    {% elif user.is_authenticated %}
+        <h3>コメントを追加</h3>
+        <div class="comment-form">
+            <form method="post">
+                {% csrf_token %}
+                <textarea id="message" name="content" required></textarea>
+                <button type="submit" class="submit-button">コメントを投稿する</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
 
-<!-- コメントフォーム -->
-{% if user.is_superuser %}
-    <h3>管理者としてコメントを追加</h3>
-    <form method="post">
-        {% csrf_token %}
-        <textarea id="admin_comment" name="content" required></textarea>
-        <button type="submit">コメントを投稿する</button>
-    </form>
-{% elif user.is_authenticated %}
-    <h3>コメントを追加</h3>
-    <form method="post">
-        {% csrf_token %}
-        <textarea id="message" name="content" required></textarea>
-        <button type="submit">コメントを投稿する</button>
-    </form>
-{% endif %}
-
+    <div class="contract-button-container" style="text-align: center; margin-top: 30px;">
+        <h2>仮契約はこちら</h2>
+        <a href="{% url 'messaging:pet_detail' pet.id %}" 
+           class="contract-button" 
+           id="contractButton"
+           style="display: inline-block; 
+                  padding: 10px 40px; /* 横の余白を広げる */
+                  background-color: #007BFF; 
+                  color: white; 
+                  text-decoration: none; 
+                  border-radius: 5px; /* 角を丸める */
+                  font-size: 1rem; /* 文字サイズはそのまま */
+           ">
+            詳細へ
+        </a>
+    </div>
+</div>
 {% endblock %}

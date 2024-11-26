@@ -40,3 +40,13 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Comment by {self.user.username} on {self.pet.pet_id}'
+
+
+class Karikeiyaku(models.Model):
+    # 他のフィールド...
+    status = models.CharField(
+        max_length=50,
+        choices=[('仮契約中', '仮契約中'), ('キャンセル', 'キャンセル'), ('仮契約済', '仮契約済')],
+        default='仮契約中', verbose_name="ステータス"
+    )
+    # 他のフィールド...
