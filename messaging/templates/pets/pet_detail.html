@@ -140,7 +140,7 @@
                         <form method="POST" style="display:inline;">
                             {% csrf_token %}
                             <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" name="delete_comment" style="color: red;">削除</button>
+                            <button type="submit" class="delete-button" style="color: red;">削除</button>
                         </form>
                     {% endif %}
                 </li>
@@ -151,45 +151,48 @@
         </div>
     </div>
     
-        <!-- コメントフォーム -->
-        {% if user.is_superuser %}
-            <h3>管理者としてコメントを追加</h3>
-            <div class="comment-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <textarea id="admin_comment" name="content" required></textarea>
-                    <button type="submit">コメントを投稿する</button>
-                </form>
-            </div>
-        {% elif user.is_authenticated %}
-            <h3>コメントを追加</h3>
-            <div class="comment-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <textarea id="message" name="content" required></textarea>
-                    <button type="submit">コメントを投稿する</button>
-                </form>
-            </div>
+    <!-- コメントフォーム -->
+    <div class="comment-form-container">
+    {% if user.is_superuser %}
+        <h3>管理者としてコメントを追加</h3>
+        <div class="comment-form">
+            <form method="post">
+                {% csrf_token %}
+                <textarea id="admin_comment" name="content" required></textarea>
+                <button type="submit" class="submit-button">コメントを投稿する</button>
+            </form>
+        </div>
+    {% elif user.is_authenticated %}
+        <h3>コメントを追加</h3>
+        <div class="comment-form">
+            <form method="post">
+                {% csrf_token %}
+                <textarea id="message" name="content" required></textarea>
+                <button type="submit" class="submit-button">コメントを投稿する</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+    </div>
+
+    <!-- 仮契約について -->
+    <div class="karikeiyaku-section">
+        <h2>仮契約について</h2>
+        <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
+
+        {% if other_user_karikeiyaku %}
+            <!-- 他のユーザーが仮契約中 -->
+            <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
+        {% elif user_karikeiyaku %}
+            <!-- 自分が仮契約中 -->
+            <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
+            <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+        {% else %}
+            <!-- 仮契約していない -->
+            <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
         {% endif %}
     </div>
-仮契約フォームリンク
-<div>
-    <h2>仮契約について</h2>
-    <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
 
-    {% if other_user_karikeiyaku %}
-        <!-- 他のユーザーが仮契約中 -->
-        <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
-    {% elif user_karikeiyaku %}
-        <!-- 自分が仮契約中 -->
-        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
-    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
-    {% else %}
-        <!-- 仮契約していない -->
-        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
-    {% endif %}
-
-</div>
 </div>
 
 {% endblock %}
