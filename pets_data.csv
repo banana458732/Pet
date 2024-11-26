@@ -1,8 +1,2 @@
 id,type,size,color,age,kinds,disease,personality,sex,image_urls
-<<<<<<< HEAD
-33,犬,中型,茶,1,雑種,なし,おとなしい,男の子,/media/pet_images/uuid_18d65e09cb834c31b83776a8f30cee86.jpg
-43,犬,小型,白,6,雑種,なし,明るい,女の子,/media/pet_images/uuid_3197205e4dcf4724891aa5c2e593552d.jpg
-63,犬,小型,茶,2,雑種,なし,おとなしい,男の子,/media/pet_images/uuid_f3c8d9f6c8c7484abf37f07dd508bcd9.jpg
-=======
-1,犬,大型,黒,1,スコティッシュフォールド,,おとなしい,男の子,/media/pet_images/uuid_9e7857dc0aeb4112ad72fee8069296c3.jpg
->>>>>>> 0ce15604eade3551f306185d594da5766a136a8f
+65,犬,小型,茶,5,コーギー,,明るい,男の子,/media/pet_images/uuid_4e12f810cd0b4be3b6ab326cf07903be.jpg
