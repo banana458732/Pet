@@ -103,7 +103,16 @@ def pet_survey(request):
     })
 
 
-def save_matching_result(request, survey_id, pet_id):
+def save_matching_result(request):
+    # リクエストからIDを取得
+    survey_id = request.GET.get('survey_id') or request.POST.get('survey_id')
+    pet_id = request.GET.get('pet_id') or request.POST.get('pet_id')
+
+    # IDの存在確認
+    if not survey_id or not pet_id:
+        return render(request, 'error.html', {'message': 'IDが正しくありません。'})
+
+    # 該当するオブジェクトを取得
     survey = get_object_or_404(SurveyResult, id=survey_id)
     pet = get_object_or_404(Pet, id=pet_id)
 
@@ -113,6 +122,7 @@ def save_matching_result(request, survey_id, pet_id):
         matched_pet=pet
     )
 
+    # 成功時のページを表示
     return render(request, 'matching_success.html', {'history': matching_history})
 
 
