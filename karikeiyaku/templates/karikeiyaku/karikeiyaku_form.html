@@ -43,9 +43,12 @@
             background-color: #f2f2f2; /* ヘッダーの背景色 */
             font-weight: bold;
         }
-
-        td {
-            background-color: #fff; /* 内容の背景色 */
+        input[type="text"], input[type="email"], input[type="address"],input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         span {
@@ -89,7 +92,7 @@
     <p>仮契約の期間内にキャンセルすることができ、キャンセルの際には所定の手続きを行うことを理解しています。</p>
     <p>仮契約期間内に本契約をしなかった場合、自動的にキャンセルと扱うことを理解しています。</p>
 
-    {% if pet.disease %}
+    {% if pet.disease and pet.disease not in exclusion_list %}
     <p class="highlight">このペットには<strong>{{ pet.disease }}</strong>の病気があります。私は、このペットが過去または現在において<strong>{{ pet.disease }}</strong>の病歴を持っていることを認識し、その健康状態に基づく必要なケアを行う責任を負うことを理解しています。</p>
     {% endif %}
 
@@ -112,13 +115,13 @@
             <input type="text" value="{{ pet.age }}" readonly>
         </div>
         <div class="form-group">
-            <label>犬種/猫種:</label>
+            <label>品種:</label>
             <input type="text" value="{{ pet.kinds }}" readonly>
         </div>
         <div class="form-group">
             <label>病歴:</label>
-            <input type="text" value="{% if pet.disease %}{{ pet.disease }}{% else %}なし{% endif %}" readonly>
-        </div>
+            <input type="text" value="{% if pet.disease and pet.disease not in exclusion_list %}{{ pet.disease }}{% else %}なし{% endif %}" readonly>
+        </div>        
         <div class="form-group">
             <label>性格:</label>
             <input type="text" value="{{ pet.personality }}" readonly>
