@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("Survey", "0016_alter_surveyresult_disease"),
-        ("Survey", "0017_alter_surveyresult_disease"),
+        ("Survey", "0017_merge_0016_merge_0016_merge_20241125_0937"),
     ]
 
     operations = []
