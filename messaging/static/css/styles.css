@@ -11297,6 +11297,15 @@ ul {
   margin-bottom: 40px;
 }
 
+.karikeiyaku-section {
+  text-align: center;
+}
+
+.karikeiyaku-section .btn {
+  display: inline-block;
+  margin: 10px;
+}
+
 /* コメント全体 */
 .comments-section {
   text-align: center; /* テキストを中央に配置 */
