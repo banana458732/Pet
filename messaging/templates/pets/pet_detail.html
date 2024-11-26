@@ -140,7 +140,7 @@
                         <form method="POST" style="display:inline;">
                             {% csrf_token %}
                             <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" name="delete_comment" style="color: red;">削除</button>
+                            <button type="submit" class="delete-button" name="delete_comment" style="color: red;">削除</button>
                         </form>
                     {% endif %}
                 </li>
@@ -151,27 +151,44 @@
         </div>
     </div>
     
-        <!-- コメントフォーム -->
-        {% if user.is_superuser %}
-            <h3>管理者としてコメントを追加</h3>
-            <div class="comment-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <textarea id="admin_comment" name="content" required></textarea>
-                    <button type="submit">コメントを投稿する</button>
-                </form>
-            </div>
-        {% elif user.is_authenticated %}
-            <h3>コメントを追加</h3>
-            <div class="comment-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <textarea id="message" name="content" required></textarea>
-                    <button type="submit">コメントを投稿する</button>
-                </form>
-            </div>
-        {% endif %}
+    <!-- コメントフォーム -->
+    <div class="comment-form-container">
+    {% if user.is_superuser %}
+        <h3>管理者としてコメントを追加</h3>
+        <div class="comment-form">
+            <form method="post">
+                {% csrf_token %}
+                <textarea id="admin_comment" name="content" required></textarea>
+                <button type="submit" class="submit-button">コメントを投稿する</button>
+            </form>
+        </div>
+    {% elif user.is_authenticated %}
+        <h3>コメントを追加</h3>
+        <div class="comment-form">
+            <form method="post">
+                {% csrf_token %}
+                <textarea id="message" name="content" required></textarea>
+                <button type="submit" class="submit-button">コメントを投稿する</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="contract-button-container" style="text-align: center; margin-top: 30px;">
+        <h2>仮契約はこちら</h2>
+        <a href="{% url 'messaging:pet_detail' pet.id %}" 
+           class="contract-button" 
+           id="contractButton"
+           style="display: inline-block; 
+                  padding: 10px 40px; /* 横の余白を広げる */
+                  background-color: #007BFF; 
+                  color: white; 
+                  text-decoration: none; 
+                  border-radius: 5px; /* 角を丸める */
+                  font-size: 1rem; /* 文字サイズはそのまま */
+           ">
+            詳細へ
+        </a>
     </div>
 </div>
-
 {% endblock %}
