@@ -70,10 +70,27 @@ def pet_survey(request):
             if '4-7' in selected_age_ranges:
                 pets_data['score'] += ((pets_data['age'] >= 4) & (pets_data['age'] <= 7)).astype(int)
             if '8-10' in selected_age_ranges:
+<<<<<<< HEAD
                 pets_data['score'] += ((pets_data['age'] >= 8) & (pets_data['age'] <= 10)).astype(int)
 
         # 年齢範囲内のペットを若い順に並べる
         final_sorted_pets = pets_data.sort_values(by=['score', 'age'], ascending=[False, True])
+=======
+                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 8) & (pets_data['age'] <= 10)]])
+            
+            # 年齢範囲内のペットを若い順に並べる
+            age_filtered_pets = age_filtered_pets.sort_values(by='age', ascending=True)
+
+            # 年齢範囲内のペットと年齢範囲外のペットを分ける
+            pets_data_outside_range = pets_data[~pets_data.index.isin(age_filtered_pets.index)]
+
+            # まず年齢範囲内のペットを若い順に表示し、その後に年齢範囲外のペットをそのままの順番で表示
+            final_sorted_pets = pd.concat([age_filtered_pets, pets_data_outside_range])
+
+        else:
+            # 年齢範囲が選択されていない場合は元のデータを使用
+            final_sorted_pets = pets_data
+>>>>>>> d8f8acbea35efff972ae63a41fe2587e6c3c286b
 
         print("スコア計算後のペットデータ:", pets_data[['score']])  # デバッグ用
 
