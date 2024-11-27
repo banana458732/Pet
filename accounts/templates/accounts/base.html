@@ -29,12 +29,8 @@
                 display: flex;
                 gap: 15px;
             ">
-                <a href="{% url 'messaging:index' %}">トップページ</a>
-                {% if user.is_authenticated %}
-                    <a href="#about">マイページ</a>
-                {% else %}
-                    <a href="{% url 'accounts:login' %}">ログイン・登録</a>
-                {% endif %}
+                <a href="{% url 'messaging:index' %}">ペット一覧</a>
+                <a href="#mypage">マイページ</a>
                 <a href="{% url 'messaging:send_message' %}">お問い合わせ</a>
                 <a href="#contact">サービス内容</a>
             </nav>
@@ -109,11 +105,11 @@
             padding: 10px 0;
             background-color: #f9f5f0;
         ">
-            <a href="#first">アンケート</a>
+            <a href="{% url 'survey:pet_survey' %}">アンケート</a>
             <a href="#search">仮登録中のペット</a>
-            <a href="#activity">最近マッチングしたペット</a>
             <a href="#meeting">お気に入り登録したペット</a>
         </nav>
+        <hr style="border: 2px solid rgb(57, 36, 0); width: 100%; margin: 0px auto;">
     <main>
         {% block contents %}{% endblock %}
     </main>
