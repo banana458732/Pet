@@ -119,6 +119,29 @@ def pet_survey(request):
     })
 
 
+<<<<<<< HEAD
+=======
+def save_matching_result(request):
+    # リクエストからペットのIDを取得
+    pet_id = request.GET.get('pet_id') or request.POST.get('pet_id')
+
+    # IDの存在確認
+    if not pet_id:
+        return render(request, 'error.html', {'message': 'ペットIDが正しくありません。'})
+
+    # 該当するペットを取得
+    pet = get_object_or_404(Pet, id=pet_id)
+
+    # マッチング履歴を保存
+    matching_history = MatchingHistory.objects.create(
+        matched_pet=pet
+    )
+
+    # 成功時のページを表示
+    return render(request, 'matching_success.html', {'history': matching_history})
+
+
+>>>>>>> 953c8cd2c76ab2f36d4a4acc095ca1bb4550f752
 class IndexView(TemplateView):
     """トップページのビュー"""
     template_name = 'Survey/index.html'
