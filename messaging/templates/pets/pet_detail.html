@@ -222,25 +222,4 @@
     </div>
 </div>
 
-
-<!-- お気に入り機能 -->
-<div class="favorite-section">
-    <h2>お気に入り</h2>
-
-    {% if user.is_authenticated %}
-        {% if is_favorite %}
-            <form method="POST" action="{% url 'favorites:remove' pet.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-warning">お気に入りから削除</button>
-            </form>
-        {% else %}
-            <form method="POST" action="{% url 'favorites:add' pet.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-outline-primary">お気に入りに追加</button>
-            </form>
-        {% endif %}
-    {% else %}
-        <p>お気に入りに追加するには、<a href="{% url 'accounts:login' %}">ログイン</a>してください。</p>
-    {% endif %}
-</div>
 {% endblock %}

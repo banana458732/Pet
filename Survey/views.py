@@ -50,50 +50,53 @@ def pet_survey(request):
             pets_data['score'] += (pets_data['disease'] == disease).astype(int)
         if personality:
             pets_data['score'] += (pets_data['personality'] == personality).astype(int)
-        # 性別でフィルタリング
+
+        # pet_type が一致した場合、スコアを加算
+        if pet_type:
+            pets_data['score'] += (pets_data['type'] == pet_type).astype(int)
+
+        # sex が一致した場合、スコアを加算
         if sex:
             pets_data = pets_data[pets_data['sex'] == sex]
-            pets_data['score'] += 1  # 性別が一致した場合スコア加算
+            pets_data['score'] += (pets_data['sex'] == sex).astype(int)
 
         # 年齢範囲のフィルタリング（年齢条件だけ追加）
         if age_range:
             selected_age_ranges = age_range.split(',')  # カンマで分割して選ばれた範囲をリストに
 
-            # 年齢範囲内のペットを抽出
-            age_filtered_pets = pd.DataFrame()  # 空のデータフレームを初期化
+            # 年齢範囲内のペットにスコアを加算
             if '0-3' in selected_age_ranges:
-                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[pets_data['age'] <= 3]])
+                pets_data['score'] += (pets_data['age'] <= 3).astype(int)
             if '4-7' in selected_age_ranges:
-                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 4) & (pets_data['age'] <= 7)]])
+                pets_data['score'] += ((pets_data['age'] >= 4) & (pets_data['age'] <= 7)).astype(int)
             if '8-10' in selected_age_ranges:
-                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 8) & (pets_data['age'] <= 10)]])
+                pets_data['score'] += ((pets_data['age'] >= 8) & (pets_data['age'] <= 10)).astype(int)
 
-            # 年齢範囲内のペットを若い順に並べる
-            age_filtered_pets = age_filtered_pets.sort_values(by='age', ascending=True)
-
-            # 年齢範囲内のペットと年齢範囲外のペットを分ける
-            pets_data_outside_range = pets_data[~pets_data.index.isin(age_filtered_pets.index)]
-
-            # まず年齢範囲内のペットを若い順に表示し、その後に年齢範囲外のペットをそのままの順番で表示
-            final_sorted_pets = pd.concat([age_filtered_pets, pets_data_outside_range])
-
-        else:
-            # 年齢範囲が選択されていない場合は元のデータを使用
-            final_sorted_pets = pets_data
+        # 年齢範囲内のペットを若い順に並べる
+        final_sorted_pets = pets_data.sort_values(by=['score', 'age'], ascending=[False, True])
 
         print("スコア計算後のペットデータ:", pets_data[['score']])  # デバッグ用
 
-        # 年齢範囲が選ばれている場合、その範囲内で若い順に並べる
-        sorted_pets = final_sorted_pets.to_dict('records')
+        # スコアが0のペットと1以上のペットに分ける
+        pets_score_0 = final_sorted_pets[final_sorted_pets['score'] == 0]
+        pets_score_1_or_more = final_sorted_pets[final_sorted_pets['score'] > 0]
 
         # 画像URLの処理
-        pet_with_images = []
-        for pet in sorted_pets:
+        pet_with_images_score_0 = []
+        pet_with_images_score_1_or_more = []
+
+        for pet in pets_score_0.to_dict('records'):
             image_urls = pet.get('image_urls', '')
             first_image = image_urls.split(',')[0] if image_urls else None
-            pet_with_images.append((pet, first_image))
+            pet_with_images_score_0.append((pet, first_image))
 
-        print("マッチング結果:", pet_with_images)
+        for pet in pets_score_1_or_more.to_dict('records'):
+            image_urls = pet.get('image_urls', '')
+            first_image = image_urls.split(',')[0] if image_urls else None
+            pet_with_images_score_1_or_more.append((pet, first_image))
+
+        print("スコア0のペット:", pet_with_images_score_0)
+        print("スコア1以上のペット:", pet_with_images_score_1_or_more)
 
         # SurveyResultを保存
         survey_result = SurveyResult.objects.create(
@@ -110,7 +113,7 @@ def pet_survey(request):
 
         return render(request, 'survey/results.html', {
             'survey_result': survey_result,
-            'pets': pet_with_images,
+            'pets': pet_with_images_score_1_or_more + pet_with_images_score_0,  # スコア1以上とスコア0を合わせる
             'MEDIA_URL': settings.MEDIA_URL,
         })
 
@@ -119,29 +122,6 @@ def pet_survey(request):
     })
 
 
-<<<<<<< HEAD
-=======
-def save_matching_result(request):
-    # リクエストからペットのIDを取得
-    pet_id = request.GET.get('pet_id') or request.POST.get('pet_id')
-
-    # IDの存在確認
-    if not pet_id:
-        return render(request, 'error.html', {'message': 'ペットIDが正しくありません。'})
-
-    # 該当するペットを取得
-    pet = get_object_or_404(Pet, id=pet_id)
-
-    # マッチング履歴を保存
-    matching_history = MatchingHistory.objects.create(
-        matched_pet=pet
-    )
-
-    # 成功時のページを表示
-    return render(request, 'matching_success.html', {'history': matching_history})
-
-
->>>>>>> 953c8cd2c76ab2f36d4a4acc095ca1bb4550f752
 class IndexView(TemplateView):
     """トップページのビュー"""
     template_name = 'Survey/index.html'
