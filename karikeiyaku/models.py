@@ -1,7 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from petapp.models import Pet
 from django.conf import settings
+
 
 class Karikeiyaku(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="ユーザー")

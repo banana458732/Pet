@@ -16,9 +16,7 @@
         </div>
     </div>
 </header>
-{% endblock %}
 
-{% block contents %}
 <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
     <div class="container px-4 px-lg-5">
@@ -79,7 +77,7 @@
         <!-- 性格 -->
         <div class="form-group">
             <label for="id_personality">性格</label>
-            {{ form.personality }}  <!-- pet_personality -> personality に変更 -->
+            {{ form.pet_personality }}
         </div>
 
         <!-- 性別 -->
@@ -97,4 +95,21 @@
         <button type="submit" class="btn btn-primary">検索</button>
     </form>
 </div>
+
+<!-- JavaScript for Deselectable Radio Buttons -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[type="radio"]');
+    radios.forEach(radio => {
+        radio.addEventListener('click', function () {
+            if (this.checked) {
+                this.dataset.checked = this.dataset.checked === 'true' ? 'false' : 'true';
+                if (this.dataset.checked === 'false') {
+                    this.checked = false;
+                }
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

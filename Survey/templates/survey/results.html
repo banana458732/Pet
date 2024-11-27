@@ -37,26 +37,51 @@
 
 <h1>マッチングしたペット情報</h1>
 
-<!-- マッチングしたペット情報がある場合 -->
+<!-- スコア1以上のペット -->
 {% if pets %}
     <ul>
         {% for pet, image_url in pets %}
-            <li>
-                <div class="pet-info">
-                    <div class="pet-details">
-                        <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
+            {% if pet.score > 0 %}
+                <li>
+                    <div class="pet-info">
+                        <div class="pet-details">
+                            <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
+                        </div>
+                        <div class="pet-image">
+                            {% if image_url %}
+                                <img src="{{ image_url }}" alt="Pet Image" width="200">
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="pet-image">
-                        {% if image_url %}
-                            <img src="{{ image_url }}" alt="Pet Image" width="200">
-                        {% endif %}
-                    </div>
-                </div>
-            </li>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
 {% else %}
-    <p>現在、登録されているペットはありません。</p>
+    <p>現在、スコア1以上のペットは登録されていません。</p>
+{% endif %}
+
+<!-- スコア0のペット（has_pets_score_0 フラグを使って表示） -->
+{% if has_pets_score_0 %}
+    <h2 style="text-align: center;">他にもこんなペットがいます！</h2>
+    <ul>
+        {% for pet, image_url in pets %}
+            {% if pet.score == 0 %}
+                <li>
+                    <div class="pet-info">
+                        <div class="pet-details">
+                            <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
+                        </div>
+                        <div class="pet-image">
+                            {% if image_url %}
+                                <img src="{{ image_url }}" alt="Pet Image" width="200">
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
 {% endif %}
 
 <!-- pet_survey.htmlに戻るボタン -->

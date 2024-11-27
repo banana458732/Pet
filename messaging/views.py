@@ -42,6 +42,15 @@ def pet_detail(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
     comments = pet.comments.all().order_by('-timestamp')  # ペットに関連するすべてのコメントを取得
 
+    # ログインしていないユーザーにも対応するために、匿名ユーザーの場合は None を設定
+    user_karikeiyaku = None
+    other_user_karikeiyaku = None
+
+    # ログインしている場合のみ仮契約情報を取得
+    if request.user.is_authenticated:
+        user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).first()
+        other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).first()
+
     # コメントフォームの処理
     if request.method == 'POST':
         form = CommentForm(request.POST)
@@ -70,30 +79,7 @@ def pet_detail(request, pet_id):
     return render(request, 'pets/pet_detail.html', {
         'pet': pet,
         'comments': comments,  # ペットのコメントをテンプレートに渡す
-        'form': form
-    })
-
-
-# データベースにデータが保存されてるか
-def pet_detail(request, pet_id):
-    pet = get_object_or_404(Pet, id=pet_id)
-
-    # デバック用
-    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).first()
-    other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).first()
-
-    print(f"ユーザー: {request.user.username}, 仮契約: {user_karikeiyaku}")
-    print(f"他のユーザーの仮契約: {other_user_karikeiyaku}")
-    # /デバック用
-
-    # 現在のユーザーの仮契約を取得
-    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).first()
-
-    # 他のユーザーが仮契約中かを確認
-    other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).first()
-
-    return render(request, 'pets/pet_detail.html', {
-        'pet': pet,
+        'form': form,
         'user_karikeiyaku': user_karikeiyaku,
         'other_user_karikeiyaku': other_user_karikeiyaku,
     })

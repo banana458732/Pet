@@ -1,0 +1,137 @@
+{% load static %}
+
+<!-- About-->        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+
+    <!DOCTYPE html>
+    <html lang="ja">
+    
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    ">
+        <header style="
+            padding: 10px 20px;
+            background-color: #fefefe;
+            border-bottom: 1px solid #ddd;
+        ">
+            <div class="logo" style="
+                font-size: 24px;
+                font-weight: bold;
+                color: #7a5c39;
+            ">ペットマッチシステム</div>
+            <nav style=" 
+                display: flex;
+                gap: 15px;
+            ">
+                <a href="{% url 'messaging:index' %}">トップページ</a>
+                {% if user.is_authenticated %}
+                    <a href="#about">マイページ</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">ログイン・登録</a>
+                {% endif %}
+                <a href="{% url 'messaging:send_message' %}">お問い合わせ</a>
+                <a href="#contact">サービス内容</a>
+            </nav>
+            <div class="actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:logout' %}">ログアウト</a>
+                {% else %}
+                    <a href="{% url 'accounts:login' %}">ログイン</a>
+                    <a href="{% url 'accounts:signup' %}">アカウント登録</a>
+                {% endif %}
+            </div>
+        </header>
+    
+        <style>
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 20px;
+                background-color: #f4f4f4;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            .logo {
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+            }
+    
+            nav a {
+                text-decoration: none;
+                color: #333;
+                font-size: 16px;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+            nav a:hover {
+                background-color: #ddd;
+            }
+            .actions {
+                display: flex;
+                gap: 10px;
+                padding: 10px;
+                padding-bottom: 30px;
+            }
+            .actions a {
+                text-decoration: none;
+                color: white;
+                background-color: #007BFF;
+                padding: 5px 15px;
+                border-radius: 5px;
+                font-size: 16px;
+            }
+            .actions a:hover {
+                background-color: #0056b3;
+            }
+    
+            nav a {
+                text-decoration: none;
+                color: #7a5c39;
+                font-size: 14px;
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+            nav a:hover {
+                background-color: #e8dfd3;
+            }
+        </style>
+        <nav style="
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 10px 0;
+            background-color: #f9f5f0;
+        ">
+            <a href="#first">アンケート</a>
+            <a href="#search">仮登録中のペット</a>
+            <a href="#activity">最近マッチングしたペット</a>
+            <a href="#meeting">お気に入り登録したペット</a>
+        </nav>
+    <main>
+        {% block contents %}{% endblock %}
+    </main>
+        
+        <!-- Footer-->
+        <footer class="bg-light py-5">
+            <div class="container px-4 px-lg-5"><div class="small text-center text-muted">Team C &copy; 2024 - Pet project</div></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- SimpleLightbox plugin JS-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script>
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <!-- * *                               SB Forms JS                               * *-->
+        <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
+        <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
+        <script src={% static 'js/scripts.js' %}></script>
+    </body>
+</html>

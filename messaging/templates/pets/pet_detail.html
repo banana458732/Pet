@@ -67,35 +67,31 @@
         </div>
     </div>
 
+    <style>
+        .karikeiyaku-section {
+        display: flex; /* 子要素をflexboxで配置 */
+        justify-content: center; /* 横方向の中央揃え */
+        align-items: center; /* 縦方向の中央揃え */
+        flex-direction: column; /* 全体のレイアウトは縦並び */
+        text-align: center; /* テキスト中央揃え */
+        }
 
-<!-- 仮契約フォームリンク -->
-<div>
-    <h2>仮契約について</h2>
-    <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
-
-    {% if other_user_karikeiyaku %}
-        <!-- 他のユーザーが仮契約中 -->
-        <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
-    {% elif user_karikeiyaku %}
-        <!-- 自分が仮契約中 -->
-        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
-    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
-    {% else %}
-        <!-- 仮契約していない -->
-        <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
-    {% endif %}
-
-</div>
-
-
-<!-- コメントセクション -->
-<h2>コメント</h2>
-<ul>
-    {% for comment in comments %}
-    <li>
-        <strong>{{ comment.user.username }}:
-            {% if comment.user.is_superuser %}
-                <span style="color: red;">[管理者]</span>
+        .karikeiyaku-section .btn-group {
+        display: flex;
+        justify-content: center; /* 横方向の中央揃え */
+        align-items: center; /* 縦方向の中央揃え */
+        flex-wrap: wrap; /* 必要に応じて折り返し */
+        gap: 20px; /* ボタン間のスペース */
+        }
+        /* ボタン間の角がとがらないようにするためにborder-radiusを追加 */
+        .karikeiyaku-section .btn-group .btn {
+            border-radius: 5px; /* ボタンの角を丸くする */
+        }
+        /* 仮契約中のボタン（btn-primary）の角を丸くする */
+        .karikeiyaku-section .btn-group .btn.btn-primary {
+            border-radius: 5px !important; /* !importantを追加して強制的に適用 */
+        }
+    </style>
 
     <!-- 情報セクション -->
     <div class="pet-info-section">
@@ -121,7 +117,6 @@
                     <td><strong>病歴</strong></td>
                     <td>{{ pet.disease }}</td>
                 </tr>
-
             {% endif %}
             <tr>
                 <td><strong>品種</strong></td>
@@ -138,69 +133,99 @@
                 <td id="formatted-personality">{{ pet.personality }}</td>
             </tr>
         </table>
-
-        <!-- 電話番号の表示 -->
-        <div>
-            <p>ご購入を検討中の方は以下の電話番号までご連絡ください</p>
-            {% if pet.phone_number %}
-                <p class="pet-phone-number">{{ pet.phone_number }}</p>
-            {% else %}
-                <p>電話番号が登録されていません。</p>
-            {% endif %}
-        </div>
     </div>
 
     <div class="comments-section">
         <h2>コメント</h2>
         <div class="comment-container">
-            <ul>
-                {% for comment in comments %}
-                <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
-                    <strong>{{ comment.user.username }}:
-                        {% if comment.user.is_superuser %}
-                            <span style="color: red;">[管理者]</span>
+            <!-- コメントがある場合 -->
+            {% if comments %}
+                <ul>
+                    {% for comment in comments %}
+                    <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
+                        <strong>{{ comment.user.username }}:
+                            {% if comment.user.is_superuser %}
+                                <span style="color: red;">[管理者]</span>
+                            {% endif %}
+                        </strong>
+                        <div class="comment-content">
+                            {{ comment.content }}
+                            <br><small>{{ comment.timestamp }}</small>
+                        </div>
+                        
+                        <!-- 管理者のみ削除ボタンを表示 -->
+                        {% if user.is_superuser %}
+                            <form method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                <button type="submit" class="delete-button" style="color: red;">削除</button>
+                            </form>
                         {% endif %}
-                    </strong>
-                    <div class="comment-content">
-                        {{ comment.content }}
-                        <br><small>{{ comment.timestamp }}</small>
-                    </div>
-                    
-                    <!-- 管理者のみ削除ボタンを表示 -->
-                    {% if user.is_superuser %}
-                        <form method="POST" style="display:inline;">
-                            {% csrf_token %}
-                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                            <button type="submit" name="delete_comment" style="color: red;">削除</button>
-                        </form>
-                    {% endif %}
-                </li>
-                {% empty %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <!-- コメントがない場合 -->
                 <p>まだコメントはありません。</p>
-                {% endfor %}
-            </ul>
+            {% endif %}
         </div>
     </div>
     
-        <!-- コメントフォーム -->
-        {% if user.is_superuser %}
-            <h3>管理者としてコメントを追加</h3>
-            <div class="comment-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <textarea id="admin_comment" name="content" required></textarea>
-                    <button type="submit">コメントを投稿する</button>
-                </form>
-            </div>
-        {% elif user.is_authenticated %}
-            <h3>コメントを追加</h3>
-            <div class="comment-form">
-                <form method="post">
-                    {% csrf_token %}
-                    <textarea id="message" name="content" required></textarea>
-                    <button type="submit">コメントを投稿する</button>
-                </form>
-            </div>
+    <!-- コメントフォーム -->
+    <div class="comment-form-container">
+        {% if user.is_authenticated %}
+            <!-- ログインしている場合 -->
+            {% if user.is_superuser %}
+                <h3>管理者としてコメントを追加</h3>
+                <div class="comment-form">
+                    <form method="post">
+                        {% csrf_token %}
+                        <textarea id="admin_comment" name="content" required></textarea>
+                        <button type="submit" class="submit-button">コメントを投稿する</button>
+                    </form>
+                </div>
+            {% else %}
+                <h3>コメントを追加</h3>
+                <div class="comment-form">
+                    <form method="post">
+                        {% csrf_token %}
+                        <textarea id="message" name="content" required></textarea>
+                        <button type="submit" class="submit-button">コメントを投稿する</button>
+                    </form>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- ログインしていない場合の表示 -->
+            <p>コメントを投稿するには、ログインが必要です。<a href="{% url 'accounts:login' %}">ログイン</a>してください。</p>
+        {% endif %}
+    </div>
+    
+    <!-- 仮契約について -->
+    <div class="karikeiyaku-section">
+        <h2>仮契約について</h2>
+
+        {% if user.is_authenticated %}
+        <!-- ログインしている場合に表示する文 -->
+        <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
+        {% endif %}
+        
+        {% if not user.is_authenticated %}
+            <!-- ログインしていない場合 -->
+            <p>仮契約を進めるには、ログインが必要です。<a href="{% url 'accounts:login' %}">ログイン</a>してください。</p>
+        {% else %}
+            {% if other_user_karikeiyaku %}
+                <!-- 他のユーザーが仮契約中 -->
+                <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
+            {% elif user_karikeiyaku %}
+                <!-- 自分が仮契約中 -->
+                <div class="btn-group">
+                    <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
+                    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+                </div>
+            {% else %}
+                <!-- 仮契約していない -->
+                <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
+            {% endif %}
         {% endif %}
     </div>
 </div>
