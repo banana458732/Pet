@@ -135,22 +135,6 @@
         </table>
     </div>
 
-   <!-- お気に入り登録セクション -->
-    <div class="favorite-section">
-        {% if user.is_authenticated %}
-            <form method="post">
-                {% csrf_token %}
-                <label for="favorite-checkbox">
-                    <input type="checkbox" id="favorite-checkbox" name="favorite" value="on"
-                        onchange="this.form.submit();" {% if is_favorite %}checked{% endif %}>
-                    お気に入りに追加
-                </label>
-            </form>
-        {% else %}
-            <p>お気に入りに登録するには、ログインが必要です。<a href="{% url 'accounts:login' %}">ログイン</a>してください。</p>
-        {% endif %}
-    </div>
-
     <div class="comments-section">
         <h2>コメント</h2>
         <div class="comment-container">
