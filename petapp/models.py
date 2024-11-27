@@ -5,9 +5,6 @@ from django.core.validators import RegexValidator, MinValueValidator, MaxValueVa
 import os
 import pandas as pd
 
-# CSV ファイルのパスを指定
-import os
-
 # 現在のスクリプトファイルのディレクトリを取得
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -44,7 +41,7 @@ class Pet(models.Model):
     personality = models.CharField(max_length=500, null=False, default='', verbose_name="性格")
     sex = models.CharField(
         max_length=10,
-        choices=[('男の子', '男の子'), ('女の子', '女の子')],
+        choices=[('オス', 'オス'), ('メス', 'メス')],
         default='', verbose_name="性別"
     )
 

@@ -359,7 +359,7 @@ def pet_update_comp_view(request, pet_id):
         'type': '種類',
         'size': 'サイズ',
         'color': '色',
-        'kinds': '種別',
+        'kinds': '品種',
         'disease': '病歴',
         'personality': '性格',
         'sex': '性別',
