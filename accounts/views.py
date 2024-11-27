@@ -32,6 +32,12 @@ class SignUpView(CreateView):
             return super().form_valid(form)
             # フォームからデータを取得
             # モデルインスタンスの作成
+        return render(self.request, 'accounts/signup.html', ctx)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 他の必要なコンテキストデータを渡す
+        return context
 
 
 class SignUpSuccessView(TemplateView):

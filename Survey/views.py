@@ -2,7 +2,7 @@ import pandas as pd
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from .forms import SimplePetSurveyForm
-from .models import SurveyResult, MatchingHistory
+from .models import SurveyResult
 from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import get_object_or_404
@@ -67,7 +67,7 @@ def pet_survey(request):
                 age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 4) & (pets_data['age'] <= 7)]])
             if '8-10' in selected_age_ranges:
                 age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 8) & (pets_data['age'] <= 10)]])
-
+            
             # 年齢範囲内のペットを若い順に並べる
             age_filtered_pets = age_filtered_pets.sort_values(by='age', ascending=True)
 
@@ -83,17 +83,26 @@ def pet_survey(request):
 
         print("スコア計算後のペットデータ:", pets_data[['score']])  # デバッグ用
 
-        # 年齢範囲が選ばれている場合、その範囲内で若い順に並べる
-        sorted_pets = final_sorted_pets.to_dict('records')
+        # スコアが0のペットと1以上のペットに分ける
+        pets_score_0 = final_sorted_pets[final_sorted_pets['score'] == 0]
+        pets_score_1_or_more = final_sorted_pets[final_sorted_pets['score'] > 0]
 
         # 画像URLの処理
-        pet_with_images = []
-        for pet in sorted_pets:
+        pet_with_images_score_0 = []
+        pet_with_images_score_1_or_more = []
+
+        for pet in pets_score_0.to_dict('records'):
             image_urls = pet.get('image_urls', '')
             first_image = image_urls.split(',')[0] if image_urls else None
-            pet_with_images.append((pet, first_image))
+            pet_with_images_score_0.append((pet, first_image))
 
-        print("マッチング結果:", pet_with_images)
+        for pet in pets_score_1_or_more.to_dict('records'):
+            image_urls = pet.get('image_urls', '')
+            first_image = image_urls.split(',')[0] if image_urls else None
+            pet_with_images_score_1_or_more.append((pet, first_image))
+
+        print("スコア0のペット:", pet_with_images_score_0)
+        print("スコア1以上のペット:", pet_with_images_score_1_or_more)
 
         # SurveyResultを保存
         survey_result = SurveyResult.objects.create(
@@ -110,33 +119,13 @@ def pet_survey(request):
 
         return render(request, 'survey/results.html', {
             'survey_result': survey_result,
-            'pets': pet_with_images,
+            'pets': pet_with_images_score_1_or_more + pet_with_images_score_0,  # スコア1以上とスコア0を合わせる
             'MEDIA_URL': settings.MEDIA_URL,
         })
 
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
-
-
-def save_matching_result(request):
-    # リクエストからペットのIDを取得
-    pet_id = request.GET.get('pet_id') or request.POST.get('pet_id')
-
-    # IDの存在確認
-    if not pet_id:
-        return render(request, 'error.html', {'message': 'ペットIDが正しくありません。'})
-
-    # 該当するペットを取得
-    pet = get_object_or_404(Pet, id=pet_id)
-
-    # マッチング履歴を保存
-    matching_history = MatchingHistory.objects.create(
-        matched_pet=pet
-    )
-
-    # 成功時のページを表示
-    return render(request, 'matching_success.html', {'history': matching_history})
 
 
 class IndexView(TemplateView):
