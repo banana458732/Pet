@@ -1,3 +1,16 @@
+<<<<<<< HEAD
+{% extends 'base.html' %}
+
+{% block contents %}
+
+<form method="POST">
+    {% csrf_token %}
+    <p>本当にキャンセルしますか？</p>
+    <p>仮契約期間中にキャンセルすると、ペットの引き渡しができなくなります。</p>
+    <button type="submit" class="btn">キャンセルする</button>
+</form>
+{% endblock %}
+=======
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -72,3 +85,4 @@
     </div>
 </body>
 </html>
+>>>>>>> ab0bd2efa1e76cddaf7bb8ed42530ebf243824c5
