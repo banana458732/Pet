@@ -2,77 +2,71 @@
 {% block title %}仮契約キャンセル{% endblock %}
 
 {% block contents %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<style>
+    /* 全体のスタイル */
+    .cancel-form-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 40px; /* より広い余白 */
+        background-color: #f9f9f9;
+        border: 3px solid #ddd; /* 枠線を少し太く変更 */
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+        overflow: hidden; /* 親要素が子要素のはみ出しを隠す */
+    }
 
-        .cancel-form-container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
+    /* 見出しのスタイル */
+    .cancel-form-container h2 {
+        color: #f4623a;
+        font-size: 2.5rem; /* 見出しサイズを少し大きく */
+        margin-bottom: 20px; /* より広い余白 */
+    }
 
-        .cancel-form-container p {
-            color: #555;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
+    /* メッセージのスタイル */
+    .cancel-form-container p {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 30px;
+    }
 
-        .btn {
-            display: inline-block;
-            background-color: #f4623a;
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
+    .warning {
+        font-weight: bold;
+        color: #d9534f;
+    }
 
-        .btn:hover {
-            background-color: #d9432a;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-        }
+    /* ボタンのスタイル */
+    .cancel-form-container .btn {
+        display: inline-block;
+        background-color: #f4623a;
+        color: white;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .btn:active {
-            background-color: #b32e1e;
-        }
+    .cancel-form-container .btn:hover {
+        background-color: #d9432a;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    }
 
-        .warning {
-            font-weight: bold;
-            color: #d9534f;
-        }
-    </style>
-</head>
-<body>
-    <div class="cancel-form-container">
-        <form method="POST">
-            {% csrf_token %}
-            <p class="warning">本当にキャンセルしますか？</p>
-            <p>仮契約期間中にキャンセルすると、ペットの引き渡しができなくなります。</p>
-            <button type="submit" class="btn">キャンセルする</button>
-        </form>
-    </div>
-</body>
-</html>
+    .cancel-form-container .btn:active {
+        background-color: #b32e1e;
+    }
+</style>
+
+<div class="cancel-form-container">
+    <form method="POST">
+        {% csrf_token %}
+        <h2>仮契約キャンセル</h2>
+        <p class="warning">本当にキャンセルしますか？</p>
+        <p>仮契約期間中にキャンセルすると、ペットの引き渡しができなくなります。</p>
+        <button type="submit" class="btn">キャンセルする</button>
+    </form>
+</div>
 {% endblock %}
