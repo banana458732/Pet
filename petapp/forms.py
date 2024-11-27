@@ -12,8 +12,10 @@ class PetCreateForm(forms.ModelForm):
                   'personality', 'sex', 'phone_number']
 
     def clean_id(self):
-        """新規登録時にidが空でも許容する"""
+        """新規登録時にidが空でも許容し、0以下のidは不正とする"""
         id = self.cleaned_data.get('id')
+        if id is not None and id <= 0:
+            raise ValidationError("IDは1以上でなければなりません。")
         if not self.instance.pk and not id:  # 新規登録時でidが空
             return None
         return id

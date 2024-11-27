@@ -1,66 +1,246 @@
+{% extends 'base.html' %}
 
+{% block title %}ペット登録{% endblock %}
 {% block contents %}
+<style>
+    h2 {
+        text-align: center;
+    }
+    /* 全体のフォームのスタイル */
+    .pet-form {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* フォームのラベルと入力のスタイル */
+    .pet-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .pet-form label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .pet-form input,
+    .pet-form select,
+    .pet-form textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .pet-form .error-list {
+        color: red;
+        font-size: 0.9em;
+    }
+
+    .pet-form .error {
+        margin-top: 5px;
+    }
+
+    /* ボタンのスタイル */
+    .pet-form button.btn-submit {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .pet-form button.btn-submit:hover {
+        background-color: #45a049;
+    }
+
+    /* 戻るボタン */
+    .btn-back {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #f44336;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+
+    .btn-back:hover {
+        background-color: #e53935;
+    }
+
+    /* フォームセットのスタイル */
+    .formset .form-group {
+        margin-bottom: 10px;
+    }
+
+    .formset input[type="file"] {
+        padding: 5px;
+    }
+
+    /* エラーメッセージを目立たせる */
+    .error-list {
+        font-size: 0.9em;
+        color: red;
+    }
+
+    .error-list p {
+        margin: 0;
+    }
+
+    /* Align the back button to the right */
+    .form-footer {
+        display: flex;
+        justify-content: flex-end; /* Align the button to the right */
+        margin-top: 20px;
+    }
+</style>
+
 <h2>新しい犬・猫の登録</h2>
-<form method="POST" enctype="multipart/form-data">
+
+<form method="POST" enctype="multipart/form-data" class="pet-form">
     {% csrf_token %}
     {{ form.non_field_errors }}
 
-    <label for="{{ form.id.id_for_label }}">ID:</label>
-    {{ form.id }}
-    <br>
-
-    <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
-    {{ form.type }}
-    <br>
-
-    <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
-    {{ form.size }}
-    <br>
-
-    <label for="{{ form.color.id_for_label }}">色:</label>
-    {{ form.color }}
-    <br>
-
-    <label for="{{ form.age.id_for_label }}">年齢:</label>
-    {{ form.age }}
-    {% if form.age.errors %}
+    <!-- エラーメッセージ表示 -->
+    {% if error_messages %}
         <div class="error-list">
-            {% for error in form.age.errors %}
+            {% for error in error_messages %}
                 <p class="error">{{ error }}</p>
             {% endfor %}
         </div>
     {% endif %}
-    <br>
 
-    <label for="{{ form.kinds.id_for_label }}">品種:</label>
-    {{ form.kinds }}
-    <br>
+    <div class="form-group">
+        <label for="{{ form.id.id_for_label }}">ID:</label>
+        {{ form.id }}
+        {% if form.id.errors %}
+            <div class="error-list">
+                {% for error in form.id.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-    <label for="{{ form.disease.id_for_label }}">病気:</label>
-    {{ form.disease }}
-    <br>
+    <div class="form-group">
+        <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
+        {{ form.type }}
+        {% if form.type.errors %}
+            <div class="error-list">
+                {% for error in form.type.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-    <label for="{{ form.personality.id_for_label }}">性格:</label>
-    {{ form.personality }}
-    <br>
+    <div class="form-group">
+        <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
+        {{ form.size }}
+        {% if form.size.errors %}
+            <div class="error-list">
+                {% for error in form.size.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-    <label for="{{ form.sex.id_for_label }}">性別:</label>
-    {{ form.sex }}
-    <br>
+    <div class="form-group">
+        <label for="{{ form.color.id_for_label }}">色:</label>
+        {{ form.color }}
+        {% if form.color.errors %}
+            <div class="error-list">
+                {% for error in form.color.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-    <!-- 電話番号 -->
-    <label for="{{ form.phone_number.id_for_label }}">電話番号:</label>
-    {{ form.phone_number }}
-    {% if form.phone_number.errors %}
-        <div class="error-list">
-            {% for error in form.phone_number.errors %}
-                <p class="error">{{ error }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
-    <br>    
+    <div class="form-group">
+        <label for="{{ form.age.id_for_label }}">年齢:</label>
+        {{ form.age }}
+        {% if form.age.errors %}
+            <div class="error-list">
+                {% for error in form.age.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
-    <!-- 写真フォームセットエラーメッセージ -->
+    <div class="form-group">
+        <label for="{{ form.kinds.id_for_label }}">品種:</label>
+        {{ form.kinds }}
+        {% if form.kinds.errors %}
+            <div class="error-list">
+                {% for error in form.kinds.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.disease.id_for_label }}">病気:</label>
+        {{ form.disease }}
+        {% if form.disease.errors %}
+            <div class="error-list">
+                {% for error in form.disease.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.personality.id_for_label }}">性格:</label>
+        {{ form.personality }}
+        {% if form.personality.errors %}
+            <div class="error-list">
+                {% for error in form.personality.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.sex.id_for_label }}">性別:</label>
+        {{ form.sex }}
+        {% if form.sex.errors %}
+            <div class="error-list">
+                {% for error in form.sex.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.phone_number.id_for_label }}">電話番号:</label>
+        {{ form.phone_number }}
+        {% if form.phone_number.errors %}
+            <div class="error-list">
+                {% for error in form.phone_number.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
     {% if photo_formset.non_form_errors %}
         <div class="error-list">
             {% for error in photo_formset.non_form_errors %}
@@ -69,7 +249,6 @@
         </div>
     {% endif %}
 
-    <!-- 写真フォームセット -->
     <div class="formset">
         {{ photo_formset.management_form }}
         {% for form in photo_formset %}
@@ -87,8 +266,11 @@
         {% endfor %}
     </div>
 
-    <button type="submit">登録</button>
+    <button type="submit" class="btn-submit">登録</button>
+
+<div class="form-footer">
+    <a href="{% url 'petapp:pet-list' %}" class="btn-back">戻る</a>
+</div>
 </form>
 
-<a href="{% url 'petapp:pet-list' %}" class="btn">戻る</a>
 {% endblock %}
