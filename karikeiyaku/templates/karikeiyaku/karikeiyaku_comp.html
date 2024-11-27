@@ -2,53 +2,55 @@
 {% block title %}仮契約完了{% endblock %}
 
 {% block contents %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            text-align: center;
-        }
-        h1 {
-            font-size: 2.5rem;
-            color: #f4623a;
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 1.2rem;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        a {
-            display: inline-block;
-            background-color: #f4623a;
-            color: white;
-            padding: 10px 20px;
-            font-size: 1rem;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        a:hover {
-            background-color: #c34e2e;
-        }
-    </style>
-</head>
-<body>
-    <h1>仮契約が完了しました！</h1>
+<style>
+    /* 全体のスタイル */
+    .registration-complete {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 40px; /* より広い余白 */
+        background-color: #f9f9f9;
+        border: 3px solid #ddd; /* 枠線を少し太く変更 */
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+        overflow: hidden; /* 親要素が子要素のはみ出しを隠す */
+    }
+
+    /* 見出しのスタイル */
+    .registration-complete h2 {
+        color: #f4623a;
+        font-size: 2.5rem; /* 見出しサイズを少し大きく */
+        margin-bottom: 20px; /* より広い余白 */
+    }
+
+    /* メッセージのスタイル */
+    .registration-complete p {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    /* ボタンのスタイル */
+    .registration-complete a {
+        display: inline-block;
+        background-color: #f4623a;
+        color: white;
+        padding: 10px 20px;
+        font-size: 1rem;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .registration-complete a:hover {
+        background-color: #c34e2e;
+    }
+</style>
+
+<div class="registration-complete">
+    <h2>仮契約が完了しました！</h2>
     <p>ご登録ありがとうございました。</p>
     <a href="/">トップページに戻る</a>
-</body>
-</html>
+</div>
 {% endblock %}
