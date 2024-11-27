@@ -83,6 +83,14 @@
         flex-wrap: wrap; /* 必要に応じて折り返し */
         gap: 20px; /* ボタン間のスペース */
         }
+        /* ボタン間の角がとがらないようにするためにborder-radiusを追加 */
+        .karikeiyaku-section .btn-group .btn {
+            border-radius: 5px; /* ボタンの角を丸くする */
+        }
+        /* 仮契約中のボタン（btn-primary）の角を丸くする */
+        .karikeiyaku-section .btn-group .btn.btn-primary {
+            border-radius: 5px !important; /* !importantを追加して強制的に適用 */
+        }
     </style>
 
     <!-- 情報セクション -->
@@ -211,8 +219,7 @@
             {% elif user_karikeiyaku %}
                 <!-- 自分が仮契約中 -->
                 <div class="btn-group">
-                    <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
-                    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+                    <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中・詳細を見る</a>
                 </div>
             {% else %}
                 <!-- 仮契約していない -->

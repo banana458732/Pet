@@ -1,129 +1,246 @@
-{% extends '../base.html' %}
+{% extends 'base.html' %}
 
-{% block title %}{{ pet_form.instance.id }}更新{% endblock %}
+{% block title %}{{ pet_form.instance.id }} 更新{% endblock %}
 
 {% block contents %}
-<form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+<style>
+    h2 {
+        text-align: center;
+    }
+    /* 全体のフォームのスタイル */
+    .pet-form {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-    <!-- IDと種類は変更不可の表示 -->
-    <label>ID:</label>
-    <span>{{ pet_form.instance.id }}</span>
-    <input type="hidden" name="id" value="{{ pet_form.instance.id }}">  <!-- idフィールドを隠しフィールドとして追加 -->
-    <br>
-    <label>種類 (犬/猫):</label>
-    <span>{{ pet_form.instance.type }}</span>
-    <br>
+    /* フォームのラベルと入力のスタイル */
+    .pet-form .form-group {
+        margin-bottom: 15px;
+    }
 
-    <!-- サイズ -->
-    <label for="{{ pet_form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
-    {{ pet_form.size }}
-    {% if pet_form.size.errors %}
-        <ul style="color: red;">
-            {% for error in pet_form.size.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
+    .pet-form label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
 
-    <!-- 色 -->
-    <label for="{{ pet_form.color.id_for_label }}">色:</label>
-    {{ pet_form.color }}
-    {% if pet_form.color.errors %}
-        <ul style="color: red;">
-            {% for error in pet_form.color.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
+    .pet-form input,
+    .pet-form select,
+    .pet-form textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
 
-    <!-- 年齢 -->
-    <label for="{{ pet_form.age.id_for_label }}">年齢:</label>
-    {{ pet_form.age }}
-    {% if pet_form.age.errors %}
-        <ul style="color: red;">
-            {% for error in pet_form.age.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
+    .pet-form .error-list {
+        color: red;
+        font-size: 0.9em;
+    }
 
-    <!-- 性別 -->
-    <label>性別:</label>
-    <span>{{ pet_form.instance.sex }}</span>
-    <br>
+    .pet-form .error {
+        margin-top: 5px;
+    }
 
-    <!-- その他のフィールド -->
-    <label for="{{ pet_form.kinds.id_for_label }}">種別:</label>
-    {{ pet_form.kinds }}
-    {% if pet_form.kinds.errors %}
-        <ul style="color: red;">
-            {% for error in pet_form.kinds.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
+    /* ボタンのスタイル */
+    .pet-form button.btn-submit {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
 
-    <label for="{{ pet_form.disease.id_for_label }}">病歴:</label>
-    {{ pet_form.disease }}
-    {% if pet_form.disease.errors %}
-        <ul style="color: red;">
-            {% for error in pet_form.disease.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
+    .pet-form button.btn-submit:hover {
+        background-color: #45a049;
+    }
 
-    <label for="{{ pet_form.personality.id_for_label }}">性格:</label>
-    {{ pet_form.personality }}
-    {% if pet_form.personality.errors %}
-        <ul style="color: red;">
-            {% for error in pet_form.personality.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
+    /* 戻るボタン */
+    .btn-back {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #f44336;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
 
-    <label for="{{ pet_form.phone_number.id_for_label }}">電話番号:</label>
-    {{ pet_form.phone_number }}
-    {% if pet_form.phone_number.errors %}
-        <ul style="color: red;">
-            {% for error in pet_form.phone_number.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <br>
+    .btn-back:hover {
+        background-color: #e53935;
+    }
 
-    <h3>画像の更新</h3>
-    {{ image_formset.management_form }}  <!-- 管理フォームを追加 -->
+    /* フォームセットのスタイル */
+    .formset .form-group {
+        margin-bottom: 10px;
+    }
 
-    {% if image_formset.non_field_errors %}
-        <ul style="color: red;">
-            {% for error in image_formset.non_field_errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    .formset input[type="file"] {
+        padding: 5px;
+    }
 
-    {% for form in image_formset %}
-        <div class="image-form">
+    /* エラーメッセージを目立たせる */
+    .error-list {
+        font-size: 0.9em;
+        color: red;
+    }
+
+    .error-list p {
+        margin: 0;
+    }
+
+    /* Align the back button to the right */
+    .form-footer {
+        display: flex;
+        justify-content: flex-end; /* Align the button to the right */
+        margin-top: 20px;
+    }
+</style>
+
+<h2>{{ pet_form.instance.id }}の情報を更新</h2>
+<div class="pet-form">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- IDと種類は変更不可の表示 -->
+        <div class="form-group">
+            <label>ID:</label>
+            <span>{{ pet_form.instance.id }}</span>
+            <input type="hidden" name="id" value="{{ pet_form.instance.id }}"> <!-- idフィールドを隠しフィールドとして追加 -->
+        </div>
+
+        <div class="form-group">
+            <label>種類 (犬/猫):</label>
+            <span>{{ pet_form.instance.type }}</span>
+        </div>
+
+        <!-- サイズ -->
+        <div class="form-group">
+            <label for="{{ pet_form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
+            {{ pet_form.size }}
+            {% if pet_form.size.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.size.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- 色 -->
+        <div class="form-group">
+            <label for="{{ pet_form.color.id_for_label }}">色:</label>
+            {{ pet_form.color }}
+            {% if pet_form.color.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.color.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- 年齢 -->
+        <div class="form-group">
+            <label for="{{ pet_form.age.id_for_label }}">年齢:</label>
+            {{ pet_form.age }}
+            {% if pet_form.age.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.age.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- 性別 -->
+        <div class="form-group">
+            <label>性別:</label>
+            <span>{{ pet_form.instance.sex }}</span>
+        </div>
+
+        <!-- その他のフィールド -->
+        <div class="form-group">
+            <label for="{{ pet_form.kinds.id_for_label }}">種別:</label>
+            {{ pet_form.kinds }}
+            {% if pet_form.kinds.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.kinds.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ pet_form.disease.id_for_label }}">病歴:</label>
+            {{ pet_form.disease }}
+            {% if pet_form.disease.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.disease.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ pet_form.personality.id_for_label }}">性格:</label>
+            {{ pet_form.personality }}
+            {% if pet_form.personality.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.personality.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ pet_form.phone_number.id_for_label }}">電話番号:</label>
+            {{ pet_form.phone_number }}
+            {% if pet_form.phone_number.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.phone_number.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- 画像の更新 -->
+        <h3>画像の更新</h3>
+        {{ image_formset.management_form }} <!-- 管理フォームを追加 -->
+
+        {% if image_formset.non_field_errors %}
+            <ul class="error-list">
+                {% for error in image_formset.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% for form in image_formset %}
+        <div class="form-group">
             {% if form.instance.image %}
                 <img src="{{ form.instance.image.url }}" alt="Pet Image" style="width: 150px; height: auto;">
-                {{ form.id.as_hidden }}  <!-- IDを隠しフィールドで保持 -->
-                
-                <!-- 削除チェックボックスを表示（任意） -->
-                <label for="{{ form.prefix }}-DELETE">この画像を削除</label>
-                {{ form.DELETE }}  <!-- DELETEフィールド -->
+                {{ form.id.as_hidden }} <!-- IDを隠しフィールドで保持 -->
 
+                <!-- 削除チェックボックスを表示 -->
+                <label for="{{ form.prefix }}-DELETE">この画像を削除</label>
+                {{ form.DELETE }}
                 {% if form.DELETE.errors %}
-                    <ul style="color: red;">
+                    <ul class="error-list">
                         {% for error in form.DELETE.errors %}
                             <li>{{ error }}</li>
                         {% endfor %}
@@ -134,7 +251,7 @@
                 <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
 
                 {% if form.image.errors %}
-                    <ul style="color: red;">
+                    <ul class="error-list">
                         {% for error in form.image.errors %}
                             <li>{{ error }}</li>
                         {% endfor %}
@@ -143,9 +260,8 @@
             {% else %}
                 <p>新しい画像を選択:</p>
                 <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
-
                 {% if form.image.errors %}
-                    <ul style="color: red;">
+                    <ul class="error-list">
                         {% for error in form.image.errors %}
                             <li>{{ error }}</li>
                         {% endfor %}
@@ -153,42 +269,57 @@
                 {% endif %}
             {% endif %}
         </div>
-    {% endfor %}
+        {% endfor %}
 
-    <br>
-    <button type="submit">更新</button>
-</form>
+        <button type="submit" class="btn-submit">更新</button>
+    </form>
 
-<a href="{% url 'petapp:pet-list' %}">戻る</a>
+    <div class="form-footer">
+        <a href="{% url 'petapp:pet-list' %}" class="btn-back">戻る</a>
+    </div>
+</div>
 
 <script type="text/javascript">
     // ページロード時に、削除と更新が両方選択されている場合の制御
-    document.addEventListener("DOMContentLoaded", function() {
-        let imageForms = document.querySelectorAll(".image-form");  // 画像フォームを取得
+    document.addEventListener("DOMContentLoaded", function () {
+    let imageForms = document.querySelectorAll(".form-group"); // 各画像フォームを取得
 
-        imageForms.forEach(function(form) {
-            let deleteCheckbox = form.querySelector("[name$='-DELETE']");  // 削除チェックボックス
-            let imageInput = form.querySelector("input[type='file']");  // 画像入力フィールド
+    imageForms.forEach(function (form) {
+        let deleteCheckbox = form.querySelector("[name$='-DELETE']"); // 削除チェックボックス
+        let imageInput = form.querySelector("input[type='file']"); // 画像入力フィールド
+
+        if (deleteCheckbox && imageInput) {
+            // 初期状態設定
+            toggleInputs(deleteCheckbox, imageInput);
 
             // 削除チェックボックスが変更されたときの処理
-            deleteCheckbox.addEventListener("change", function() {
-                if (deleteCheckbox.checked) {
-                    imageInput.disabled = true;  // 画像更新フィールドを無効化
-                } else {
-                    imageInput.disabled = false;  // 画像更新フィールドを有効化
-                }
+            deleteCheckbox.addEventListener("change", function () {
+                toggleInputs(deleteCheckbox, imageInput);
             });
 
             // 画像入力が変更されたときの処理
-            imageInput.addEventListener("change", function() {
+            imageInput.addEventListener("change", function () {
                 if (imageInput.files.length > 0) {
-                    deleteCheckbox.checked = false;  // 削除チェックボックスをオフにする
-                    deleteCheckbox.disabled = true;  // 削除チェックボックスを無効化
-                } else {
-                    deleteCheckbox.disabled = false;  // 画像が選択されていない場合は削除チェックボックスを有効化
+                    deleteCheckbox.checked = false; // 削除チェックボックスをオフにする
                 }
+                toggleInputs(deleteCheckbox, imageInput);
             });
-        });
+        }
     });
+
+    // 入力状態を切り替える関数
+    function toggleInputs(deleteCheckbox, imageInput) {
+        if (deleteCheckbox.checked) {
+            imageInput.disabled = true; // 画像更新フィールドを無効化
+            deleteCheckbox.disabled = false; // 削除チェックボックスは有効
+        } else if (imageInput.files.length > 0) {
+            deleteCheckbox.disabled = true; // 削除チェックボックスを無効化
+            imageInput.disabled = false; // 画像更新フィールドは有効
+        } else {
+            deleteCheckbox.disabled = false; // 削除チェックボックスを有効化
+            imageInput.disabled = false; // 画像更新フィールドも有効化
+        }
+    }
+});
 </script>
 {% endblock %}

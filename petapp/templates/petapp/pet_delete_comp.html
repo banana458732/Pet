@@ -1,8 +1,52 @@
-{% extends '../base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}削除完了{% endblock %}
 
 {% block contents %}
-<h2>削除が完了しました</h2>
-<a href="{% url 'petapp:pet-list' %}">ペット一覧に戻る</a>
+<style>
+    /* 全体のスタイル */
+    .completion-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin: 0 auto;
+        max-width: 400px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    /* 見出しのスタイル */
+    .completion-message h2 {
+        color: #333;
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+
+    /* リンクボタンのスタイル */
+    .completion-message a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 16px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    .completion-message a:hover {
+        background-color: #388e3c;
+    }
+</style>
+
+<div class="completion-message">
+    <h2>削除が完了しました</h2>
+    <a href="{% url 'petapp:pet-list' %}">ペット一覧に戻る</a>
+</div>
 {% endblock %}
