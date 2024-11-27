@@ -50,3 +50,16 @@ class Karikeiyaku(models.Model):
         default='仮契約中', verbose_name="ステータス"
     )
     # 他のフィールド...
+
+
+# お気に入り機能を追加
+class FavoritePet(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="favorite_pets")
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name="favorited_by")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'pet')  # ユーザーとペットの組み合わせが一意であることを保証
+
+    def __str__(self):
+        return f"{self.user.username} - {self.pet.pet_id} (Favorite)"

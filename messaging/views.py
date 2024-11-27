@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Pet, Comment
+from .models import Pet, Comment, FavoritePet
 from django.contrib.auth.decorators import login_required
 from .forms import MessageForm, CommentForm
 from django.core.mail import send_mail
@@ -83,6 +83,24 @@ def pet_detail(request, pet_id):
         'user_karikeiyaku': user_karikeiyaku,
         'other_user_karikeiyaku': other_user_karikeiyaku,
     })
+
+
+@login_required
+def toggle_favorite(request, pet_id):
+    pet = Pet.objects.get(id=pet_id)
+
+    if request.method == "POST":
+        # チェックボックスの状態を取得
+        is_favorite = request.POST.get('favorite') == 'on'
+        
+        if is_favorite:
+            # お気に入りに登録
+            FavoritePet.objects.get_or_create(user=request.user, pet=pet)
+        else:
+            # お気に入りから解除
+            FavoritePet.objects.filter(user=request.user, pet=pet).delete()
+
+    return redirect('pet_detail', pet_id=pet.id)
 
 
 class IndexView(TemplateView):
