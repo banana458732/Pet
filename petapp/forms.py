@@ -97,7 +97,7 @@ class PetUpdateForm(forms.ModelForm):
     size = forms.ChoiceField(choices=SIZE_CHOICES, label='サイズ')
     color = forms.CharField(max_length=100, label='毛の色')
     age = forms.IntegerField(min_value=0, max_value=10, label='年齢')
-    kinds = forms.CharField(max_length=100, label='種別')
+    kinds = forms.CharField(max_length=100, label='品種')
     disease = forms.CharField(max_length=100, label='病歴', required=False)
     personality = forms.CharField(max_length=100, label='性格', required=False)
     sex = forms.CharField(label='性別', required=False, disabled=True)

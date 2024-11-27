@@ -67,6 +67,24 @@
         </div>
     </div>
 
+    <style>
+        .karikeiyaku-section {
+        display: flex; /* 子要素をflexboxで配置 */
+        justify-content: center; /* 横方向の中央揃え */
+        align-items: center; /* 縦方向の中央揃え */
+        flex-direction: column; /* 全体のレイアウトは縦並び */
+        text-align: center; /* テキスト中央揃え */
+        }
+
+        .karikeiyaku-section .btn-group {
+        display: flex;
+        justify-content: center; /* 横方向の中央揃え */
+        align-items: center; /* 縦方向の中央揃え */
+        flex-wrap: wrap; /* 必要に応じて折り返し */
+        gap: 20px; /* ボタン間のスペース */
+        }
+    </style>
+
     <!-- 情報セクション -->
     <div class="pet-info-section">
         <table class="pet-info-table">
@@ -178,10 +196,6 @@
     <div class="karikeiyaku-section">
         <h2>仮契約について</h2>
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 7d17de5749b2285329fac24c436aa64e0b97b92b
         {% if user.is_authenticated %}
         <!-- ログインしている場合に表示する文 -->
         <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
@@ -196,8 +210,10 @@
                 <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
             {% elif user_karikeiyaku %}
                 <!-- 自分が仮契約中 -->
-                <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
-                <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+                <div class="btn-group">
+                    <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中</a>
+                    <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
+                </div>
             {% else %}
                 <!-- 仮契約していない -->
                 <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
