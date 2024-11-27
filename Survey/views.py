@@ -30,16 +30,12 @@ def pet_survey(request):
         sex = form.cleaned_data.get('sex')
         age_range = form.cleaned_data.get('age_range')
 
-        print("フォームから取得したデータ:", pet_type, size, color, kinds, disease, personality, sex, age_range)
-
-        # **ここでフィルタリング処理を追加**
+        # フィルタリング処理
         if pet_type:
             pets_data = pets_data[pets_data['type'] == pet_type]
 
-        # スコア方式で一致項目を計算
-        pets_data['score'] = 0  # 初期スコアを0に設定
-
-        # 各フィールドについて一致項目に応じてスコアを加算
+        # スコア計算
+        pets_data['score'] = 0
         if size:
             pets_data['score'] += (pets_data['size'] == size).astype(int)
         if color:
@@ -50,38 +46,22 @@ def pet_survey(request):
             pets_data['score'] += (pets_data['disease'] == disease).astype(int)
         if personality:
             pets_data['score'] += (pets_data['personality'] == personality).astype(int)
-        # 性別でフィルタリング
+        if pet_type:
+            pets_data['score'] += (pets_data['type'] == pet_type).astype(int)
         if sex:
             pets_data = pets_data[pets_data['sex'] == sex]
-            pets_data['score'] += 1  # 性別が一致した場合スコア加算
-
-        # 年齢範囲のフィルタリング（年齢条件だけ追加）
+            pets_data['score'] += (pets_data['sex'] == sex).astype(int)
         if age_range:
-            selected_age_ranges = age_range.split(',')  # カンマで分割して選ばれた範囲をリストに
-
-            # 年齢範囲内のペットを抽出
-            age_filtered_pets = pd.DataFrame()  # 空のデータフレームを初期化
+            selected_age_ranges = age_range.split(',')
             if '0-3' in selected_age_ranges:
-                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[pets_data['age'] <= 3]])
+                pets_data['score'] += (pets_data['age'] <= 3).astype(int)
             if '4-7' in selected_age_ranges:
-                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 4) & (pets_data['age'] <= 7)]])
+                pets_data['score'] += ((pets_data['age'] >= 4) & (pets_data['age'] <= 7)).astype(int)
             if '8-10' in selected_age_ranges:
-                age_filtered_pets = pd.concat([age_filtered_pets, pets_data[(pets_data['age'] >= 8) & (pets_data['age'] <= 10)]])
-            
-            # 年齢範囲内のペットを若い順に並べる
-            age_filtered_pets = age_filtered_pets.sort_values(by='age', ascending=True)
+                pets_data['score'] += ((pets_data['age'] >= 8) & (pets_data['age'] <= 10)).astype(int)
 
-            # 年齢範囲内のペットと年齢範囲外のペットを分ける
-            pets_data_outside_range = pets_data[~pets_data.index.isin(age_filtered_pets.index)]
-
-            # まず年齢範囲内のペットを若い順に表示し、その後に年齢範囲外のペットをそのままの順番で表示
-            final_sorted_pets = pd.concat([age_filtered_pets, pets_data_outside_range])
-
-        else:
-            # 年齢範囲が選択されていない場合は元のデータを使用
-            final_sorted_pets = pets_data
-
-        print("スコア計算後のペットデータ:", pets_data[['score']])  # デバッグ用
+        # 最終的にスコアが高い順で並べ替える
+        final_sorted_pets = pets_data.sort_values(by=['score', 'age'], ascending=[False, True])
 
         # スコアが0のペットと1以上のペットに分ける
         pets_score_0 = final_sorted_pets[final_sorted_pets['score'] == 0]
@@ -101,9 +81,6 @@ def pet_survey(request):
             first_image = image_urls.split(',')[0] if image_urls else None
             pet_with_images_score_1_or_more.append((pet, first_image))
 
-        print("スコア0のペット:", pet_with_images_score_0)
-        print("スコア1以上のペット:", pet_with_images_score_1_or_more)
-
         # SurveyResultを保存
         survey_result = SurveyResult.objects.create(
             pet_type=pet_type or '',
@@ -115,17 +92,17 @@ def pet_survey(request):
             sex=sex or '',
             age_range=", ".join(age_range) if age_range else ''
         )
-        print("SurveyResultが作成されました:", survey_result)
 
+        # レンダリング時にスコア0のペットがある場合のみ表示
         return render(request, 'survey/results.html', {
             'survey_result': survey_result,
             'pets': pet_with_images_score_1_or_more + pet_with_images_score_0,  # スコア1以上とスコア0を合わせる
             'MEDIA_URL': settings.MEDIA_URL,
+            'pets_score_0': pets_score_0,  # スコア0のペットデータ
+            'has_pets_score_0': len(pets_score_0) > 0,  # スコア0のペットがいるかどうかのフラグ
         })
 
-    return render(request, 'survey/pet_survey.html', {
-        'form': form,
-    })
+    return render(request, 'survey/pet_survey.html', {'form': form})
 
 
 class IndexView(TemplateView):

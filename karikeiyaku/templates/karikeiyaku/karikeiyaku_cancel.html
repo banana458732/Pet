@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'base.html' %}
 
 {% block contents %}
@@ -9,3 +10,79 @@
     <button type="submit" class="btn">キャンセルする</button>
 </form>
 {% endblock %}
+=======
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仮契約キャンセル</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .cancel-form-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .cancel-form-container p {
+            color: #555;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #f4623a;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #d9432a;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            background-color: #b32e1e;
+        }
+
+        .warning {
+            font-weight: bold;
+            color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <div class="cancel-form-container">
+        <form method="POST">
+            {% csrf_token %}
+            <p class="warning">本当にキャンセルしますか？</p>
+            <p>仮契約期間中にキャンセルすると、ペットの引き渡しができなくなります。</p>
+            <button type="submit" class="btn">キャンセルする</button>
+        </form>
+    </div>
+</body>
+</html>
+>>>>>>> ab0bd2efa1e76cddaf7bb8ed42530ebf243824c5
