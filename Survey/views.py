@@ -120,10 +120,6 @@ def pet_survey(request):
 
 
 def save_matching_result(request):
-<<<<<<< HEAD
-
-=======
->>>>>>> 7d17de5749b2285329fac24c436aa64e0b97b92b
     # リクエストからペットのIDを取得
     pet_id = request.GET.get('pet_id') or request.POST.get('pet_id')
 
