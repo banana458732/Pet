@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import MyPageView, complete_contract
+from .views import MyPageView, complete_contract, RedirectTemporaryPetView
 
 app_name = 'accounts'
 
@@ -30,4 +30,5 @@ urlpatterns = [
           name='index'),
      path('mypage/', MyPageView.as_view(), name='my_page'),  # 'mypage'ではなく'my_page'を使用
      path('contract/complete/', complete_contract, name='complete_contract'),
+     path('temporary-pet/', RedirectTemporaryPetView.as_view(), name='temporary_pet'),
 ]

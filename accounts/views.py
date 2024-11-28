@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 # Create your views here.
+from django.views import View
 from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm
 from django.views.generic import TemplateView, CreateView
@@ -125,6 +126,21 @@ def complete_contract(request):
 
 class IndexView(TemplateView):
     template_name = 'accounts/index.html'
+
+
+class RedirectTemporaryPetView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if user.is_authenticated:
+            # 仮契約中のペット情報を取得
+            contract_pet = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet').first()
+            
+            if contract_pet:
+                return redirect('messaging:pet_detail', pet_id=contract_pet.pet.id)
+
+
+        # 仮登録中のペットがない場合はトップページに戻る
+        return redirect('accounts:index')
 
 
 class LogoutView(LoginRequiredMixin, LogoutView):
