@@ -8,17 +8,21 @@
     <h2 class="survey-title">アンケートフォーム</h2>
     <form method="POST">
         {% csrf_token %}
-        
+
         <!-- ペットの種類 -->
         <div class="form-group">
             <label for="id_pet_type">ペットの種類</label>
-            {{ form.pet_type }}
+            <div class="form-check">
+                {{ form.pet_type }}
+            </div>
         </div>
 
         <!-- ペットのサイズ -->
         <div class="form-group">
             <label for="id_size">ペットのサイズ</label>
-            {{ form.size }}
+            <div class="form-check">
+                {{ form.size }}
+            </div>
         </div>
 
         <!-- 色 -->
@@ -54,13 +58,17 @@
         <!-- 性別 -->
         <div class="form-group">
             <label for="id_sex">性別</label>
-            {{ form.sex }}
+            <div class="form-check">
+                {{ form.sex }}
+            </div>
         </div>
 
         <!-- 年齢範囲 -->
         <div class="form-group">
             <label for="id_age_range">希望するペットの年齢範囲 (任意)</label>
-            {{ form.age_range }}
+            <div class="form-check">
+                {{ form.age_range }}
+            </div>
         </div>
 
         <button type="submit" class="btn btn-primary">検索</button>
@@ -83,4 +91,37 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+<!-- 追加CSS -->
+<style>
+    /* フォーム全体を左揃え */
+    .form-group {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    /* ラベルの左揃え */
+    .form-group label {
+        display: block;
+        text-align: left;
+        margin-bottom: 5px;
+    }
+
+    /* ラジオボタンとラベルを横並びにして左揃え */
+    .form-check {
+        display: flex;
+        align-items: center;  /* ラジオボタンとラベルを縦方向に中央揃え */
+    }
+
+    .form-check input[type="radio"] {
+        height: 15px;
+        width: 15px;
+        margin-right: 5px;  /* ラジオボタンとラベルの間隔 */
+    }
+
+    .survey-container {
+        text-align: left;  /* コンテナ内の内容を左揃え */
+    }
+</style>
+
 {% endblock %}
