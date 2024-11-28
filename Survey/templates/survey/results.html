@@ -4,30 +4,40 @@
 {% block title %}ペット情報一覧{% endblock %}
 
 {% block contents %}
-<h1>マッチングしたペット情報</h1>
+<h1 style="font-weight: bold;">マッチングしたペット情報</h1>
 
 <!-- スコア1以上のペット -->
 {% if pets %}
-    <ul>
-        {% for pet, image_url in pets %}
-            {% if pet.score > 0 %}
-                <li>
-                    <div class="pet-info">
-                        <div class="pet-details">
-                            <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
+    {% with has_score_above_zero=False %}
+        <ul>
+            {% for pet, image_url in pets %}
+                {% if pet.score > 0 %}
+                    {% with has_score_above_zero=True %}
+                    <li>
+                        <div class="pet-info">
+                            <div class="pet-details">
+                                <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
+                            </div>
+                            <div class="pet-image">
+                                {% if image_url %}
+                                    <img src="{{ image_url }}" alt="Pet Image" width="200">
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="pet-image">
-                            {% if image_url %}
-                                <img src="{{ image_url }}" alt="Pet Image" width="200">
-                            {% endif %}
-                        </div>
-                    </div>
-                </li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+                    </li>
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <!-- スコア1以上のペットがいない場合のみ表示 -->
+        {% if not has_score_above_zero %}
+            <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
+            <hr>
+        {% endif %}
+    {% endwith %}
 {% else %}
-    <p>現在、スコア1以上のペットは登録されていません。</p>
+    <p style="text-align: center;">マッチングしたペットはいませんでした。</p>
 {% endif %}
 
 <!-- スコア0のペット（has_pets_score_0 フラグを使って表示） -->
