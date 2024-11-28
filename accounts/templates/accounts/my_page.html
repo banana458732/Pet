@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+  <h1>{{ user.username }}さんのマイページ</h1>
+
+  <h2>ユーザー情報</h2>
+  <table>
+    <tr>
+      <th>ユーザー名</th>
+      <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+      <th>メールアドレス</th>
+      <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+      <th>住所</th>
+      <td>{{ user.address }}</td>
+    </tr>
+    <tr>
+      <th>電話番号</th>
+      <td>{{ user.phone_number }}</td>
+    </tr>
+
+  </table>
+
+  <h2>仮契約中のペット</h2>
+  {% if user.contract_pets.all %}
+    <table>
+      <thead>
+        <tr>
+          <th>種類</th>
+          <th>契約状況</th>
+          <th>契約開始日</th>
+          <th>契約終了日</th>
+          <th>大きさ</th>
+          <th>色</th>
+          <th>年齢</th>
+          <th>品種</th>
+          <th>病歴</th>
+          <th>性格</th>
+          <th>性別</th>
+          <th>アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pet in user.contract_pets.all %}
+          <tr>
+            <td>{{ pet.type }}</td>
+            <td>{{ pet.status }}</td>
+            <td>{{ pet.created_at|date:"Y年m月d日" }}</td>
+            <td>{{ pet.end_date }}</td>
+            <td>{{ pet.size }}</td>
+            <td>{{ pet.color }}</td>
+            <td>{{ pet.age }}</td>
+            <td>{{ pet.kinds }}</td>
+            <td>{% if show_disease %}{{ pet.disease }}{% else %}なし{% endif %}</td>
+            <td>{{ pet.personality }}</td>
+            <td>{{ pet.sex }}</td>
+            <td>
+                <a href="{% url 'karikeiyaku:cancel' pet.id %}?from_mypage=true">キャンセル</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>現在、仮契約中のペットはありません。</p>
+  {% endif %}
+{% endblock %}

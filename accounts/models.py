@@ -2,11 +2,12 @@ from django.db import models
 # Create your models here.
 from django.contrib.auth.models import AbstractUser, Group, Permission
 
+
 class CustomUser(AbstractUser):
 
     groups = models.ManyToManyField(Group, blank=True,  related_name='customuser_set')
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='customuser_set')
-    
+
     address = models.CharField(
         verbose_name='住所',
         max_length=30,
@@ -17,4 +18,12 @@ class CustomUser(AbstractUser):
         verbose_name='電話番号',
         max_length=15,
         null=True,blank=True
+    )
+
+    # 仮契約したペットとの多対多関係
+    contract_pets = models.ManyToManyField(
+        'petapp.Pet',  # アプリ名.petモデル
+        blank=True,
+        related_name='contracted_users',
+        verbose_name='仮契約したペット'
     )
