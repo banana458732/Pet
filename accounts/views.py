@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 # Create your views here.
 from django.contrib.auth.models import User
@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser
 # from .forms import CustomUserCreationForm
+from petapp.models import Pet
+from karikeiyaku.models import Karikeiyaku
 
 
 class SignUpView(CreateView):
@@ -18,7 +20,7 @@ class SignUpView(CreateView):
     template_name = "accounts/signup.html"
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('accounts:signup_success')
-        
+
     def form_valid(self, form):
         ctx = {'form': form}
 
@@ -58,8 +60,67 @@ def LoginView(request):
         # ユーザーがオブジェクトが存在しないなら。
         else:
             return render(request, 'accounts/login.html', {'error': 'そのユーザーは存在しません。'})
-        
+
     return render(request, 'accounts/login.html', {})
+
+
+class MyPageView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/my_page.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+
+        # 仮契約中のペット情報を取得
+        contract_pets = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')
+
+        # Debugging output
+        print(f"User: {user.username}")
+        print(f"Contract Pets: {contract_pets}")
+
+        context['contract_pets'] = contract_pets
+
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        # Here we set a session flag before redirecting to cancel
+        pet_id = request.POST.get('pet_id')
+        if pet_id:
+            request.session['from_mypage'] = True
+            return redirect('karikeiyaku:cancel', pet_id=pet_id)
+        return super().post(request, *args, **kwargs)
+
+
+def add_contract_pet(request, pet_id):
+    user = request.user
+    if not user.is_authenticated:
+        return redirect('accounts:login')
+
+    pet = get_object_or_404(Pet, id=pet_id)  # ペットを取得
+
+    # デバッグ用ログ
+    print(f"User: {user.username}")
+    print(f"Adding pet ID: {pet.id} - {pet}")
+
+    # 仮契約を作成
+    Karikeiyaku.objects.create(user=user, pet=pet, status="仮契約中")
+
+    # 追加後の確認
+    print(f"Contract Pets after addition: {user.karikeiyaku.filter(status='仮契約中')}")
+
+    return redirect('accounts:my_page')
+
+
+def complete_contract(request):
+    user = request.user
+    if not user.is_authenticated:  # ユーザーがログインしているか確認
+        return redirect('accounts:login')
+
+    # 仮契約を完了に更新
+    user.contract_status = '完了'
+    user.save()  # ユーザー情報を保存
+
+    return redirect('accounts:my_page')  # マイページへリダイレクト
 
 
 class IndexView(TemplateView):
@@ -68,4 +129,3 @@ class IndexView(TemplateView):
 
 class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'accounts/login.html'
-
