@@ -25,7 +25,7 @@
   </table>
 
   <h2>仮契約中のペット</h2>
-  {% if user.contract_pets.all %}
+  {% if contract_pets %}
     <table>
       <thead>
         <tr>
@@ -44,21 +44,21 @@
         </tr>
       </thead>
       <tbody>
-        {% for pet in user.contract_pets.all %}
+        {% for karikeiyaku in contract_pets %}
           <tr>
-            <td>{{ pet.type }}</td>
-            <td>{{ pet.status }}</td>
-            <td>{{ pet.created_at|date:"Y年m月d日" }}</td>
-            <td>{{ pet.end_date }}</td>
-            <td>{{ pet.size }}</td>
-            <td>{{ pet.color }}</td>
-            <td>{{ pet.age }}</td>
-            <td>{{ pet.kinds }}</td>
-            <td>{% if show_disease %}{{ pet.disease }}{% else %}なし{% endif %}</td>
-            <td>{{ pet.personality }}</td>
-            <td>{{ pet.sex }}</td>
+            <td>{{ karikeiyaku.pet.type }}</td>
+            <td>{{ karikeiyaku.status }}</td>
+            <td>{{ karikeiyaku.created_at|date:"Y年m月d日" }}</td> <!-- 契約開始日を表示 -->
+            <td>{{ karikeiyaku.end_date }}</td> <!-- 契約終了日を表示 -->
+            <td>{{ karikeiyaku.pet.size }}</td>
+            <td>{{ karikeiyaku.pet.color }}</td>
+            <td>{{ karikeiyaku.pet.age }}</td>
+            <td>{{ karikeiyaku.pet.kinds }}</td>
+            <td>{% if show_disease %}{{ karikeiyaku.pet.disease }}{% else %}なし{% endif %}</td>
+            <td>{{ karikeiyaku.pet.personality }}</td>
+            <td>{{ karikeiyaku.pet.sex }}</td>
             <td>
-                <a href="{% url 'karikeiyaku:cancel' pet.id %}?from_mypage=true">キャンセル</a>
+                <a href="{% url 'karikeiyaku:cancel' karikeiyaku.pet.id %}?from_mypage=true">キャンセル</a>
             </td>
           </tr>
         {% endfor %}
