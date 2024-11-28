@@ -61,8 +61,8 @@ class SimplePetSurveyForm(forms.Form):
 
     # 性別
     SEX_CHOICES = [
-        ('男の子', '男の子'),
-        ('女の子', '女の子'),
+        ('オス', 'オス'),
+        ('メス', 'メス'),
     ]
     sex = forms.ChoiceField(
         choices=SEX_CHOICES,
