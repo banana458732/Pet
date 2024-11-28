@@ -1,4 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
+
+{% load static %}
+{% block title %}Mypage{% endblock %}
+
 
 {% block contents %}
   <h1>{{ user.username }}さんのマイページ</h1>
