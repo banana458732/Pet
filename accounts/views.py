@@ -79,21 +79,24 @@ class MyPageView(LoginRequiredMixin, TemplateView):
             print(f"契約開始日: {contract_pet.created_at}")
             print(f"契約終了日: {contract_pet.end_date}")
             print(f"契約状態: {contract_pet.status}")
+
         # 仮契約中のペットの画像を取得
         pet_images = []
         for contract_pet in contract_pets:
             pet = contract_pet.pet
 
-            # PetImageモデルに関連する画像を取得
-            images = PetImage.objects.filter(pet=pet)
+            if pet:  # petが存在するか確認
+                # PetImageモデルに関連する画像を取得
+                images = PetImage.objects.filter(pet=pet)
 
-        pet_images.append({
-            'pet': pet,
-            'images': images if images.exists() else None,
-            'created_at': contract_pet.created_at,
-            'end_date': contract_pet.end_date,
-            'status': contract_pet.status
-        })
+                # 画像情報とペット情報をまとめて辞書に格納
+                pet_images.append({
+                    'pet': pet,
+                    'images': images if images.exists() else None,
+                    'created_at': contract_pet.created_at,
+                    'end_date': contract_pet.end_date,
+                    'status': contract_pet.status
+                })
 
         context['pet_images'] = pet_images  # ここで画像情報を追加
 
