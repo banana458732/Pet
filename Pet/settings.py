@@ -165,3 +165,9 @@ LOGIN_URL = '/accounts/login/'
 LOGOUT_REDIRECT_URL = "/"
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+<<<<<<< HEAD
+=======
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+>>>>>>> af0bab8de46bcb5ca4e7a7d6e1ae3bb9ee901b6c

@@ -25,11 +25,19 @@ urlpatterns = [
           name='logout'
           ),
 
-     path('',
-          views.IndexView.as_view(template_name='accounts/index.html'),
-          name='index'),
+    #  path('',
+    #       views.IndexView.as_view(template_name='accounts/index.html'),
+    #       name='index'),
+     path('', views.index, name='index'),
      path('mypage/', MyPageView.as_view(), name='my_page'),  # 'mypage'ではなく'my_page'を使用
      path('contract/complete/', complete_contract, name='complete_contract'),
      path('temporary-pet/', RedirectTemporaryPetView.as_view(), name='temporary_pet'),
      path('change_profile_image/', views.change_profile_image, name='change_profile_image'),  # 追加
 ]
+
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

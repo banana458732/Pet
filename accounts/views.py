@@ -168,3 +168,11 @@ class RedirectTemporaryPetView(LoginRequiredMixin, View):
 
 class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'accounts/login.html'
+
+from django.shortcuts import render
+from petapp.models import PetImage
+
+def index(request):
+    # PetImageテーブルから全ての画像データを取得
+    images = PetImage.objects.all()
+    return render(request, 'accounts/index.html', {'images': images})
