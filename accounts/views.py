@@ -166,7 +166,7 @@ class RedirectTemporaryPetView(LoginRequiredMixin, View):
 
 
         # 仮登録中のペットがない場合はトップページに戻る
-        return redirect('accounts:index')
+        return render(request, 'accounts/index.html', {'has_temporary_pet': contract_pet})
 
 
 class LogoutView(LoginRequiredMixin, LogoutView):

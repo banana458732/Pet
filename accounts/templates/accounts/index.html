@@ -2,7 +2,6 @@
 {% load static %}
 {% block title %}Top Page{% endblock %}
 
-
 {% block contents %}
 <!DOCTYPE html>
 <html lang="ja">
@@ -22,10 +21,17 @@
             max-width: calc(33.333% - 20px);
             box-sizing: border-box; /* パディングや境界線も幅に含める */
         }
+        a {
+            display: block; /* リンク全体をクリック可能にする */
+        }
         img {
             max-width: 100%;
             height: auto;
-            display: block;
+            display: block; /* 画像の表示をブロックにしてクリック可能領域を確保 */
+            transition: transform 0.3s ease; /* ズームのアニメーションを追加 */
+        }
+        img:hover {
+            transform: scale(1.05); /* カーソルを合わせたときにズームイン */
         }
     </style>
 </head>
@@ -34,12 +40,14 @@
     <div class="image-container">
         {% for image in images %}
             <div>
-                <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                <!-- 画像が関連付けられたペットの詳細ページに遷移 -->
+                <a href="{% url 'messaging:pet_detail' image.pet.id %}">
+                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                </a>
             </div>
         {% endfor %}
     </div>
 </body>
 </html>
-
 
 {% endblock %}
