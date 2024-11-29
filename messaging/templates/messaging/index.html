@@ -1,0 +1,53 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %}Top Page{% endblock %}
+
+{% block contents %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        .image-container {
+            display: flex;
+            flex-wrap: wrap; /* 横に並びきれない場合、次の行に移る */
+            gap: 10px; /* 各画像間の隙間 */
+            justify-content: space-around; /* 画像を均等に配置 */
+        }
+        .image-container div {
+            flex: 1 1 calc(33.333% - 20px); /* 横幅を3等分 */
+            max-width: calc(33.333% - 20px);
+            box-sizing: border-box; /* パディングや境界線も幅に含める */
+        }
+        a {
+            display: block; /* リンク全体をクリック可能にする */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* 画像の表示をブロックにしてクリック可能領域を確保 */
+            transition: transform 0.3s ease; /* ズームのアニメーションを追加 */
+        }
+        img:hover {
+            transform: scale(1.05); /* カーソルを合わせたときにズームイン */
+        }
+    </style>
+</head>
+<body>
+    <h1>現在保護されているペット</h1>
+    <div class="image-container">
+        {% for image in images %}
+            <div>
+                <!-- 画像が関連付けられたペットの詳細ページに遷移 -->
+                <a href="{% url 'messaging:pet_detail' image.pet.id %}">
+                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+
+{% endblock %}
