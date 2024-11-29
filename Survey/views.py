@@ -68,12 +68,16 @@ def pet_survey(request):
 
         for pet in pets_score_0.to_dict('records'):
             image_urls = pet.get('image_urls', '')
-            first_image = image_urls.split(',')[0] if image_urls else None
+            first_image = None  # Default to None
+            if image_urls:
+                first_image = image_urls.split(',')[0]  # Get the first image URL
             pet_with_images_score_0.append((pet, first_image))
 
         for pet in pets_score_1_or_more.to_dict('records'):
             image_urls = pet.get('image_urls', '')
-            first_image = image_urls.split(',')[0] if image_urls else None
+            first_image = None  # Default to None
+            if image_urls:
+                first_image = image_urls.split(',')[0]  # Get the first image URL
             pet_with_images_score_1_or_more.append((pet, first_image))
 
         # スコア1以上のペットがいるかどうかのフラグ

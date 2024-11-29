@@ -87,9 +87,6 @@ def pet_create_view(request):
     # CSVデータを最初に読み込んでおく
     data = read_csv()
 
-    # 'id'列が存在しない場合、'id'列を作成
-    if 'id' not in data.columns:
-        data['id'] = pd.Series(dtype=int)  # 'id'列がない場合は空の整数列を作成
     # 不要な列（Unnamed: 10）を削除
     data = data.drop(columns=['Unnamed: 10'], errors='ignore')
 
@@ -136,9 +133,10 @@ def pet_create_view(request):
                     if phone_number:
                         PhoneNumber.objects.create(pet=pet, number=phone_number)
 
-                    # CSVデータに新しいペットの情報を追加
+                    # ペットのIDを確認した後にCSVにデータを追加
+                    pet_id = pet.id
                     new_pet_data = {
-                        'id': pet.id,
+                        'id': pet_id,  # 保存後に確定するIDを使用
                         'type': pet.type,
                         'size': pet.size,
                         'color': pet.color,
@@ -151,7 +149,7 @@ def pet_create_view(request):
                     }
 
                     # 新しいペットがCSVに存在しない場合は追加
-                    if pet.id not in data['id'].values:
+                    if pet_id not in data['id'].values:
                         data = pd.concat([data, pd.DataFrame([new_pet_data])], ignore_index=True)
                         write_csv(data)
 

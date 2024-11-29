@@ -8,7 +8,7 @@ from django.core.files.storage import default_storage
 class PetCreateForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['id', 'type', 'size', 'color', 'age', 'kinds', 'disease',
+        fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
                   'personality', 'sex', 'phone_number']
 
     def clean_id(self):
@@ -22,8 +22,9 @@ class PetCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not self.instance.pk:  # 新規登録時
-            self.fields['id'].required = True  # idを非必須にする
+        if 'id' in self.fields:
+            self.fields['id'].initial = value  # 初期値を設定
+            print(self.fields)  # フィールド全体を出力して確認
 
 
 class PetImageForm(forms.ModelForm):
@@ -68,7 +69,7 @@ PetImageFormSet = RequiredPetImageFormSet
 class PetUpdateForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ['id', 'type', 'size', 'color', 'age', 'kinds', 'disease',
+        fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
                   'personality', 'sex', 'phone_number']
 
     def __init__(self, *args, **kwargs):
