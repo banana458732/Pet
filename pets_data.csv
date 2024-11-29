@@ -1,0 +1,4 @@
+id,type,size,color,age,kinds,disease,personality,sex,image_urls
+57,犬,小型,茶,2,雑種,なし,明るい,オス,/media/pet_images/uuid_5811fb17be0748de947e0297de0bf2b6.jpg
+92,犬,中型,黒,7,雑種,なし,おとなしい,メス,/media/pet_images/uuid_6d22298319b64c7d884d088970abda8c.jpg
+42,犬,大型,茶,4,コーギー,なし,元気,オス,/media/pet_images/uuid_c884aeb36a2f428b8b6aa59fec685a47.jpg
