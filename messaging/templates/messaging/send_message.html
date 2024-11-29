@@ -1,61 +1,179 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
 {% load static %}
 
 {% block title %}お問い合わせ{% endblock %}
 
-{% block header %}
-<!-- Masthead-->
-<header class="masthead" style="background-image: url({% static 'assets/img/Image1.jpg' %}); display: flex; align-items: center; justify-content: center; height: 100vh;">
-    <div class="container position-relative px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 justify-content-center">
-            <div class="col-md-10 col-lg-8 col-xl-7">
-                <div class="site-heading" style="text-align: center;">
-                    <h1 style="font-size: 60px; white-space: nowrap;">Matching system that connects</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-{% endblock %}
 
 {% block contents %}
-<!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light fixed-top py-3" id="mainNav">
-    <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="#" onclick="history.back()">Top page</a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ms-auto my-2 my-lg-0">
-                <li class="nav-item"><a class="nav-link" href="#about">ログイン・登録</a></li>
-                <li class="nav-item"><a class="nav-link" href="#services">サービス内容</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about2">アンケートに回答</a></li>
-                <li class="nav-item"><a class="nav-link" href="#call">お問い合わせ</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
 
+<style>
+    h2 {
+        text-align: center;
+    }
+
+    /* 全体のフォームのスタイル */
+    .inquiry-form {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* フォームのラベルと入力のスタイル */
+    .inquiry-form .form-group {
+        margin-bottom: 15px;
+    }
+
+    .inquiry-form label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .inquiry-form input,
+    .inquiry-form select,
+    .inquiry-form textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .inquiry-form .error-list {
+        color: red;
+        font-size: 0.9em;
+    }
+
+    .inquiry-form .error {
+        margin-top: 5px;
+    }
+
+    /* ボタンのスタイル */
+    .inquiry-form button.btn-submit {
+        width: 100%;
+        padding: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .inquiry-form button.btn-submit:hover {
+        background-color: #45a049;
+    }
+
+    /* 戻るボタン */
+    .btn-back {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #f44336;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-top: 10px;
+    }
+
+    .btn-back:hover {
+        background-color: #e53935;
+    }
+
+    /* エラーメッセージを目立たせる */
+    .error-list {
+        font-size: 0.9em;
+        color: red;
+    }
+
+    .error-list p {
+        margin: 0;
+    }
+
+    /* フォーム内のボタンの配置 */
+    .form-footer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 768px) {
+        .inquiry-form {
+            padding: 15px;
+        }
+
+        .inquiry-form input,
+        .inquiry-form select,
+        .inquiry-form textarea {
+            padding: 8px;
+        }
+
+        .inquiry-form button.btn-submit {
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+    }
+
+    /* より大きな画面のための設定 */
+    @media (min-width: 1200px) {
+        .inquiry-form {
+            max-width: 1000px;
+        }
+
+        .inquiry-form input,
+        .inquiry-form select,
+        .inquiry-form textarea {
+            padding: 12px;
+        }
+
+        .inquiry-form button.btn-submit {
+            font-size: 18px;
+        }
+    }
+</style>
 
 <section class="page-section" id="contact">
     <div class="container px-4 px-lg-5">
         <h2 class="text-center mt-0">お問い合わせ</h2>
         <hr class="divider" />
-        
-        <form method="post">
+
+        <form method="post" class="inquiry-form">
             {% csrf_token %}
             <div class="mb-3">
-                <label for="sender_name" class="form-label">お名前:</label>
+                <label for="sender_name" class="form-label">お名前</label>
                 <input type="text" class="form-control" id="sender_name" name="sender_name" required>
             </div>
             <div class="mb-3">
-                <label for="sender_email" class="form-label">メールアドレス:</label>
+                <label for="sender_email" class="form-label">メールアドレス</label>
                 <input type="email" class="form-control" id="sender_email" name="sender_email" required>
             </div>
             <div class="mb-3">
-                <label for="message" class="form-label">メッセージ内容:</label>
+                <label for="message" class="form-label">メッセージ内容</label>
                 <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">送信</button>
+
+            <!-- エラーメッセージ -->
+            {% if error_messages %}
+                <div class="error-list">
+                    {% for error in error_messages %}
+                        <p class="error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-primary">送信</button>
+            </div>
         </form>
     </div>
 </section>

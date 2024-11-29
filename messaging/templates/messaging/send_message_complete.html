@@ -1,11 +1,104 @@
+{% extends 'accounts/base.html' %}
 
 {% block title %}お問い合わせ完了{% endblock %}
 
-{% block content %}
-<h2>お問い合わせ完了</h2>
-<p>お問い合わせが送信されました。</p>
-<p>お名前: {{ sender_name }}</p>
-<p>メールアドレス: {{ sender_email }}</p>
-<p>メッセージ内容: {{ message_content }}</p>
-<a href="{% url 'messages:index' %}">トップページに戻る</a>
+{% block contents %}
+<style>
+    /* 全体のスタイル */
+    .registration-complete {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 40px; /* より広い余白 */
+        background-color: #f9f9f9;
+        border: 3px solid #ddd; /* 枠線を少し太く変更 */
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* より柔らかな影 */
+        font-family: Arial, sans-serif;
+        overflow: hidden; /* 親要素が子要素のはみ出しを隠す */
+        text-align: center; /* 中央揃え */
+    }
+
+    /* 見出しのスタイル */
+    .registration-complete h2 {
+        color: #f4623a;
+        font-size: 2.5rem; /* 見出しサイズを少し大きく */
+        margin-bottom: 20px; /* より広い余白 */
+        font-weight: bold;
+    }
+
+    /* テーブルのスタイル */
+    .registration-complete table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+    }
+
+    .registration-complete th,
+    .registration-complete td {
+        padding: 15px 20px; /* セル内の余白を調整 */
+        text-align: left;
+        border-bottom: 2px solid #eee; /* 柔らかな区切り線 */
+        word-wrap: break-word; /* 長い単語を改行させる */
+        white-space: normal; /* 自然に改行する */
+    }
+
+    /* テーブルヘッダーのスタイル */
+    .registration-complete th {
+        color: #333;
+        background-color: #f5f5f5;
+        font-weight: bold;
+        width: 150px; /* thの幅を固定 */
+    }
+
+    /* テーブルデータのスタイル */
+    .registration-complete td {
+        color: #555;
+    }
+
+    /* メッセージ内容のスタイル（内容が長い場合に広がる） */
+    .registration-complete td.message-content {
+        white-space: pre-wrap; /* 長いテキストが折り返されるように */
+        word-wrap: break-word;
+        max-width: 500px; /* メッセージ内容の最大幅を設定 */
+    }
+
+    /* ボタンのスタイル */
+    .registration-complete a {
+        display: inline-block;
+        background-color: #f4623a;
+        color: white;
+        padding: 12px 25px;
+        font-size: 1.1rem;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s ease;
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .registration-complete a:hover {
+        background-color: #c34e2e;
+        transform: translateY(-2px); /* ボタンが浮き上がる */
+    }
+</style>
+
+<div class="registration-complete">
+    <h2>お問い合わせ完了</h2>
+    <p>お問い合わせが送信されました。</p>
+    <table>
+        <tr>
+            <th>お名前</th>
+            <td>{{ sender_name }}</td>
+        </tr>
+        <tr>
+            <th>メールアドレス</th>
+            <td>{{ sender_email }}</td>
+        </tr>
+        <tr>
+            <th>メッセージ内容</th>
+            <td class="message-content">{{ message_content }}</td> <!-- メッセージ内容用のクラスを追加 -->
+        </tr>
+    </table>
+    <a href="{% url 'accounts:index' %}">トップページに戻る</a>
+</div>
 {% endblock %}
