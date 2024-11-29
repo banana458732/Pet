@@ -10,6 +10,30 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ('username', 'email', 'password1', 'password2','address','phone_number')
 
+
 class LoginForm(AuthenticationForm):
     class Meta:
         model = CustomUser
+
+
+class ProfileImageForm(forms.ModelForm):
+    delete_image = forms.BooleanField(required=False, label='画像を削除', initial=False)
+
+    class Meta:
+        model = CustomUser
+        fields = ['profile_image']
+
+    # フィールドにカスタムウィジェットを設定
+    profile_image = forms.ImageField(
+        widget=forms.FileInput(attrs={'accept': 'image/*'}),
+        label=''
+    )
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.cleaned_data.get('delete_image'):  # 画像を削除する場合
+            instance.delete_old_image()
+            instance.profile_image = 'profile_images/default.jpg'  # デフォルト画像に戻す
+        if commit:
+            instance.save()
+        return instance

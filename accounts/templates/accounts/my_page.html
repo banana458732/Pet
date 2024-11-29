@@ -1,74 +1,182 @@
 {% extends 'accounts/base.html' %}
-
 {% load static %}
+
 {% block title %}Mypage{% endblock %}
 
-
 {% block contents %}
-  <h1>{{ user.username }}さんのマイページ</h1>
+<style>
+    .profile-container {
+        text-align: center;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 1000px;
+        background-color: #f9f9f9;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
 
-  <h2>ユーザー情報</h2>
-  <table>
-    <tr>
-      <th>ユーザー名</th>
-      <td>{{ user.username }}</td>
-    </tr>
-    <tr>
-      <th>メールアドレス</th>
-      <td>{{ user.email }}</td>
-    </tr>
-    <tr>
-      <th>住所</th>
-      <td>{{ user.address }}</td>
-    </tr>
-    <tr>
-      <th>電話番号</th>
-      <td>{{ user.phone_number }}</td>
-    </tr>
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #ddd;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-  </table>
+    .profile-info {
+        margin: 30px auto;
+        width: 100%;
+        max-width: 600px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+    }
 
-  <h2>仮契約中のペット</h2>
-  {% if contract_pets %}
-    <table>
-      <thead>
+    .profile-info th, .profile-info td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .profile-info th {
+        background-color: #f7f7f7;
+        text-align: left;
+    }
+
+    .contract-pets {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 子要素を中央揃え */
+    justify-content: center;
+    margin-top: 30px;
+    }
+
+    .contract-pet-card {
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+        width: 100%;
+        max-width: 800px; /* 最大幅を設定 */
+        text-align: center;
+        margin: 0 auto; /* 左右中央揃え */
+    }
+
+    .contract-pet-card .pet-info {
+        grid-template-columns: 1fr 2fr;
+        grid-gap: 20px;
+        margin-top: 20px;
+        justify-items: center; /* グリッドアイテムを中央揃え */
+    }
+
+    .contract-pet-card .pet-info p {
+        font-size: 1em;
+        color: #555;
+    }
+
+    .pet-image {
+        width: 80%;
+        max-width: 200px;
+        height: auto;
+        margin: 0 auto 10px;
+    }
+
+    .action-link-container a {
+        font-size: 1.2em;
+        color: #007BFF;
+        text-decoration: none;
+    }
+
+    .action-link-container a:hover {
+        text-decoration: underline;
+    }
+
+
+    .section-title {
+        font-size: 2em;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+</style>
+
+
+<div class="profile-container">
+    <h1>{{ user.username }}様のマイページ</h1>
+  
+    <div>
+      {% if user.profile_image and user.profile_image.name != "profile_images/default.jpg" %}
+        <img src="{{ user.profile_image.url }}" alt="プロフィール画像" class="profile-image" />
+      {% else %}
+        <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
+      {% endif %}
+      <p>
+        <a href="{% url 'accounts:change_profile_image' %}" class="action-link">プロフィール画像を変更する</a>
+      </p>
+    </div>
+  
+    <div class="profile-info">
+      <h2>ユーザー情報</h2>
+      <table>
         <tr>
-          <th>種類</th>
-          <th>契約状況</th>
-          <th>契約開始日</th>
-          <th>契約終了日</th>
-          <th>大きさ</th>
-          <th>色</th>
-          <th>年齢</th>
-          <th>品種</th>
-          <th>病歴</th>
-          <th>性格</th>
-          <th>性別</th>
-          <th>アクション</th>
+          <th>ユーザー名</th>
+          <td>{{ user.username }}</td>
         </tr>
-      </thead>
-      <tbody>
-        {% for karikeiyaku in contract_pets %}
-          <tr>
-            <td>{{ karikeiyaku.pet.type }}</td>
-            <td>{{ karikeiyaku.status }}</td>
-            <td>{{ karikeiyaku.created_at|date:"Y年m月d日" }}</td> <!-- 契約開始日を表示 -->
-            <td>{{ karikeiyaku.end_date }}</td> <!-- 契約終了日を表示 -->
-            <td>{{ karikeiyaku.pet.size }}</td>
-            <td>{{ karikeiyaku.pet.color }}</td>
-            <td>{{ karikeiyaku.pet.age }}</td>
-            <td>{{ karikeiyaku.pet.kinds }}</td>
-            <td>{% if show_disease %}{{ karikeiyaku.pet.disease }}{% else %}なし{% endif %}</td>
-            <td>{{ karikeiyaku.pet.personality }}</td>
-            <td>{{ karikeiyaku.pet.sex }}</td>
-            <td>
-                <a href="{% url 'karikeiyaku:cancel' karikeiyaku.pet.id %}?from_mypage=true">キャンセル</a>
-            </td>
-          </tr>
+        <tr>
+          <th>メールアドレス</th>
+          <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+          <th>住所</th>
+          <td>{{ user.address }}</td>
+        </tr>
+        <tr>
+          <th>電話番号</th>
+          <td>{{ user.phone_number }}</td>
+        </tr>
+      </table>
+    </div>
+  
+    <h2 class="section-title">仮契約中のペット</h2>
+    {% if pet_images %}
+    <div class="contract-pets">
+        {% for pet_data in pet_images %}
+          <div class="contract-pet-card">
+            {% if pet_data.images %}
+              <img src="{{ pet_data.images.first.image.url }}" alt="ペット画像" class="pet-image">
+            {% else %}
+              <img src="{% static 'images/default-image.jpg' %}" alt="デフォルト画像" class="pet-image">
+            {% endif %}
+            <h3>ペット情報</h3>
+            <div class="pet-info">
+              <div>
+                <p><strong>種類:</strong> {{ pet_data.pet.type }}</p>
+                <p><strong>契約状況:</strong> {{ pet_data.status }}</p>
+                <p><strong>契約開始日:</strong> {{ pet_data.created_at|date:"Y年m月d日" }}</p>
+                <p><strong>契約終了日:</strong> {{ pet_data.end_date|date:"Y年m月d日" }}</p>
+                <p><strong>大きさ:</strong> {{ pet_data.pet.size }}</p>
+                <p><strong>色:</strong> {{ pet_data.pet.color }}</p>
+                <p><strong>年齢:</strong> {{ pet_data.pet.age }}</p>
+                <p><strong>品種:</strong> {{ pet_data.pet.kinds }}</p>
+                <p><strong>病歴:</strong> {% if show_disease %}{{ pet_data.pet.disease }}{% else %}なし{% endif %}</p>
+                <p><strong>性格:</strong> {{ pet_data.pet.personality }}</p>
+                <p><strong>性別:</strong> {{ pet_data.pet.sex }}</p>
+              </div>
+            </div>
+            <div class="action-link-container">
+              <a href="{% url 'karikeiyaku:cancel' pet_data.pet.id %}?from_mypage=true" class="action-link">キャンセル</a>
+            </div>
+          </div>
         {% endfor %}
-      </tbody>
-    </table>
-  {% else %}
-    <p>現在、仮契約中のペットはありません。</p>
-  {% endif %}
+      </div>
+          {% else %}
+      <p style="text-align: center;">現在、仮契約中のペットはありません。</p>
+    {% endif %}
+  
+</div>
 {% endblock %}

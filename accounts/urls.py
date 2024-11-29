@@ -32,6 +32,7 @@ urlpatterns = [
      path('mypage/', MyPageView.as_view(), name='my_page'),  # 'mypage'ではなく'my_page'を使用
      path('contract/complete/', complete_contract, name='complete_contract'),
      path('temporary-pet/', RedirectTemporaryPetView.as_view(), name='temporary_pet'),
+     path('change_profile_image/', views.change_profile_image, name='change_profile_image'),  # 追加
 ]
 
 

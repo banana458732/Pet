@@ -1,0 +1,63 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}プロフィール画像の変更{% endblock %}
+
+{% block contents %}
+<style>
+  .profile-container {
+    text-align: center;
+    margin: 20px 0;
+  }
+  .profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* 丸いアイコン */
+    object-fit: cover;
+    border: 3px solid #ddd; /* 輪郭線 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  .profile-info {
+    margin: 20px auto;
+    width: 80%;
+    max-width: 600px;
+    border-collapse: collapse;
+  }
+  .profile-info th, .profile-info td {
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+  .profile-info th {
+    text-align: left;
+    background-color: #f9f9f9;
+  }
+  .action-link {
+    color: #007BFF;
+    text-decoration: none;
+  }
+  .action-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="profile-container">
+    <h1>プロフィールの変更</h1>
+
+    <!-- 現在のプロフィール画像を表示 -->
+    <div>
+      {% if user.profile_image and user.profile_image.name != "profile_images/default.jpg" %}
+        <img src="{{ user.profile_image.url }}" alt="現在のプロフィール画像" class="profile-image" />
+      {% else %}
+        <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
+      {% endif %}
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ profile_form.as_p }}  <!-- フォームを表示 -->
+      <button type="submit">変更を保存</button>
+    </form>
+
+    <p><a href="{% url 'accounts:my_page' %}" class="action-link">マイページに戻る</a></p>
+</div>
+{% endblock %}

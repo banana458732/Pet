@@ -28,12 +28,11 @@ def pet_survey(request):
         sex = form.cleaned_data.get('sex')
         age_range = form.cleaned_data.get('age_range')
 
-        # フィルタリング処理
-        if pet_type:
-            pets_data = pets_data[pets_data['type'] == pet_type]
-
         # スコア計算
         pets_data['score'] = 0
+        if pet_type:
+            pets_data = pets_data[pets_data['type'] == pet_type]
+            pets_data['score'] += (pets_data['type'] == pet_type).astype(int)
         if size:
             pets_data['score'] += (pets_data['size'] == size).astype(int)
         if color:
@@ -44,8 +43,6 @@ def pet_survey(request):
             pets_data['score'] += (pets_data['disease'] == disease).astype(int)
         if personality:
             pets_data['score'] += (pets_data['personality'] == personality).astype(int)
-        if pet_type:
-            pets_data['score'] += (pets_data['type'] == pet_type).astype(int)
         if sex:
             pets_data = pets_data[pets_data['sex'] == sex]
             pets_data['score'] += (pets_data['sex'] == sex).astype(int)

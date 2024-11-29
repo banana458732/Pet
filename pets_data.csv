@@ -1,7 +1,4 @@
 id,type,size,color,age,kinds,disease,personality,sex,image_urls
-93,犬,大型,茶,3,雑種,なし,明るい,オス,/media/pet_images/uuid_9707054bdcf247eca40a0e9e3cfa9730.jpg
-476,猫,中型,黒,3,雑種,なし,元気,オス,/media/pet_images/uuid_29083306ba74403a8b46bdfedff0d48a.jpg
-89,犬,小型,白,1,コーギー,なし,おとなしい,メス,/media/pet_images/uuid_fa50f81ddb9b42b4a942873a7221ba11.jpg
-97,犬,大型,茶,7,雑種,なし,元気,メス,/media/pet_images/uuid_7d95fe6937f44428853b5dc4f879d0c6.jpg
-26,猫,中型,黒,9,雑種,なし,明るい,オス,/media/pet_images/uuid_ef67c6e863224efdae56e5696bfbff8d.jpg
-85,猫,中型,黒,2,雑種,なし,おとなしい,オス,/media/pet_images/uuid_7b69edc099904262abbe8b0837a372c5.jpg
+57,犬,小型,茶,2,雑種,なし,明るい,オス,/media/pet_images/uuid_5811fb17be0748de947e0297de0bf2b6.jpg
+92,犬,中型,黒,7,雑種,なし,おとなしい,メス,/media/pet_images/uuid_6d22298319b64c7d884d088970abda8c.jpg
+42,犬,大型,茶,4,コーギー,なし,元気,オス,/media/pet_images/uuid_c884aeb36a2f428b8b6aa59fec685a47.jpg

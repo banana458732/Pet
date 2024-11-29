@@ -1,5 +1,5 @@
 {% extends 'accounts/base.html' %}
-
+{% load static%}
 {% block title %}{{ pet.id }}の詳細{% endblock %}
 
 {% block contents %}
@@ -91,6 +91,18 @@
         .karikeiyaku-section .btn-group .btn.btn-primary {
             border-radius: 5px !important; /* !importantを追加して強制的に適用 */
         }
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .profile-image {
+            width: 40px;  /* 画像の幅 */
+            height: 40px; /* 画像の高さ */
+            border-radius: 50%; /* 丸い画像にする */
+            margin-right: 10px; /* 画像とテキストの間にスペース */
+        }
     </style>
 
     <!-- 情報セクション -->
@@ -143,16 +155,24 @@
                 <ul>
                     {% for comment in comments %}
                     <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
-                        <strong>{{ comment.user.username }}:
-                            {% if comment.user.is_superuser %}
-                                <span style="color: red;">[管理者]</span>
+                        <!-- ユーザーのプロフィール画像 -->
+                        <div class="comment-header">
+                            {% if comment.user.profile_image and comment.user.profile_image.name != 'profile_images/default.jpg' %}
+                                <img src="{{ comment.user.profile_image.url }}" alt="{{ comment.user.username }}のプロフィール画像" class="profile-image" />
+                            {% else %}
+                                <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
                             {% endif %}
-                        </strong>
+                            <strong>{{ comment.user.username }}
+                                {% if comment.user.is_superuser %}
+                                    <span style="color: red;">[管理者]</span>
+                                {% endif %}
+                            </strong>
+                        </div>
                         <div class="comment-content">
                             {{ comment.content }}
                             <br><small>{{ comment.timestamp }}</small>
                         </div>
-                        
+    
                         <!-- 管理者のみ削除ボタンを表示 -->
                         {% if user.is_superuser %}
                             <form method="POST" style="display:inline;">
@@ -169,7 +189,7 @@
                 <p>まだコメントはありません。</p>
             {% endif %}
         </div>
-    </div>
+    </div>    
     
     <!-- コメントフォーム -->
     <div class="comment-form-container">
