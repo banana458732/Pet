@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-# Create your views here.
 from django.views import View
 from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm
@@ -11,9 +10,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser
-# from .forms import CustomUserCreationForm
 from petapp.models import Pet
 from karikeiyaku.models import Karikeiyaku
+from .forms import ProfileImageForm
+from petapp.models import PetImage
 
 
 class SignUpView(CreateView):
@@ -75,21 +75,32 @@ class MyPageView(LoginRequiredMixin, TemplateView):
         # 仮契約中のペット情報を取得
         contract_pets = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')
 
-        # Debugging output
-        print(f"User: {user.username}")
-        print(f"Contract Pets: {contract_pets}")
+        for contract_pet in contract_pets:
+            print(f"契約開始日: {contract_pet.created_at}")
+            print(f"契約終了日: {contract_pet.end_date}")
+            print(f"契約状態: {contract_pet.status}")
+        # 仮契約中のペットの画像を取得
+        pet_images = []
+        for contract_pet in contract_pets:
+            pet = contract_pet.pet
 
-        context['contract_pets'] = contract_pets
+            # PetImageモデルに関連する画像を取得
+            images = PetImage.objects.filter(pet=pet)
+
+        pet_images.append({
+            'pet': pet,
+            'images': images if images.exists() else None,
+            'created_at': contract_pet.created_at,
+            'end_date': contract_pet.end_date,
+            'status': contract_pet.status
+        })
+
+        context['pet_images'] = pet_images  # ここで画像情報を追加
+
+        # プロフィール画像フォームをコンテキストに追加
+        context['profile_image_form'] = ProfileImageForm(instance=user)
 
         return context
-    
-    def post(self, request, *args, **kwargs):
-        # Here we set a session flag before redirecting to cancel
-        pet_id = request.POST.get('pet_id')
-        if pet_id:
-            request.session['from_mypage'] = True
-            return redirect('karikeiyaku:cancel', pet_id=pet_id)
-        return super().post(request, *args, **kwargs)
 
 
 def add_contract_pet(request, pet_id):
@@ -124,6 +135,18 @@ def complete_contract(request):
     return redirect('accounts:my_page')  # マイページへリダイレクト
 
 
+def change_profile_image(request):
+    if request.method == 'POST':
+        profile_form = ProfileImageForm(request.POST, request.FILES, instance=request.user)
+        if profile_form.is_valid():
+            profile_form.save()  # save() メソッドを呼び出すだけで古い画像の削除処理も動作
+            return redirect('accounts:my_page')  # マイページへリダイレクト
+    else:
+        profile_form = ProfileImageForm(instance=request.user)
+
+    return render(request, 'accounts/change_profile_image.html', {'profile_form': profile_form})
+
+
 class IndexView(TemplateView):
     template_name = 'accounts/index.html'
 
@@ -134,7 +157,7 @@ class RedirectTemporaryPetView(LoginRequiredMixin, View):
         if user.is_authenticated:
             # 仮契約中のペット情報を取得
             contract_pet = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet').first()
-            
+
             if contract_pet:
                 return redirect('messaging:pet_detail', pet_id=contract_pet.pet.id)
 

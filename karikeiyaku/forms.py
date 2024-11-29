@@ -2,6 +2,7 @@ from django import forms
 from .models import Karikeiyaku
 from datetime import date, timedelta
 
+
 class KarikeiyakuForm(forms.ModelForm):
     agreement = forms.BooleanField(
         required=True, 
