@@ -162,7 +162,7 @@ PET_IMAGES_FOLDER = os.path.join(MEDIA_ROOT, 'pet_images')
 
 LOGIN_URL = '/accounts/login/'
 
-LOGOUT_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/"
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 

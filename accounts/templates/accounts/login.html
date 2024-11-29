@@ -79,12 +79,10 @@
               </div>
               <!-- パスワードリセットページのリンクテキスト -->
               <p style="text-align: center; margin-top:">
-              <a href="{% url 'survey:index' %}" style="font-size:
+              <a href="{% url 'accounts:index' %}" style="font-size:
                14px; ">トップページに戻る</a></p>
               
               <!-- ログイン直後のリダイレクト先(トップページ)のURLパターンを設定 -->
-              <input type="hidden" 
-                     value="{% url 'survey:index' %}">
             </form>  
 </html>
 

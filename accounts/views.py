@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import CustomUser
+from django.contrib import messages
 from petapp.models import Pet
 from karikeiyaku.models import Karikeiyaku
 from .forms import ProfileImageForm
@@ -57,7 +58,8 @@ def LoginView(request):
         if user is not None:
         # ログインする。
             login(request, user)
-            return redirect('accounts:index')
+            previous_page = request.META.get('HTTP_REFERER', '/')
+            return redirect(previous_page)
         # ユーザーがオブジェクトが存在しないなら。
         else:
             return render(request, 'accounts/login.html', {'error': 'そのユーザーは存在しません。'})
@@ -165,8 +167,12 @@ class RedirectTemporaryPetView(LoginRequiredMixin, View):
                 return redirect('messaging:pet_detail', pet_id=contract_pet.pet.id)
 
 
-        # 仮登録中のペットがない場合はトップページに戻る
-        return render(request, 'accounts/index.html', {'has_temporary_pet': contract_pet})
+        # 仮登録中のペットがない場合は元のページに戻る
+        messages.info(request, '仮登録中のペットがありません。')
+        previous_page = request.META.get('HTTP_REFERER', '/')
+        return redirect(previous_page)
+
+        # return redirect(previous_page, {'no_petmessage': '現在登録中のペットがありません。'})
 
 
 class LogoutView(LoginRequiredMixin, LogoutView):
