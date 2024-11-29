@@ -5,22 +5,20 @@ from .forms import SimplePetSurveyForm
 from .models import SurveyResult
 from django.http import HttpResponse
 from django.conf import settings
-from django.shortcuts import get_object_or_404
 from petapp.models import Pet
-
 
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
     # CSVファイルの読み込み
     try:
-        pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')  # pets_data.csvを読み込む
-        pets_data = pets_data.fillna('')  # 欠損値を空文字で埋める
+        pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')
+        pets_data = pets_data.fillna('')
     except Exception as e:
         return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
 
     if request.method == 'POST' and form.is_valid():
-        # フォームから取得するフィールド
+        # フォームからの入力データ取得
         pet_type = form.cleaned_data.get('pet_type')
         size = form.cleaned_data.get('size')
         color = form.cleaned_data.get('color')
@@ -60,14 +58,14 @@ def pet_survey(request):
             if '8-10' in selected_age_ranges:
                 pets_data['score'] += ((pets_data['age'] >= 8) & (pets_data['age'] <= 10)).astype(int)
 
-        # 最終的にスコアが高い順で並べ替える
+        # スコアで並べ替え
         final_sorted_pets = pets_data.sort_values(by=['score', 'age'], ascending=[False, True])
 
-        # スコアが0のペットと1以上のペットに分ける
+        # スコアによる分類
         pets_score_0 = final_sorted_pets[final_sorted_pets['score'] == 0]
         pets_score_1_or_more = final_sorted_pets[final_sorted_pets['score'] > 0]
 
-        # 画像URLの処理
+        # 画像の処理
         pet_with_images_score_0 = []
         pet_with_images_score_1_or_more = []
 
@@ -81,7 +79,10 @@ def pet_survey(request):
             first_image = image_urls.split(',')[0] if image_urls else None
             pet_with_images_score_1_or_more.append((pet, first_image))
 
-        # SurveyResultを保存
+        # スコア1以上のペットがいるかどうかのフラグ
+        has_score_above_zero = any(pet['score'] > 0 for pet in pets_score_1_or_more.to_dict('records'))
+
+        # SurveyResult保存
         survey_result = SurveyResult.objects.create(
             pet_type=pet_type or '',
             size=size or '',
@@ -93,22 +94,20 @@ def pet_survey(request):
             age_range=", ".join(age_range) if age_range else ''
         )
 
-        # レンダリング時にスコア0のペットがある場合のみ表示
         return render(request, 'survey/results.html', {
             'survey_result': survey_result,
-            'pets': pet_with_images_score_1_or_more + pet_with_images_score_0,  # スコア1以上とスコア0を合わせる
+            'pets': pet_with_images_score_1_or_more + pet_with_images_score_0,
             'MEDIA_URL': settings.MEDIA_URL,
-            'pets_score_0': pets_score_0,  # スコア0のペットデータ
-            'has_pets_score_0': len(pets_score_0) > 0,  # スコア0のペットがいるかどうかのフラグ
+            'pets_score_0': pets_score_0,
+            'has_pets_score_0': len(pets_score_0) > 0,
+            'has_score_above_zero': has_score_above_zero,
         })
 
     return render(request, 'survey/pet_survey.html', {'form': form})
 
-
 class IndexView(TemplateView):
     """トップページのビュー"""
     template_name = 'Survey/index.html'
-
 
 def index(request):
     """トップページを表示"""
