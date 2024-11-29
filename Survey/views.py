@@ -68,16 +68,22 @@ def pet_survey(request):
 
         for pet in pets_score_0.to_dict('records'):
             image_urls = pet.get('image_urls', '')
-            first_image = image_urls.split(',')[0] if image_urls else None
+            first_image = None  # Default to None
+            if image_urls:
+                first_image = image_urls.split(',')[0]  # Get the first image URL
             pet_with_images_score_0.append((pet, first_image))
 
         for pet in pets_score_1_or_more.to_dict('records'):
             image_urls = pet.get('image_urls', '')
-            first_image = image_urls.split(',')[0] if image_urls else None
+            first_image = None  # Default to None
+            if image_urls:
+                first_image = image_urls.split(',')[0]  # Get the first image URL
             pet_with_images_score_1_or_more.append((pet, first_image))
 
-        # スコア1以上のペットがいるかどうかのフラグ
-        has_score_above_zero = any(pet['score'] > 0 for pet in pets_score_1_or_more.to_dict('records'))
+        # フラグ設定
+        has_score_above_zero = len(pets_score_1_or_more) > 0
+        has_pets_score_0 = len(pets_score_0) > 0
+        only_score_0_pets = has_pets_score_0 and not has_score_above_zero
 
         # SurveyResult保存
         survey_result = SurveyResult.objects.create(
@@ -96,8 +102,9 @@ def pet_survey(request):
             'pets': pet_with_images_score_1_or_more + pet_with_images_score_0,
             'MEDIA_URL': settings.MEDIA_URL,
             'pets_score_0': pets_score_0,
-            'has_pets_score_0': len(pets_score_0) > 0,
+            'has_pets_score_0': has_pets_score_0,
             'has_score_above_zero': has_score_above_zero,
+            'only_score_0_pets': only_score_0_pets,
         })
 
     return render(request, 'survey/pet_survey.html', {'form': form})

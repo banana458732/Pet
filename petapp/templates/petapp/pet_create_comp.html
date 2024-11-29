@@ -1,9 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
 
 {% block title %}登録完了{% endblock %}
 
 {% block contents %}
 <style>
+    .h3 {
+        text-align: center;
+    }
     /* 全体のスタイル */
     .registration-complete {
         max-width: 800px;
@@ -52,19 +55,31 @@
         left: 0;
     }
 
-    /* 画像のスタイル */
+    /* 画像グリッドのスタイル */
     .pet-images {
-        max-width: 100%;
-        overflow: hidden;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    /* 画像のタイトルを中央に配置 */
+    .pet-images h3 {
+        width: 100%;
+        text-align: center;
+        font-size: 1.5em;
+        margin-bottom: 20px;
     }
 
     .pet-images img {
-        margin: 20px 10px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        width: 100%;
-        height: auto;
-        max-width: 200px; /* 画像が大きくなりすぎないように調整 */
+        width: 100%; /* 親要素に合わせて画像が伸縮 */
+        max-width: 300px; /* 画像の最大幅を300pxに設定 */
+        height: auto; /* 高さは自動調整 */
+        max-height: 200px; /* 最大高さを200pxに設定 */
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        object-fit: contain; /* 画像が歪まないように調整 */
     }
 
     /* リンクボタンのスタイル */
@@ -83,6 +98,22 @@
 
     .back-link:hover {
         background-color: #388e3c;
+    }
+
+    /* 大画面（768px以上）でのスタイル */
+    @media (min-width: 768px) {
+        .pet-images img {
+            width: 30%; /* 画像を48%の幅に設定し、2列表示に */
+        }
+    }
+
+    /* 小画面（768px未満）でのスタイル */
+    @media (max-width: 767px) {
+        .pet-images img {
+            width: 43%; /* 画像を画面幅に合わせる */
+            max-width: 100%; /* 最大幅を100%に設定 */
+            max-height: 150px; /* 高さを少し縮小 */
+        }
     }
 </style>
 

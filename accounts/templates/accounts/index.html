@@ -28,6 +28,10 @@
             max-width: 100%;
             height: auto;
             display: block; /* 画像の表示をブロックにしてクリック可能領域を確保 */
+            transition: transform 0.3s ease; /* ズームのアニメーションを追加 */
+        }
+        img:hover {
+            transform: scale(1.05); /* カーソルを合わせたときにズームイン */
         }
     </style>
 </head>

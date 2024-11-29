@@ -29,7 +29,6 @@ class Pet(models.Model):
         ('小型', '小型'),
     ]
 
-    id = models.IntegerField(primary_key=True)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES, default='', verbose_name="種類")
     size = models.CharField(max_length=10, choices=SIZE_CHOICES, default='', verbose_name="サイズ")
     color = models.CharField(max_length=100, default='', verbose_name="色")
@@ -88,7 +87,7 @@ def delete_pet_images(sender, instance, **kwargs):
     # CSVファイルからペット情報を削除
     if os.path.exists(CSV_FILE_PATH):
         data = pd.read_csv(CSV_FILE_PATH)
-        data = data[data['id'] != instance.id]  # 該当する行を削除
+        data = data[data['id'] != instance.pk]  # 該当する行を削除
         data.to_csv(CSV_FILE_PATH, index=False)
 
 

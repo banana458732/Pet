@@ -103,6 +103,426 @@
             border-radius: 50%; /* 丸い画像にする */
             margin-right: 10px; /* 画像とテキストの間にスペース */
         }
+        /* ペット情報アイテム */
+        .pet-info {
+        display: flex;
+        justify-content: center; /* 中央に配置 */
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 15px 0;
+        padding: 20px;
+        align-items: center;
+        flex-wrap: wrap; /* 横並びで収まりきらないときに縦に並べる */
+        }
+
+        /* ペット詳細部分のスタイル */
+        .pet-details {
+        width: 60%; /* ペット情報の詳細部分 */
+        line-height: 1.6;
+        padding-right: 20px; /* 右側に余白を追加 */
+        text-align: center; /* テキストを中央揃え */
+        }
+
+        .pet-image {
+        width: 35%; /* 画像の幅を調整 */
+        padding-left: 20px; /* 左側に余白を追加 */
+        text-align: center; /* 画像を中央に配置 */
+        }
+
+        .pet-image img {
+        width: 100%; /* 画像の幅を100%に */
+        height: auto;
+        border-radius: 8px;
+        }
+
+        /* モバイルデバイス向け */
+        @media (max-width: 768px) {
+        /* ヘッダーのテキストサイズ */
+        .masthead h1 {
+            font-size: 8vw; /* 小さな画面ではフォントサイズを小さく */
+        }
+
+        /* ペット情報リストのレイアウト */
+        .pet-info {
+        display: flex;
+        justify-content: center; /* 中央に配置 */
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin: 15px 0;
+        padding: 20px;
+        align-items: center;
+        flex-wrap: wrap; /* 横並びで収まりきらないときに縦に並べる */
+        }
+
+        /* ペット詳細部分のスタイル */
+        .pet-details {
+        width: 60%; /* ペット情報の詳細部分 */
+        line-height: 1.6;
+        padding-right: 20px; /* 右側に余白を追加 */
+        text-align: center; /* テキストを中央揃え */
+        }
+
+        .pet-image {
+        display: flex; /* 親要素をflexに設定 */
+        justify-content: center; /* 画像を中央に配置 */
+        width: 35%; /* 画像の幅を調整 */
+        padding-left: 20px; /* 左側に余白を追加 */
+        text-align: center; /* 画像内でのテキスト中央揃え */
+        }
+
+        .pet-image img {
+        max-width: 100%; /* 画像の最大幅を親要素に合わせる */
+        height: auto;
+        border-radius: 8px;
+        }
+
+
+        button[type="submit"] {
+            font-size: 1rem; /* モバイルでのボタンサイズを調整 */
+        }
+        }
+
+        /* タブレットやデスクトップ向け */
+        @media (min-width: 769px) and (max-width: 1200px) {
+        /* ペット情報リストのレイアウト */
+        .pet-info {
+            flex-direction: row;
+            align-items: center;
+            justify-content: center; /* こちらも中央に配置 */
+        }
+
+        .survey-container {
+            width: 70%; /* タブレットの幅を70%に設定 */
+        }
+        }
+
+        .pet-info-table {
+        width: 100%;
+        border-collapse: collapse; /* セル間のスペースをなくす */
+        }
+
+        .pet-info-table td, .pet-info-table th {
+        border: 1px solid #ddd; /* 薄い線を追加 */
+        padding: 8px; /* セル内の余白 */
+        text-align: left; /* テキストを左寄せ */
+        }
+
+        .pet-info-table th {
+        background-color: #f4f4f4; /* ヘッダー部分の背景色 */
+        font-weight: bold;
+        }
+
+        .pet-info-table td {
+        background-color: #fff; /* セルの背景色 */
+        }
+
+        .pet-info-section table {
+        margin-top: 20px;
+        width: 100%;
+        }
+
+        .pet-phone-number {
+        background-color: #007BFF;  /* 背景色を青に */
+        color: white;               /* 文字色を白に */
+        padding: 5px 10px;          /* 上下5px、左右10pxの余白 */
+        border-radius: 5px;         /* 角を丸く */
+        font-weight: bold;          /* 文字を太字に */
+        display: inline-block;      /* 背景を文字にぴったり合わせる */
+        }
+
+        .pet-details-container {
+        width: 80%;
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+        }
+
+        .pet-images-section {
+        margin-bottom: 40px;
+        display: flex;
+        gap: 20px;
+        }
+
+        .pet-info-section {
+        margin-bottom: 40px;
+        }
+
+        /* コメント全体 */
+        .comments-section {
+            text-align: center; /* テキストを中央に配置 */
+            margin-top: 20px;
+        }
+
+        /* コメントフォーム全体の中央配置 */
+        .comment-form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 横中央揃え */
+            margin: 20px auto; /* 縦方向の余白 */
+            text-align: center; /* テキストの中央揃え */
+            gap: 20px; /* コメントフォームとコメント投稿ボタンの間に空白を追加 */
+        }
+
+        /* h3 のスタイル調整 */
+        .comment-form-container h3 {
+            font-size: 24px; /* 適切なフォントサイズ */
+            margin-bottom: 20px; /* 下に余白を追加 */
+            color: #333; /* テキストカラー */
+        }
+
+        /* コメント入力フォーム */
+        .comment-form {
+            display: flex;
+            flex-direction: column; /* 要素を縦に並べる */
+            align-items: center; /* 子要素（入力欄とボタン）を中央揃え */
+            gap: 10px; /* 入力欄とボタンの間隔を設定 */
+            margin: 0 auto; /* フォーム全体を左右中央揃え */
+            width: 100%;
+            max-width: 500px; /* 最大幅を指定 */
+        }
+
+        .comment-form textarea {
+            width: 100%; /* 入力欄を親要素の幅に合わせる */
+            max-width: 500px; /* 最大幅を指定 */
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .comment-form .submit-button {
+            width: auto; /* ボタンの自然な幅 */
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center; /* ボタン内のテキストも中央揃え */
+            margin-top: 20px; /* ボタンとフォームの間に空白を追加 */
+        }
+
+        .comment-form .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* コメントアイテム */
+        .comment {
+        display: flex;
+        flex-direction: column; /* コメント内容を縦に配置 */
+        align-items: flex-start; /* 左側に配置 */
+        margin-bottom: 10px; /* コメント間の余白を広げる */
+        padding: 12px;
+        border-radius: 10px;
+        background-color: #f9f9f9; /* コメント背景色 */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽いシャドウを追加 */
+        position: relative; /* これにより削除ボタンを右側に配置 */
+        }
+
+        /* 管理者・ユーザー共通のスタイル */
+        .comment-content {
+        max-width: 400px; /* コメントの幅を調整 */
+        margin-top: 10px; /* コメント内容と名前を分ける */
+        font-size: 18px; /* コメント内容の文字サイズを変更 */
+        line-height: 1.5; /* 行間を広げて読みやすく */
+        color: #333; /* コメント内容の色 */
+        }
+
+        /* コメント者の名前 */
+        .comment strong {
+        font-weight: bold;
+        font-size: 20px; /* コメント者の名前の文字サイズを変更 */
+        color: #007BFF; /* 名前の色を青に変更 */
+        }
+
+        /* コメントのタイムスタンプ */
+        .comment small {
+        font-size: 14px;
+        color: #888;
+        margin-top: 5px; /* タイムスタンプと内容を分ける */
+        }
+
+        /* コメントの削除ボタン（管理者用） */
+        .delete-button[type="submit"] {
+        background-color: transparent;
+        border: none;
+        color: red;
+        cursor: pointer;
+        font-size: 14px;
+        position: absolute;
+        right: 10px; /* 右側に配置 */
+        top: 50%;
+        transform: translateY(-50%); /* ボタンを中央揃え */
+        }
+
+        .delete-button[type="submit"]:hover {
+        text-decoration: underline;
+        }
+
+        /* 画面が600px以下の場合のスタイル変更（モバイルビュー） */
+        @media screen and (max-width: 600px) {
+        /* コメント内容のフォントサイズを小さく */
+        .comment-content {
+            font-size: 14px;
+            max-width: 300px; /* コメントの最大幅を小さく */
+        }
+
+        /* コメント者の名前のフォントサイズを小さく */
+        .comment strong {
+            font-size: 16px;
+        }
+
+        /* コメントのタイムスタンプのフォントサイズを小さく */
+        .comment small {
+            font-size: 12px;
+        }
+
+        /* コメントアイテムのパディングを小さく */
+        .comment {
+            padding: 8px;
+        }
+
+        /* コメントの削除ボタンを少し小さく */
+        .delete-button[type="submit"] {
+            font-size: 12px;
+        }
+        }
+
+        /* 画面が1024px以上の場合のスタイル変更（タブレットまたはデスクトップビュー） */
+        @media screen and (min-width: 1024px) {
+        /* コメント内容のフォントサイズを大きく */
+        .comment-content {
+            font-size: 20px;
+            max-width: 500px; /* コメントの最大幅を広く */
+        }
+
+        /* コメント者の名前のフォントサイズを大きく */
+        .comment strong {
+            font-size: 22px;
+        }
+
+        /* コメントのタイムスタンプのフォントサイズを大きく */
+        .comment small {
+            font-size: 16px;
+        }
+
+        /* コメントアイテムのパディングを広く */
+        .comment {
+            padding: 12px;
+        }
+
+        /* コメントの削除ボタンを大きく */
+        .delete-button[type="submit"] {
+            font-size: 16px;
+        }
+            /* 入力欄の幅調整 */
+            .comment-form textarea {
+            max-width: 700px; /* 最大幅を広げる */
+            font-size: 18px; /* 大画面で文字サイズを大きく */
+            padding: 15px; /* パディングを増やす */
+            }
+        
+            /* 送信ボタンの調整 */
+            .comment-form .submit-button {
+            font-size: 18px; /* 大画面で文字サイズを大きく */
+            padding: 12px 24px; /* ボタンのサイズを調整 */
+            }
+        }
+
+        /* 画面が大きい時（幅800px以上）のレイアウト */
+        @media screen and (min-width: 800px) {
+        .pet-details-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .pet-images-section {
+            display: flex;
+            gap: 10px;  /* サムネイル画像の間隔を詰める */
+            flex-direction: row; /* 横並びにする */
+        }
+
+        /* メイン画像（クリックして大きく表示される画像） */
+        .main-image {
+            width: 500px;  /* メイン画像の幅を500pxに設定 */
+            height: auto; /* メイン画像の高さを自動調整 */
+            object-fit: contain; /* 縦横比を保ちつつ、指定したサイズに収める */
+            object-position: center; /* 余白ができた場合に画像が中央に配置される */
+            margin: 0 auto; /* 中央寄せ */
+        }
+
+        /* サムネイル画像のセクション */
+        .thumbnail-images {
+            width: 100%; /* サムネイル画像のセクション幅を100%に設定（収まるように調整） */
+            display: flex;
+            gap: 1px;  /* サムネイル間の隙間を1pxに設定 */
+            flex-wrap: wrap; /* 画像が複数行に渡って並ぶように折り返し設定 */
+            justify-content: flex-start; /* 左寄せ */
+        }
+
+        /* サムネイル画像のスタイル */
+        .thumbnail-images img {
+            width: calc(18% - 1px); /* 各サムネイルの幅を18%に設定し、間隔を1pxに調整 */
+            height: 100px; /* 高さを固定 */
+            object-fit: contain; /* 画像全体を収める（切れない） */
+            cursor: pointer;
+            border: 1px solid #ccc; /* 枠線を追加 */
+            border-radius: 4px; /* 角を丸くする（オプション） */
+        }
+
+        /* 情報セクション（メイン画像の下側に表示される） */
+        .pet-info-section {
+            flex: 1;
+        }
+
+        .comments-section {
+            flex: 1;
+        }
+        }
+
+        /* 画面が小さい時（幅800px未満）のレイアウト */
+        @media screen and (max-width: 799px) {
+        .pet-details-container {
+            display: block;
+        }
+
+        .pet-images-section {
+            display: block;
+            margin-bottom: 0;
+        }
+
+        /* メイン画像のスタイル（小画面用） */
+        .main-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 0;
+            object-fit: contain; /* 画像全体を収める（切れない） */
+        }
+
+        .thumbnail-images {
+            display: flex;
+            justify-content: flex-start; /* サムネイルを左寄せ */
+            gap: 5px;
+            flex-wrap: nowrap; /* 画像が横一列に並ぶように */
+            overflow-x: auto; /* 横スクロールを許可（必要なら） */
+        }
+
+        /* サムネイル画像のスタイル */
+        .thumbnail-images img {
+            width: calc(100% / 5 - 5px); /* 5枚の画像が横並びに収まるように調整 */
+            height: auto;
+            object-fit: contain; /* 画像が縦横比を保って収まるようにする */
+            cursor: pointer;
+            border: 1px solid #ccc; /* 枠線を追加 */
+            border-radius: 4px; /* 角を丸くする（オプション） */
+        }
+        }
+
     </style>
 
     <!-- 情報セクション -->
