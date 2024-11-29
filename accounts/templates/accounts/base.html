@@ -106,10 +106,12 @@
             background-color: #f9f5f0;
         ">
             <a href="{% url 'survey:pet_survey' %}">アンケート</a>
-            {% if has_temporary_pet %}
-                <a href="{% url 'accounts:temporary_pet' %}">仮契約中のペット</a>
+            {% if messages %}
+                {% for message in messages %}
+                    <a href="{% url 'accounts:temporary_pet' %}">{{ message }}</a>
+                {% endfor %}
             {% else %}
-                <a href="#">仮登録中のペットがありません。</a>
+                <a href="{% url 'accounts:temporary_pet' %}">仮契約中のペット</a>
             {% endif %}
             <a href="#meeting">お気に入り登録したペット</a>
         </nav>
