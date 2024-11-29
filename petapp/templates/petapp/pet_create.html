@@ -2,6 +2,7 @@
 
 {% block title %}ペット登録{% endblock %}
 {% block contents %}
+
 <style>
     h2 {
         text-align: center;
@@ -241,8 +242,9 @@
         {{ photo_formset.management_form }}
         {% for form in photo_formset %}
             <div class="form-group">
-                {{ form.image.label_tag }}
-                {{ form.image }}
+                <!-- ラベルをカスタマイズ -->
+                <label for="{{ form.image.id_for_label }}">写真</label> 
+                {{ form.image }}  <!-- フォームフィールド -->
                 {% if form.image.errors %}
                     <div class="error">
                         {% for error in form.image.errors %}

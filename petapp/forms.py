@@ -23,7 +23,7 @@ class PetCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if 'id' in self.fields:
-            self.fields['id'].initial = value  # 初期値を設定
+            self.fields['id']
             print(self.fields)  # フィールド全体を出力して確認
 
 
@@ -32,7 +32,7 @@ class PetImageForm(forms.ModelForm):
         model = PetImage
         fields = ['image']
 
-    image = forms.ImageField(required=False, label='写真')
+    image = forms.ImageField(required=False, label='')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
