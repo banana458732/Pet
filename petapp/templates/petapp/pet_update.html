@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
 
 {% block title %}{{ pet_form.instance.id }} 更新{% endblock %}
 
@@ -7,10 +7,11 @@
     h2 {
         text-align: center;
     }
+
     /* 全体のフォームのスタイル */
     .pet-form {
         width: 100%;
-        max-width: 600px;
+        max-width: 800px; /* 最大幅を設定 */
         margin: 0 auto;
         padding: 20px;
         background-color: #f9f9f9;
@@ -20,7 +21,7 @@
 
     /* フォームのラベルと入力のスタイル */
     .pet-form .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 20px; /* フォームグループの間隔を広げる */
     }
 
     .pet-form label {
@@ -33,7 +34,7 @@
     .pet-form select,
     .pet-form textarea {
         width: 100%;
-        padding: 8px;
+        padding: 10px; /* 入力フィールドのパディングを広げる */
         border: 1px solid #ddd;
         border-radius: 4px;
         box-sizing: border-box;
@@ -51,7 +52,7 @@
     /* ボタンのスタイル */
     .pet-form button.btn-submit {
         width: 100%;
-        padding: 10px;
+        padding: 12px;
         background-color: #4CAF50;
         color: white;
         border: none;
@@ -68,7 +69,7 @@
     /* 戻るボタン */
     .btn-back {
         display: inline-block;
-        padding: 10px 20px;
+        padding: 12px 25px;
         background-color: #f44336;
         color: white;
         text-decoration: none;
@@ -82,11 +83,11 @@
 
     /* フォームセットのスタイル */
     .formset .form-group {
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .formset input[type="file"] {
-        padding: 5px;
+        padding: 10px;
     }
 
     /* エラーメッセージを目立たせる */
@@ -105,6 +106,53 @@
         justify-content: flex-end; /* Align the button to the right */
         margin-top: 20px;
     }
+
+    /* 画像のスタイル */
+    .pet-form img {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 768px) {
+        .pet-form {
+            padding: 15px; /* 小さい画面ではパディングを少なく */
+        }
+
+        .pet-form input,
+        .pet-form select,
+        .pet-form textarea {
+            padding: 8px; /* 小さい画面では入力フィールドのパディングを少なく */
+        }
+
+        .pet-form button.btn-submit {
+            padding: 12px;
+            font-size: 14px; /* 小さい画面ではボタンのフォントサイズを少し小さく */
+        }
+
+        .btn-back {
+            padding: 10px 20px;
+            font-size: 14px; /* 小さい画面では戻るボタンのサイズを調整 */
+        }
+    }
+
+    /* より大きな画面のための設定 */
+    @media (min-width: 1200px) {
+        .pet-form {
+            max-width: 1000px; /* 大画面ではフォームの最大幅を広げる */
+        }
+
+        .pet-form input,
+        .pet-form select,
+        .pet-form textarea {
+            padding: 12px; /* 大きな画面では入力フィールドを広げる */
+        }
+
+        .pet-form button.btn-submit {
+            font-size: 18px; /* 大きな画面ではボタンを少し大きく */
+        }
+    }
 </style>
 
 <h2>{{ pet_form.instance.id }}の情報を更新</h2>
@@ -114,19 +162,19 @@
         
         <!-- IDと種類は変更不可の表示 -->
         <div class="form-group">
-            <label>ID:</label>
+            <label>ID</label>
             <span>{{ pet_form.instance.id }}</span>
             <input type="hidden" name="id" value="{{ pet_form.instance.id }}"> <!-- idフィールドを隠しフィールドとして追加 -->
         </div>
 
         <div class="form-group">
-            <label>種類 (犬/猫):</label>
+            <label>種類 (犬/猫)</label>
             <span>{{ pet_form.instance.type }}</span>
         </div>
 
         <!-- サイズ -->
         <div class="form-group">
-            <label for="{{ pet_form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
+            <label for="{{ pet_form.size.id_for_label }}">サイズ (大型/中型/小型)</label>
             {{ pet_form.size }}
             {% if pet_form.size.errors %}
                 <ul class="error-list">
@@ -139,7 +187,7 @@
 
         <!-- 色 -->
         <div class="form-group">
-            <label for="{{ pet_form.color.id_for_label }}">色:</label>
+            <label for="{{ pet_form.color.id_for_label }}">色</label>
             {{ pet_form.color }}
             {% if pet_form.color.errors %}
                 <ul class="error-list">
@@ -152,7 +200,7 @@
 
         <!-- 年齢 -->
         <div class="form-group">
-            <label for="{{ pet_form.age.id_for_label }}">年齢:</label>
+            <label for="{{ pet_form.age.id_for_label }}">年齢</label>
             {{ pet_form.age }}
             {% if pet_form.age.errors %}
                 <ul class="error-list">
@@ -165,13 +213,13 @@
 
         <!-- 性別 -->
         <div class="form-group">
-            <label>性別:</label>
+            <label>性別</label>
             <span>{{ pet_form.instance.sex }}</span>
         </div>
 
         <!-- その他のフィールド -->
         <div class="form-group">
-            <label for="{{ pet_form.kinds.id_for_label }}">種別:</label>
+            <label for="{{ pet_form.kinds.id_for_label }}">品種</label>
             {{ pet_form.kinds }}
             {% if pet_form.kinds.errors %}
                 <ul class="error-list">
@@ -183,7 +231,7 @@
         </div>
 
         <div class="form-group">
-            <label for="{{ pet_form.disease.id_for_label }}">病歴:</label>
+            <label for="{{ pet_form.disease.id_for_label }}">病歴</label>
             {{ pet_form.disease }}
             {% if pet_form.disease.errors %}
                 <ul class="error-list">
@@ -195,7 +243,7 @@
         </div>
 
         <div class="form-group">
-            <label for="{{ pet_form.personality.id_for_label }}">性格:</label>
+            <label for="{{ pet_form.personality.id_for_label }}">性格</label>
             {{ pet_form.personality }}
             {% if pet_form.personality.errors %}
                 <ul class="error-list">
@@ -207,7 +255,7 @@
         </div>
 
         <div class="form-group">
-            <label for="{{ pet_form.phone_number.id_for_label }}">電話番号:</label>
+            <label for="{{ pet_form.phone_number.id_for_label }}">電話番号</label>
             {{ pet_form.phone_number }}
             {% if pet_form.phone_number.errors %}
                 <ul class="error-list">
@@ -247,7 +295,7 @@
                     </ul>
                 {% endif %}
 
-                <p style="color: orange;">更新する画像を選択:</p>
+                <p style="color: orange;">更新する画像を選択</p>
                 <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
 
                 {% if form.image.errors %}
@@ -258,7 +306,7 @@
                     </ul>
                 {% endif %}
             {% else %}
-                <p>新しい画像を選択:</p>
+                <p>新しい画像を選択</p>
                 <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
                 {% if form.image.errors %}
                     <ul class="error-list">

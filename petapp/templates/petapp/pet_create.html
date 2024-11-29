@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'accounts/base.html' %}
 
 {% block title %}ペット登録{% endblock %}
 {% block contents %}
@@ -122,7 +122,7 @@
     {% endif %}
 
     <div class="form-group">
-        <label for="{{ form.id.id_for_label }}">ID:</label>
+        <label for="{{ form.id.id_for_label }}">ID</label>
         {{ form.id }}
         {% if form.id.errors %}
             <div class="error-list">
@@ -134,7 +134,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.type.id_for_label }}">種類 (犬/猫):</label>
+        <label for="{{ form.type.id_for_label }}">種類 (犬/猫)</label>
         {{ form.type }}
         {% if form.type.errors %}
             <div class="error-list">
@@ -146,7 +146,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型):</label>
+        <label for="{{ form.size.id_for_label }}">サイズ (大型/中型/小型)</label>
         {{ form.size }}
         {% if form.size.errors %}
             <div class="error-list">
@@ -158,7 +158,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.color.id_for_label }}">色:</label>
+        <label for="{{ form.color.id_for_label }}">色</label>
         {{ form.color }}
         {% if form.color.errors %}
             <div class="error-list">
@@ -170,7 +170,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.age.id_for_label }}">年齢:</label>
+        <label for="{{ form.age.id_for_label }}">年齢</label>
         {{ form.age }}
         {% if form.age.errors %}
             <div class="error-list">
@@ -182,7 +182,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.kinds.id_for_label }}">品種:</label>
+        <label for="{{ form.kinds.id_for_label }}">品種</label>
         {{ form.kinds }}
         {% if form.kinds.errors %}
             <div class="error-list">
@@ -194,7 +194,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.disease.id_for_label }}">病気:</label>
+        <label for="{{ form.disease.id_for_label }}">病気</label>
         {{ form.disease }}
         {% if form.disease.errors %}
             <div class="error-list">
@@ -206,7 +206,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.personality.id_for_label }}">性格:</label>
+        <label for="{{ form.personality.id_for_label }}">性格</label>
         {{ form.personality }}
         {% if form.personality.errors %}
             <div class="error-list">
@@ -218,7 +218,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.sex.id_for_label }}">性別:</label>
+        <label for="{{ form.sex.id_for_label }}">性別</label>
         {{ form.sex }}
         {% if form.sex.errors %}
             <div class="error-list">
@@ -230,7 +230,7 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.phone_number.id_for_label }}">電話番号:</label>
+        <label for="{{ form.phone_number.id_for_label }}">電話番号</label>
         {{ form.phone_number }}
         {% if form.phone_number.errors %}
             <div class="error-list">
