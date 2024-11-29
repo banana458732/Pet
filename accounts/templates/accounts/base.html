@@ -29,7 +29,7 @@
                 display: flex;
                 gap: 15px;
             ">
-                <a href="{% url 'messaging:index' %}">ペット一覧</a>
+                <a href="{% url 'accounts:index' %}">ペット一覧</a>
                 <a href="{% url 'accounts:my_page' %}">マイページ</a>
                 <a href="{% url 'messaging:send_message' %}">お問い合わせ</a>
                 <a href="#contact">サービス内容</a>
@@ -106,7 +106,11 @@
             background-color: #f9f5f0;
         ">
             <a href="{% url 'survey:pet_survey' %}">アンケート</a>
-            <a href="{% url 'accounts:temporary_pet' %}">仮契約中のペット</a>
+            {% if has_temporary_pet %}
+                <a href="{% url 'accounts:temporary_pet' %}">仮契約中のペット</a>
+            {% else %}
+                <a href="#">仮登録中のペットがありません。</a>
+            {% endif %}
             <a href="#meeting">お気に入り登録したペット</a>
         </nav>
         <hr style="border: 2px solid rgb(57, 36, 0); width: 100%; margin: 0px auto;">
