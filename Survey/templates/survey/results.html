@@ -28,10 +28,14 @@
 </ul>
 
 <!-- スコア1以上のペットがいない場合、かつスコア0のペットもいない場合のみ表示 -->
-{% if not has_score_above_zero and not has_pets_score_0 %}
+{% if only_score_0_pets %}
+    <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
+    <hr>
+{% elif not has_score_above_zero and not has_pets_score_0 %}
     <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
     <hr>
 {% endif %}
+
 
 <!-- スコア0のペットがいる場合 -->
 {% if has_pets_score_0 %}
