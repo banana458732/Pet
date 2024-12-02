@@ -6,6 +6,8 @@ from .models import SurveyResult
 from django.http import HttpResponse
 from django.conf import settings
 from petapp.models import Pet
+from fuzzywuzzy import fuzz
+
 
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
@@ -36,13 +38,13 @@ def pet_survey(request):
         if size:
             pets_data['score'] += (pets_data['size'] == size).astype(int)
         if color:
-            pets_data['score'] += (pets_data['color'] == color).astype(int)
+            pets_data['score'] += pets_data['color'].apply(lambda x: 1 if color in x or x in color else 0)
         if kinds:
             pets_data['score'] += (pets_data['kinds'] == kinds).astype(int)
         if disease:
             pets_data['score'] += (pets_data['disease'] == disease).astype(int)
         if personality:
-            pets_data['score'] += (pets_data['personality'] == personality).astype(int)
+            pets_data['score'] += pets_data['personality'].apply(lambda x: 1 if fuzz.partial_ratio(personality, x) > 70 else 0)
         if sex:
             pets_data = pets_data[pets_data['sex'] == sex]
             pets_data['score'] += (pets_data['sex'] == sex).astype(int)
