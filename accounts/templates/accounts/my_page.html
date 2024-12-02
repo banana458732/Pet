@@ -66,7 +66,7 @@
         width: 100%;
         max-width: 800px; /* 最大幅を設定 */
         text-align: center;
-        margin: 0 auto; /* 左右中央揃え */
+        margin: 20px auto; /* 左右中央揃え */
     }
 
     .contract-pet-card .pet-info {
@@ -86,6 +86,14 @@
         max-width: 200px;
         height: auto;
         margin: 0 auto 10px;
+    }
+
+    .pet-info p {
+    font-size: 1em;
+    color: #555;
+    word-wrap: break-word;  /* テキストが長い場合に折り返す */
+    word-break: break-word; /* 単語の途中でも改行して折り返す */
+    white-space: normal;    /* デフォルトでテキストを折り返す */
     }
 
     .action-link-container a {

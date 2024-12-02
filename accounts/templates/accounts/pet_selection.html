@@ -1,0 +1,98 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %}Sign up{% endblock %}
+
+{% block contents %}
+
+<style>
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* ペットギャラリーのスタイル */
+    .pet-gallery {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .pet-item {
+        text-align: center;
+        width: 200px;  /* アイテムの幅を広げる */
+        cursor: pointer; /* 画像選択時にカーソルを変える */
+        border: 2px solid transparent; /* デフォルトの境界線 */
+        padding: 10px;
+        border-radius: 8px;
+        transition: border 0.3s, transform 0.3s; /* アニメーション効果 */
+    }
+
+    .pet-image {
+        width: 150px;  /* 画像の幅を150pxに設定 */
+        height: 150px; /* 画像の高さを150pxに設定 */
+        object-fit: cover;  /* 画像を切り取らずに収める */
+        border-radius: 8px;  /* 画像に丸みをつける */
+        transition: transform 0.3s ease; /* 画像が拡大するアニメーション */
+    }
+
+    /* 画像にカーソルを合わせたときの効果 */
+    .pet-item:hover .pet-image {
+        transform: scale(1.1); /* 画像を少し大きくする */
+    }
+
+    /* 画像が選択されている場合の強調 */
+    .pet-item.selected {
+        border: 2px solid #4CAF50; /* 緑の枠線 */
+        transform: scale(1.05); /* 少し大きくして目立たせる */
+    }
+
+    /* ペット画像がない場合のフォント調整 */
+    .pet-item p {
+        color: gray;
+        font-size: 14px;
+    }
+
+    .back-link {
+    text-align: center;  /* 中央揃え */
+    margin-top: 20px;  /* 上部マージンを設定（任意） */
+    }
+
+    .back-link a {
+        font-size: 14px;  /* フォントサイズ */
+        text-decoration: none;  /* リンクの下線を削除 */
+    }
+
+    .back-link a:hover {
+        color: #b00e03;  /* ホバー時の文字色変更 */
+    }
+
+
+    /* レスポンシブ調整 */
+    @media (max-width: 768px) {
+        .pet-item {
+            width: 30%;  /* 小画面時に3枚表示 */
+        }
+    }
+</style>
+
+<h2>仮契約中のペットを選択してください</h2>
+<div class="pet-gallery">
+    {% for contract_pet in contract_pets %}
+        <div class="pet-item" onclick="selectPet(this)">
+            <a href="{% url 'messaging:pet_detail' pet_id=contract_pet.pet.id %}">
+                {% if contract_pet.pet.images.first %}
+                    <img src="{{ contract_pet.pet.images.first.image.url }}" alt="Pet Image" class="pet-image">
+                {% else %}
+                    <p>画像がありません</p>
+                {% endif %}
+                <br>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+<p class="back-link">
+    <a href="{% url 'accounts:index' %}">トップページに戻る</a>
+</p>
+
+{% endblock %}
