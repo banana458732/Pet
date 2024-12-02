@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
         verbose_name='住所',
         max_length=30,
         null=True,
-        blank=True
+        blank=True,
     )
 
     phone_number = models.CharField(

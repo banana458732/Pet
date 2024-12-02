@@ -58,8 +58,8 @@ def LoginView(request):
         if user is not None:
         # ログインする。
             login(request, user)
-            previous_page = request.META.get('HTTP_REFERER', '/')
-            return redirect(previous_page)
+            return redirect('accounts:index')  # トップページのURLパターンにリダイレクト
+
         # ユーザーがオブジェクトが存在しないなら。
         else:
             return render(request, 'accounts/login.html', {'error': 'そのユーザーは存在しません。'})
@@ -161,11 +161,15 @@ class RedirectTemporaryPetView(LoginRequiredMixin, View):
         user = request.user
         if user.is_authenticated:
             # 仮契約中のペット情報を取得
-            contract_pet = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet').first()
+            contract_pets = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')
+            print(contract_pets.count())
 
-            if contract_pet:
-                return redirect('messaging:pet_detail', pet_id=contract_pet.pet.id)
-
+            if contract_pets.count() == 1:
+                # 仮契約中のペットが1匹だけの場合、その詳細ページにリダイレクト
+                return redirect('messaging:pet_detail', pet_id=contract_pets.first().pet.id)
+            elif contract_pets.count() > 1:
+                # 仮契約中のペットが複数匹いる場合、選択画面にリダイレクト
+                return redirect('accounts:pet_selection')
 
         # 仮登録中のペットがない場合は元のページに戻る
         messages.info(request, '仮登録中のペットがありません。')
@@ -175,13 +179,21 @@ class RedirectTemporaryPetView(LoginRequiredMixin, View):
         # return redirect(previous_page, {'no_petmessage': '現在登録中のペットがありません。'})
 
 
+class PetSelectionView(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/pet_selection.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['contract_pets'] = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')
+        return context
+
+
 class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'accounts/login.html'
 
-from django.shortcuts import render
-from petapp.models import PetImage
 
 def index(request):
     # PetImageテーブルから全ての画像データを取得
-    images = PetImage.objects.all()
-    return render(request, 'accounts/index.html', {'images': images})
+    pets = Pet.objects.all()
+    return render(request, 'accounts/index.html', {'pets': pets})

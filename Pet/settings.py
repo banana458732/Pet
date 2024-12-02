@@ -148,6 +148,7 @@ EMAIL_HOST_USER = 'ngn2349602@stu.o-hara.ac.jp'
 EMAIL_HOST_PASSWORD = 'Tomo0617'
 EMAIL_USE_TLS = True
 
+LOGIN_REDIRECT_URL = '/'  # ログイン後、トップページにリダイレクト
 
 # セッションバックエンドの設定
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # デフォルトの設定

@@ -31,9 +31,10 @@
     }
 
     .pet-item img {
-        max-width: 100%;
-        height: auto;
-        margin-bottom: 10px;
+        width: 200px;  /* 画像の幅を200pxに設定 */
+        height: 200px; /* 画像の高さを200pxに設定 */
+        object-fit: cover;  /* 画像を枠にフィットさせ、余白を切り取る */
+        margin-bottom: 15px; /* 画像とリンクとの間にスペースを追加 */
     }
 
     .pet-item a {
@@ -69,18 +70,16 @@
         <li class="pet-item">
             <h3>{{ pet }}</h3>
             {% with pet.images.first as first_image %}
-                {% if first_image %}
-                    {% if first_image.image %}
-                        <img src="{{ first_image.image.url }}" alt="{{ pet.id }}の画像">
-                    {% else %}
-                        <p>画像が登録されていません</p>
-                    {% endif %}
+                {% if first_image and first_image.image %}
+                    <img src="{{ first_image.image.url }}" alt="{{ pet.id }}の画像">
                 {% else %}
                     <p>画像が登録されていません</p>
                 {% endif %}
             {% endwith %}
-            <a href="{% url 'petapp:pet-update' pet.id %}">更新</a>
-            <a href="{% url 'petapp:pet-delete' pet.id %}">削除</a>
+            <div class="pet-actions">
+                <a href="{% url 'petapp:pet-update' pet.id %}">更新</a>
+                <a href="{% url 'petapp:pet-delete' pet.id %}">削除</a>
+            </div>
         </li>
     {% endfor %}
 </ul>
