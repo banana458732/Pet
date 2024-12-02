@@ -595,10 +595,10 @@
     
                         <!-- 管理者のみ削除ボタンを表示 -->
                         {% if user.is_superuser %}
-                            <form method="POST" style="display:inline;">
+                            <form method="post" style="display:inline;">
                                 {% csrf_token %}
                                 <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                                <button type="submit" class="delete-button" style="color: red;">削除</button>
+                                <button type="submit" name="delete_comment" class="delete-button" style="color: red;">削除</button>
                             </form>
                         {% endif %}
                     </li>
