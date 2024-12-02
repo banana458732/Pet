@@ -8,12 +8,15 @@ import re
 def validate_phone_number(value):
     if not re.match(r'^\d{2,4}-\d{2,4}-\d{4}$', value):
         raise ValidationError('有効な電話番号の形式で入力してください（例: 090-1234-5678）。')
-
+    
+def validate_address(value):
+    if not re.match(r'^[\w\s\-、。、・〒]+$',value):
+        raise ValidationError('有効な住所を入力してください。記号や特殊文字は使用できません。')
 
 class CustomUserCreationForm(UserCreationForm):
 
-    address = forms.CharField(label="住所", max_length=31, required=True)
-    phone_number = forms.CharField(label='電話番号', max_length=15, required=True, validators=[validate_phone_number])
+    address = forms.CharField(label="住所",min_length=10, max_length=31, required=True, widget=forms.TextInput(attrs={'placeholder': '例: 長野県長野市長野元善町491番地'}), validators=[validate_address])
+    phone_number = forms.CharField(label='電話番号', max_length=15, required=True,widget=forms.TextInput(attrs={'placeholder': '例: 090-0000-0000'}) ,validators=[validate_phone_number])
 
     class Meta:
         model = CustomUser
