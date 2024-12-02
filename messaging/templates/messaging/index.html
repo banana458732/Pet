@@ -13,37 +13,71 @@
         .image-container {
             display: flex;
             flex-wrap: wrap; /* 横に並びきれない場合、次の行に移る */
-            gap: 10px; /* 各画像間の隙間 */
+            gap: 8px; /* 各画像間の隙間を少し狭める */
             justify-content: space-around; /* 画像を均等に配置 */
         }
+
         .image-container div {
-            flex: 1 1 calc(33.333% - 20px); /* 横幅を3等分 */
-            max-width: calc(33.333% - 20px);
+            flex: 1 1 calc(33.333% - 16px); /* 横幅を3等分、パディングを考慮して少し小さく */
+            max-width: calc(33.333% - 16px);
             box-sizing: border-box; /* パディングや境界線も幅に含める */
+            padding: 8px; /* 画像の周りの余白を少し減らす */
         }
+
         a {
             display: block; /* リンク全体をクリック可能にする */
         }
+
         img {
-            max-width: 100%;
-            height: auto;
+            width: 100%; /* 画像の横幅を100%にして親要素に合わせる */
+            height: auto; /* 画像の高さを自動調整 */
             display: block; /* 画像の表示をブロックにしてクリック可能領域を確保 */
             transition: transform 0.3s ease; /* ズームのアニメーションを追加 */
+            border-radius: 8px; /* 角を少し丸めて画像を柔らかく見せる */
         }
+
         img:hover {
             transform: scale(1.05); /* カーソルを合わせたときにズームイン */
         }
+
+        /* 小さい画面 (モバイル) 用: 1列表示 */
+        @media (max-width: 600px) {
+            .image-container div {
+                flex: 1 1 calc(100% - 16px); /* 100%の幅を使って1列表示 */
+            }
+        }
+
+        /* 中くらいの画面 (タブレット) 用: 2列表示 */
+        @media (min-width: 600px) and (max-width: 1024px) {
+            .image-container div {
+                flex: 1 1 calc(50% - 16px); /* 2列表示 */
+            }
+        }
+
+        /* 大きい画面 (デスクトップ) 用: 4列表示 */
+        @media (min-width: 1024px) {
+            .image-container div {
+                flex: 1 1 calc(25% - 16px); /* 4列表示 */
+            }
+        }
+
     </style>
 </head>
 <body>
     <h1>現在保護されているペット</h1>
     <div class="image-container">
-        {% for image in images %}
+        {% for pet in pets %}
             <div>
-                <!-- 画像が関連付けられたペットの詳細ページに遷移 -->
-                <a href="{% url 'messaging:pet_detail' image.pet.id %}">
-                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
-                </a>
+                <!-- 最初に登録された画像のみ表示 -->
+                {% with pet.images.first as first_image %}
+                    {% if first_image %}
+                        <a href="{% url 'messaging:pet_detail' pet.id %}">
+                            <img src="{{ first_image.image.url }}" alt="{{ pet.name }}">
+                        </a>
+                    {% else %}
+                        <p>画像が登録されていません</p>
+                    {% endif %}
+                {% endwith %}
             </div>
         {% endfor %}
     </div>

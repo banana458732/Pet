@@ -195,5 +195,5 @@ class LogoutView(LoginRequiredMixin, LogoutView):
 
 def index(request):
     # PetImageテーブルから全ての画像データを取得
-    images = PetImage.objects.all()
-    return render(request, 'accounts/index.html', {'images': images})
+    pets = Pet.objects.all()
+    return render(request, 'accounts/index.html', {'pets': pets})

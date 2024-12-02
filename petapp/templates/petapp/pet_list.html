@@ -70,12 +70,8 @@
         <li class="pet-item">
             <h3>{{ pet }}</h3>
             {% with pet.images.first as first_image %}
-                {% if first_image %}
-                    {% if first_image.image %}
-                        <img src="{{ first_image.image.url }}" alt="{{ pet.id }}の画像">
-                    {% else %}
-                        <p>画像が登録されていません</p>
-                    {% endif %}
+                {% if first_image and first_image.image %}
+                    <img src="{{ first_image.image.url }}" alt="{{ pet.id }}の画像">
                 {% else %}
                     <p>画像が登録されていません</p>
                 {% endif %}
