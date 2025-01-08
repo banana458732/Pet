@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.contrib.auth.models import User
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomUserUpdateForm
 from django.views.generic import TemplateView, CreateView
 from django.views.generic.edit import FormView
 from django.contrib.auth.views import LogoutView
@@ -141,16 +141,29 @@ def complete_contract(request):
 
 
 def change_profile_image(request):
+    """プロフィール画像と登録情報を変更するビュー"""
+    user = request.user
+
     if request.method == 'POST':
-        profile_form = ProfileImageForm(request.POST, request.FILES, instance=request.user)
-        if profile_form.is_valid():
-            profile_form.save()  # save() メソッドを呼び出すだけで古い画像の削除処理も動作
-            return redirect('accounts:my_page')  # マイページへリダイレクト
+        user_form = CustomUserUpdateForm(request.POST, instance=user)  # ユーザー情報用フォーム
+        profile_form = ProfileImageForm(request.POST, request.FILES, instance=user)  # プロフィール画像用フォーム
+
+        # 両方のフォームが有効であれば保存
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('accounts:my_page')  # 保存後にマイページへリダイレクト
     else:
-        profile_form = ProfileImageForm(instance=request.user)
+        # 初期値を設定
+        user_form = CustomUserUpdateForm(instance=user)
+        profile_form = ProfileImageForm(instance=user)
 
-    return render(request, 'accounts/change_profile_image.html', {'profile_form': profile_form})
-
+    # コンテキストに両方のフォームを渡す
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'accounts/change_profile_image.html', context)
 
 class IndexView(TemplateView):
     template_name = 'accounts/index.html'

@@ -30,7 +30,7 @@ class CustomUserCreationForm(UserCreationForm):
         # ラベルからコロンを削除
         for field in self.fields.values():
             field.label_suffix = ''  # コロンを削除
-            
+
 
 class LoginForm(AuthenticationForm):
     class Meta:
@@ -58,3 +58,32 @@ class ProfileImageForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+
+class CustomUserUpdateForm(forms.ModelForm):
+    """ユーザー情報編集フォーム"""
+    address = forms.CharField(
+        label="住所",
+        min_length=10,
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: 長野県長野市元善町491'}),
+        validators=[validate_address]
+    )
+    phone_number = forms.CharField(
+        label="電話番号",
+        max_length=15,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: 090-1234-5678'}),
+        validators=[validate_phone_number]
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'address', 'phone_number']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # ラベルのコロンを削除
+        for field in self.fields.values():
+            field.label_suffix = ""

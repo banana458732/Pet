@@ -1,41 +1,99 @@
 {% extends 'accounts/base.html' %}
 {% load static %}
 
-{% block title %}プロフィール画像の変更{% endblock %}
+{% block title %}プロフィールの変更{% endblock %}
 
 {% block contents %}
 <style>
   .profile-container {
     text-align: center;
-    margin: 20px 0;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1000px;
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   }
+
   .profile-image {
     width: 150px;
     height: 150px;
-    border-radius: 50%; /* 丸いアイコン */
+    border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #ddd; /* 輪郭線 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 3px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
   }
-  .profile-info {
+
+  .profile-form-container {
     margin: 20px auto;
     width: 80%;
     max-width: 600px;
-    border-collapse: collapse;
-  }
-  .profile-info th, .profile-info td {
-    border: 1px solid #ddd;
-    padding: 10px;
-  }
-  .profile-info th {
     text-align: left;
-    background-color: #f9f9f9;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
   }
+
+  .profile-form-container h2 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+  }
+
+  .profile-form-container .form-group {
+    margin-bottom: 15px;
+  }
+
+  .profile-form-container label {
+    font-weight: bold;
+  }
+
+  .profile-form-container input, .profile-form-container select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+
+  .profile-form-container button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .profile-form-container button:hover {
+    background-color: #0056b3;
+  }
+
   .action-link {
-    color: #007BFF;
+    color: #FF6600; /* オレンジ色 */
     text-decoration: none;
   }
+
   .action-link:hover {
+    text-decoration: underline;
+  }
+
+  .form-footer {
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  .form-footer a {
+    font-size: 1.2em;
+    color: #FF6600; /* オレンジ色 */
+    text-decoration: none;
+  }
+
+  .form-footer a:hover {
     text-decoration: underline;
   }
 </style>
@@ -52,12 +110,45 @@
       {% endif %}
     </div>
 
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ profile_form.as_p }}  <!-- フォームを表示 -->
-      <button type="submit">変更を保存</button>
-    </form>
+    <div class="profile-form-container">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
 
-    <p><a href="{% url 'accounts:my_page' %}" class="action-link">マイページに戻る</a></p>
+        <!-- ユーザー情報編集 -->
+        <h2>ユーザー情報を編集</h2>
+        <div class="form-group">
+          <label for="id_username">ユーザー名</label>
+          {{ user_form.username }}
+        </div>
+        <div class="form-group">
+          <label for="id_email">メールアドレス</label>
+          {{ user_form.email }}
+        </div>
+        <div class="form-group">
+          <label for="id_address">住所</label>
+          {{ user_form.address }}
+        </div>
+        <div class="form-group">
+          <label for="id_phone_number">電話番号</label>
+          {{ user_form.phone_number }}
+        </div>
+
+        <!-- プロフィール画像編集 -->
+        <h2>プロフィール画像の変更</h2>
+        <div class="form-group">
+          {{ profile_form.profile_image }}
+        </div>
+        <div class="form-group">
+          <label for="id_delete_image">画像を削除</label>
+          {{ profile_form.delete_image }}
+        </div>
+
+        <button type="submit">変更を保存</button>
+      </form>
+    </div>
+
+    <div class="form-footer">
+      <p><a href="{% url 'accounts:my_page' %}" class="action-link">マイページに戻る</a></p>
+    </div>
 </div>
 {% endblock %}
