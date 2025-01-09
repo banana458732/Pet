@@ -30,7 +30,8 @@
 
         img {
             width: 100%; /* 画像の横幅を100%にして親要素に合わせる */
-            height: auto; /* 画像の高さを自動調整 */
+            height: 200px; /* 画像の高さを200pxに変更 */
+            object-fit: cover; /* 画像が指定された領域に収まるように切り取る */
             display: block; /* 画像の表示をブロックにしてクリック可能領域を確保 */
             transition: transform 0.3s ease; /* ズームのアニメーションを追加 */
             border-radius: 8px; /* 角を少し丸めて画像を柔らかく見せる */

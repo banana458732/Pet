@@ -11,20 +11,9 @@ class PetCreateForm(forms.ModelForm):
         fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
                   'personality', 'sex', 'phone_number']
 
-    def clean_id(self):
-        """新規登録時にidが空でも許容し、0以下のidは不正とする"""
-        id = self.cleaned_data.get('id')
-        if id is not None and id <= 0:
-            raise ValidationError("IDは1以上でなければなりません。")
-        if not self.instance.pk and not id:  # 新規登録時でidが空
-            return None
-        return id
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'id' in self.fields:
-            self.fields['id']
-            print(self.fields)  # フィールド全体を出力して確認
+        print(self.fields)  # フィールド全体を出力して確認
 
 
 class PetImageForm(forms.ModelForm):
@@ -74,8 +63,6 @@ class PetUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # idは入力可能に保つ（必須ではない）
-        self.fields['id'].required = False
 
         # 更新時に id フィールドを非必須に設定
         if self.instance.pk:

@@ -18,6 +18,7 @@ CSV_FILE_PATH = file_path
 
 
 class Pet(models.Model):
+    id = models.AutoField(primary_key=True)
     TYPE_CHOICES = [
         ('犬', '犬'),
         ('猫', '猫'),
