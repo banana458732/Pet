@@ -16,11 +16,16 @@ def validate_address(value):
         raise ValidationError('有効な住所を入力してください。記号や特殊文字は使用できません。')    
 
 
+def validate_username(value):
+    if not re.match(r'^[\w]+$', value):
+        raise ValidationError('英数字とアルファベット、_を用いて入力してください。')
+
+
 class CustomUserCreationForm(UserCreationForm):
 
     address = forms.CharField(label="住所", min_length=10, max_length=31, required=True, widget=forms.TextInput(attrs={'placeholder': '例: 長野県長野市長野元善町491番地'}), validators=[validate_address])
     phone_number = forms.CharField(label='電話番号', max_length=15, required=True,widget=forms.TextInput(attrs={'placeholder': '例: 090-0000-0000'}) ,validators=[validate_phone_number])
-    username = forms.CharField(label="ユーザーネーム", min_length=3, max_length=16, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet123'}))
+    username = forms.CharField(label="ユーザーネーム", min_length=3, max_length=16, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet123'}), validators=[validate_username])
     email = forms.EmailField(label="メールアドレス", min_length=7, max_length=256, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet@pet.com'}))
 
     class Meta:
