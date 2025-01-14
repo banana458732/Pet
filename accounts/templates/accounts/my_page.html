@@ -170,34 +170,45 @@
     <h2 class="section-title">仮契約中のペット</h2>
     {% if pet_images %}
     <div class="contract-pets">
-        {% for pet_data in pet_images %}
-          <div class="contract-pet-card">
-            {% if pet_data.images %}
-              <img src="{{ pet_data.images.first.image.url }}" alt="ペット画像" class="pet-image">
-            {% else %}
-              <img src="{% static 'images/default-image.jpg' %}" alt="デフォルト画像" class="pet-image">
-            {% endif %}
-            <h3>ペット情報</h3>
-            <div class="pet-info">
-              <div>
-                <p><strong>種類:</strong> {{ pet_data.pet.type }}</p>
-                <p><strong>契約状況:</strong> {{ pet_data.status }}</p>
-                <p><strong>契約開始日:</strong> {{ pet_data.created_at|date:"Y年m月d日" }}</p>
-                <p><strong>契約終了日:</strong> {{ pet_data.end_date|date:"Y年m月d日" }}</p>
-                <p><strong>大きさ:</strong> {{ pet_data.pet.size }}</p>
-                <p><strong>色:</strong> {{ pet_data.pet.color }}</p>
-                <p><strong>年齢:</strong> {{ pet_data.pet.age }}</p>
-                <p><strong>品種:</strong> {{ pet_data.pet.kinds }}</p>
-                <p><strong>病歴:</strong> {% if show_disease %}{{ pet_data.pet.disease }}{% else %}なし{% endif %}</p>
-                <p><strong>性格:</strong> {{ pet_data.pet.personality }}</p>
-                <p><strong>性別:</strong> {{ pet_data.pet.sex }}</p>
-              </div>
-            </div>
-            <div class="action-link-container">
-              <a href="{% url 'karikeiyaku:cancel' pet_data.pet.id %}?from_mypage=true" class="action-link">キャンセル</a>
+      {% for pet_data in pet_images %}
+        <div class="contract-pet-card">
+          {% if pet_data.images %}
+            <img src="{{ pet_data.images.first.image.url }}" alt="ペット画像" class="pet-image">
+          {% else %}
+            <img src="{% static 'images/default-image.jpg' %}" alt="デフォルト画像" class="pet-image">
+          {% endif %}
+          <h3>ペット情報</h3>
+          <div class="pet-info">
+            <div>
+              <p><strong>種類:</strong> {{ pet_data.pet.type }}</p>
+              <p><strong>契約状況:</strong> {{ pet_data.status }}</p>
+              <p><strong>契約開始日:</strong> {{ pet_data.created_at|date:"Y年m月d日" }}</p>
+              <p><strong>契約終了日:</strong> {{ pet_data.end_date|date:"Y年m月d日" }}</p>
+              <p><strong>大きさ:</strong> {{ pet_data.pet.size }}</p>
+              <p><strong>色:</strong> {{ pet_data.pet.color }}</p>
+              <p><strong>年齢:</strong> {{ pet_data.pet.age }}</p>
+              <p><strong>品種:</strong> {{ pet_data.pet.kinds }}</p>
+              <p><strong>病歴:</strong> {% if show_disease %}{{ pet_data.pet.disease }}{% else %}なし{% endif %}</p>
+              <p><strong>性格:</strong> {{ pet_data.pet.personality }}</p>
+              <p><strong>性別:</strong> {{ pet_data.pet.sex }}</p>
             </div>
           </div>
-        {% endfor %}
+          <div class="google-map">
+            <iframe
+              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q={{ "35°46'6.29\"N 139°25'13.9\"E"|urlencode }}"
+              width="600"
+              height="450"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <div class="action-link-container">
+            <a href="{% url 'karikeiyaku:cancel' pet_data.pet.id %}?from_mypage=true" class="action-link">キャンセル</a>
+          </div>
+        </div>
+      {% endfor %}
       </div>
           {% else %}
       <p style="text-align: center;">現在、仮契約中のペットはありません。</p>
