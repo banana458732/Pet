@@ -133,6 +133,14 @@
     justify-content: flex-end; /* 右側に配置 */
     width: 100%;
     }
+
+    /* エラーメッセージのスタイル */
+    .error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    }
 </style>
 
     <!-- 全体のフォームを囲む -->
@@ -152,7 +160,7 @@
             <p>仮契約期間内に本契約をしなかった場合、自動的にキャンセルと扱うことを理解しています。</p>
 
             {% if show_disease %}
-            <p class="highlight">このペットには<strong>{{ pet.disease }}</strong>の病気があります。私は、このペットが過去または現在において<strong>{{ pet.disease }}</strong>の病歴を持っていることを認識し、その健康状態に基づく必要なケアを行う責任を負うことを理解しています。</p>
+            <p class="highlight">このペットには<strong>{{ pet.disease }}</strong>があります。私は、このペットが過去または現在において<strong>{{ pet.disease }}</strong>の病歴を持っていることを認識し、その健康状態に基づく必要なケアを行う責任を負うことを理解しています。</p>
             {% endif %}
         </section>
         
@@ -222,8 +230,8 @@
                 <!-- 同意確認 -->
                 <div class="agree">
                     {% if not user_karikeiyaku %}
-                    <label for="agreement">契約内容を確認し、同意しますか？</label>
-                        <input type="checkbox" id="agreement" name="agreement" required> 
+                        <label for="agreement">契約内容を確認し、同意しますか？</label>
+                        <input type="checkbox" id="agreement" name="agreement" {% if current_karikeiyaku_count >= 3 %}disabled{% endif %} required> 
                         <label for="agreement">同意します</label>
                     {% endif %}
                 </div>
@@ -238,7 +246,7 @@
                             </div>
                     {% else %}
                         <!-- 契約がまだの場合 -->
-                        <button type="submit" class="btn btn-success">契約する</button>
+                        <button type="submit" class="btn btn-success" {% if current_karikeiyaku_count >= 3 %}disabled{% endif %}>契約する</button>
                         
                         <!-- 戻るリンク（文字のみ） -->
                         <div class="return-button-wrapper">
@@ -247,5 +255,8 @@
                     {% endif %}
                 </div>
         </section>
+        {% if not can_contract %}
+            <p class="error-message">これ以上は契約できません。</p>
+        {% endif %}
     </div>
 {% endblock %}

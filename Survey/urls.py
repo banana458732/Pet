@@ -1,10 +1,8 @@
-# survey/urls.py
 from django.urls import path
 from . import views
 
-app_name = 'survey'  # 名前空間の設定
+app_name = 'survey'
 
 urlpatterns = [
-    path('survey/', views.IndexView.as_view(), name='pet_survey'),
-    path('', views.index, name='index'),
+    path('', views.pet_survey, name='pet_survey'),  # アンケート
 ]

@@ -7,6 +7,27 @@ from django.http import HttpResponse
 from django.conf import settings
 from petapp.models import Pet
 from fuzzywuzzy import fuzz
+from janome.tokenizer import Tokenizer
+import unicodedata
+
+
+# Janomeトークナイザの初期化
+tokenizer = Tokenizer()
+
+
+# ひらがなに変換する関数
+def to_hiragana(text):
+    tokens = tokenizer.tokenize(text)
+    result = []
+    for token in tokens:
+        # 読み仮名が取得できる場合はそれを使用
+        reading = token.reading if token.reading != "*" else token.surface
+        # カタカナをひらがなに変換
+        hiragana = unicodedata.normalize('NFKC', reading).translate(
+            str.maketrans("アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンァィゥェォャュョッー", 
+                          "あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをんぁぃぅぇぉゃゅょっー"))
+        result.append(hiragana)
+    return ''.join(result)
 
 
 def pet_survey(request):
@@ -30,6 +51,16 @@ def pet_survey(request):
         sex = form.cleaned_data.get('sex')
         age_range = form.cleaned_data.get('age_range')
 
+        # 色、品種、病気をひらがなに変換
+        input_hiragana_color = to_hiragana(color) if color else ""
+        input_hiragana_kinds = to_hiragana(kinds) if kinds else ""
+        input_hiragana_disease = to_hiragana(disease) if disease else ""
+
+        # CSVデータの色、品種、病気列をひらがなに変換
+        pets_data['hiragana_color'] = pets_data['color'].apply(to_hiragana)
+        pets_data['hiragana_kinds'] = pets_data['kinds'].apply(to_hiragana)
+        pets_data['hiragana_disease'] = pets_data['disease'].apply(to_hiragana)
+
         # スコア計算
         pets_data['score'] = 0
         if pet_type:
@@ -38,13 +69,24 @@ def pet_survey(request):
         if size:
             pets_data['score'] += (pets_data['size'] == size).astype(int)
         if color:
-            pets_data['score'] += pets_data['color'].apply(lambda x: 1 if color in x or x in color else 0)
+            pets_data['score'] += pets_data['hiragana_color'].apply(lambda x: 1 if input_hiragana_color in x or x in input_hiragana_color else 0)
         if kinds:
-            pets_data['score'] += (pets_data['kinds'] == kinds).astype(int)
+            # ひらがなに変換した品種を使用して部分一致を確認
+            input_hiragana_kinds = to_hiragana(kinds) if kinds else ""
+            pets_data['score'] += pets_data['hiragana_kinds'].apply(
+                lambda x: 1 if fuzz.partial_ratio(input_hiragana_kinds, x) > 80 else 0
+            )
         if disease:
-            pets_data['score'] += (pets_data['disease'] == disease).astype(int)
+            # 入力された病歴とCSVデータの病歴に対して部分一致を使用
+            pets_data['score'] += pets_data['hiragana_disease'].apply(
+                lambda x: 1 if fuzz.partial_ratio(input_hiragana_disease, x) > 80 else 0
+            )
         if personality:
-            pets_data['score'] += pets_data['personality'].apply(lambda x: 1 if fuzz.partial_ratio(personality, x) > 70 else 0)
+            # 性格マッチング処理（スコア計算）
+            input_hiragana_personality = to_hiragana(personality) if personality else ""
+            pets_data['score'] += pets_data['hiragana_personality'].apply(
+                lambda x: 1 if fuzz.partial_ratio(input_hiragana_personality, x) > 70 else 0
+            )
         if sex:
             pets_data = pets_data[pets_data['sex'] == sex]
             pets_data['score'] += (pets_data['sex'] == sex).astype(int)
@@ -111,9 +153,11 @@ def pet_survey(request):
 
     return render(request, 'survey/pet_survey.html', {'form': form})
 
+
 class IndexView(TemplateView):
     """トップページのビュー"""
     template_name = 'Survey/index.html'
+
 
 def index(request):
     """トップページを表示"""

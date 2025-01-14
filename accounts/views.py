@@ -165,6 +165,7 @@ def change_profile_image(request):
     }
     return render(request, 'accounts/change_profile_image.html', context)
 
+
 class IndexView(TemplateView):
     template_name = 'accounts/index.html'
 
