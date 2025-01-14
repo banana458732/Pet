@@ -39,6 +39,13 @@ def pet_survey(request):
         pets_data = pets_data.fillna('')
     except Exception as e:
         return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
+    
+    # CSVデータの性格列をひらがなに変換
+    if 'personality' in pets_data.columns:
+        pets_data['hiragana_personality'] = pets_data['personality'].apply(to_hiragana)
+    else:
+        # personality 列がない場合の処理（例えばデフォルト値を設定するなど）
+        pets_data['hiragana_personality'] = ''
 
     if request.method == 'POST' and form.is_valid():
         # フォームからの入力データ取得

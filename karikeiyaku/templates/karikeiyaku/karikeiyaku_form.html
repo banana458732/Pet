@@ -254,9 +254,9 @@
                         </div>
                     {% endif %}
                 </div>
+            {% if not can_contract %}
+                <p class="error-message">これ以上は契約できません。</p>
+            {% endif %}
         </section>
-        {% if not can_contract %}
-            <p class="error-message">これ以上は契約できません。</p>
-        {% endif %}
     </div>
 {% endblock %}
