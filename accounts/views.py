@@ -15,7 +15,9 @@ from petapp.models import Pet
 from karikeiyaku.models import Karikeiyaku
 from .forms import ProfileImageForm
 from petapp.models import PetImage
-
+from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
 
 class SignUpView(CreateView):
 
@@ -65,6 +67,14 @@ def LoginView(request):
             return render(request, 'accounts/login.html', {'error': 'そのユーザーは存在しません。'})
 
     return render(request, 'accounts/login.html', {})
+
+def is_staff(user):
+    return user.is_staff
+
+
+@staff_member_required
+def staff_menu(request):
+    return HttpResponse('staff')
 
 
 class MyPageView(LoginRequiredMixin, TemplateView):

@@ -9,18 +9,26 @@ class CustomUser(AbstractUser):
     groups = models.ManyToManyField(Group, blank=True, related_name='customuser_set')
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='customuser_set')
 
-    address = models.CharField(
-        verbose_name='住所',
-        max_length=30,
-        null=True,
-        blank=True,
+    post_code = models.CharField(
+        verbose_name='郵便番号',
+        max_length=8,
+        blank=False,
+        null=False,
     )
 
     phone_number = models.CharField(
         verbose_name='電話番号',
         max_length=15,
-        null=True,
-        blank=True
+        blank=False,
+        null=False,
+    )
+
+    address1 = models.CharField(
+        verbose_name='都道府県 市区町村', max_length=40,blank=False,null=False
+    )
+
+    street_address = models.CharField(
+        verbose_name='番地',max_length=5,blank=True, null=False
     )
 
     contract_pets = models.ManyToManyField(

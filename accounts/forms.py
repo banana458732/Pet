@@ -7,30 +7,37 @@ import re
 
 
 def validate_phone_number(value):
-    if not re.match(r'^\d{2,4}-\d{2,4}-\d{4}$', value):
-        raise ValidationError('有効な電話番号の形式で入力してください（例: 090-1234-5678）。')
+    if not re.match(r'^\d{2,4}\d{2,4}\d{4}$', value):
+        raise ValidationError('電話番号は半角数字のみで、10～15桁にしてください。(例: 09012345678)')
 
 
 def validate_address(value):
-    if not re.match(r'^[\w\s\-、。、・〒]+$',value):
+    if not re.match(r'^[\w\s\-、。、・〒]+$', value):
         raise ValidationError('有効な住所を入力してください。記号や特殊文字は使用できません。')    
 
 
 def validate_username(value):
     if not re.match(r'^[\w]+$', value):
-        raise ValidationError('英数字とアルファベット、_を用いて入力してください。')
+        raise ValidationError('英数字とアルファベット、_のみ用いて入力してください。')
 
+
+def validate_post_code(value):
+    if not re.match(r'^\d{3}\d{4}', value):
+        raise ValidationError('郵便番号は半角数字のみで入力してください。')
 
 class CustomUserCreationForm(UserCreationForm):
 
-    address = forms.CharField(label="住所", min_length=10, max_length=31, required=True, widget=forms.TextInput(attrs={'placeholder': '例: 長野県長野市長野元善町491番地'}), validators=[validate_address])
-    phone_number = forms.CharField(label='電話番号', max_length=15, required=True,widget=forms.TextInput(attrs={'placeholder': '例: 090-0000-0000'}) ,validators=[validate_phone_number])
+    
+    phone_number = forms.CharField(label='電話番号', max_length=15, required=True,widget=forms.TextInput(attrs={'placeholder': '例: 00012345678'}), validators=[validate_phone_number])
     username = forms.CharField(label="ユーザーネーム", min_length=3, max_length=16, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet123'}), validators=[validate_username])
     email = forms.EmailField(label="メールアドレス", min_length=7, max_length=256, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet@pet.com'}))
+    post_code = forms.CharField(label="郵便番号", min_length=7,max_length=7, required=True,widget=forms.TextInput(attrs={'class': 'p-postal-code', 'placeholder': '例:8900053'}), validators=[validate_post_code])
+    street_address = forms.CharField(label="番地",max_length=5, required=True,widget=forms.TextInput(attrs={'class': 'p-extended-address', 'placeholder': '例:10'}))
+    address = forms.CharField(label="都道府県 市区町村", max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'p-region p-locality', 'placeholder': '例: 長野県長野市長野元善町'}))
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password1', 'password2', 'address', 'phone_number')
+        fields = ('username', 'email', 'password1', 'password2', 'address', 'phone_number','post_code','street_address')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
