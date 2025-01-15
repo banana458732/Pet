@@ -58,6 +58,33 @@
     .cancel-form-container .btn:active {
         background-color: #b32e1e;
     }
+        /* 戻るボタンのスタイル */
+        .return-button-wrapper {
+    display: flex;
+    justify-content: center; /* 戻るボタンも中央揃え */
+    margin-top: 20px; /* グループから少し下に配置 */
+    }
+
+    /* 戻るリンクのスタイル */
+    .return-button {
+    color: #007bff; /* リンクの色 */
+    font-size: 16px; /* フォントサイズ */
+    text-decoration: none; /* 下線を消す */
+    margin-top: 10px;
+    cursor: pointer; /* ポインターを表示 */
+    }
+
+    .return-button:hover {
+    color: #0056b3; /* ホバー時の色 */
+    }
+
+
+    /* ボタンの位置調整：戻るリンクは右側 */
+    .return-button-wrapper {
+    display: flex;
+    justify-content: flex-end; /* 右側に配置 */
+    width: 100%;
+    }
 </style>
 
 <div class="cancel-form-container">
