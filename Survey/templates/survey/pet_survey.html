@@ -11,10 +11,17 @@
 
         <!-- ペットの種類 -->
         <div class="form-group">
-            <label for="id_pet_type">ペットの種類</label>
+            <label for="id_pet_type">ペットの種類 <span style="color: red;">(*必須)</span></label>
             <div class="form-check">
                 {{ form.pet_type }}
             </div>
+            {% if form.pet_type.errors %}
+                <div class="text-danger">
+                    {% for error in form.pet_type.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
         <!-- ペットのサイズ -->
@@ -33,13 +40,13 @@
 
         <!-- 種別 -->
         <div class="form-group">
-            <label for="id_kinds">品種 (任意)</label>
+            <label for="id_kinds">品種</label>
             {{ form.kinds }}
         </div>
 
         <!-- 病気 -->
         <div class="form-group">
-            <label for="id_disease">病気 (任意)</label>
+            <label for="id_disease">病気</label>
             {{ form.disease }}
         </div>
 
@@ -59,7 +66,7 @@
 
         <!-- 年齢範囲 -->
         <div class="form-group">
-            <label for="id_age_range">希望するペットの年齢範囲 (任意)</label>
+            <label for="id_age_range">希望するペットの年齢範囲</label>
             <div class="form-check">
                 {{ form.age_range }}
             </div>

@@ -10,8 +10,11 @@ class SimplePetSurveyForm(forms.Form):
     pet_type = forms.ChoiceField(
         choices=TYPE_CHOICES,
         widget=forms.RadioSelect,
-        required=False,
-        label="ペットの種類"
+        required=True,
+        label="ペットの種類",
+        error_messages={
+            'required': 'ペットの種類を選択してください。',
+        }
     )
 
     # ペットのサイズ
