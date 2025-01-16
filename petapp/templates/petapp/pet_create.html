@@ -65,19 +65,32 @@
         background-color: #45a049;
     }
 
-    /* 戻るボタン */
-    .btn-back {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #f44336;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        margin-top: 10px;
+    /* 戻るボタンのスタイル */
+    .return-button-wrapper {
+    display: flex;
+    justify-content: center; /* 戻るボタンも中央揃え */
+    margin-top: 20px; /* グループから少し下に配置 */
     }
 
-    .btn-back:hover {
-        background-color: #e53935;
+    /* 戻るリンクのスタイル */
+    .return-button {
+    color: #007bff; /* リンクの色 */
+    font-size: 16px; /* フォントサイズ */
+    text-decoration: none; /* 下線を消す */
+    margin-top: 10px;
+    cursor: pointer; /* ポインターを表示 */
+    }
+
+    .return-button:hover {
+    color: #0056b3; /* ホバー時の色 */
+    }
+
+
+    /* ボタンの位置調整：戻るリンクは右側 */
+    .return-button-wrapper {
+    display: flex;
+    justify-content: flex-end; /* 右側に配置 */
+    width: 100%;
     }
 
     /* フォームセットのスタイル */
@@ -97,13 +110,6 @@
 
     .error-list p {
         margin: 0;
-    }
-
-    /* Align the back button to the right */
-    .form-footer {
-        display: flex;
-        justify-content: flex-end; /* Align the button to the right */
-        margin-top: 20px;
     }
 </style>
 
@@ -258,9 +264,9 @@
 
     <button type="submit" class="btn-submit">登録</button>
 
-<div class="form-footer">
-    <a href="{% url 'petapp:pet-list' %}" class="btn-back">戻る</a>
-</div>
+    <div class="return-button-wrapper">
+        <a href="#" class="return-button" onclick="history.back()">戻る</a>
+    </div>
 </form>
 
 {% endblock %}
