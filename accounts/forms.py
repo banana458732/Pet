@@ -22,8 +22,14 @@ def validate_username(value):
 
 
 def validate_post_code(value):
-    if not re.match(r'^\d{3}\d{4}', value):
+    if not re.match(r'^\d{7}', value):
         raise ValidationError('郵便番号は半角数字のみで入力してください。')
+    
+
+def validate_street_address(value):
+    if not re.match(r'^\d{1,6}', value):
+        raise ValidationError('番地は半角数字とハイフンのみで入力してください。')
+    
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -32,8 +38,9 @@ class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(label="ユーザーネーム", min_length=3, max_length=16, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet123'}), validators=[validate_username])
     email = forms.EmailField(label="メールアドレス", min_length=7, max_length=256, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet@pet.com'}))
     post_code = forms.CharField(label="郵便番号", min_length=7,max_length=7, required=True,widget=forms.TextInput(attrs={'class': 'p-postal-code', 'placeholder': '例:8900053'}), validators=[validate_post_code])
-    street_address = forms.CharField(label="番地",max_length=5, required=True,widget=forms.TextInput(attrs={'class': 'p-extended-address', 'placeholder': '例:10'}))
+    street_address = forms.CharField(label="番地",max_length=6, required=True,widget=forms.TextInput(attrs={'class': 'p-extended-address', 'placeholder': '例:10'}),validators=[validate_street_address])
     address = forms.CharField(label="都道府県 市区町村", max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'p-region p-locality', 'placeholder': '例: 長野県長野市長野元善町'}))
+    address2 = forms.CharField(label="建物名", max_length=20,widget=forms.TextInput(attrs={'class': '','placeholder': '記入例：キャンセビル'}) )
 
     class Meta:
         model = CustomUser
