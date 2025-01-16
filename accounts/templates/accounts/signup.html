@@ -3,7 +3,13 @@
 {% block title %}Sign up{% endblock %}
 
 {% block contents %}
+
+
+
+
 <hr>
+<script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+
 <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
     <div class="row" style="width: 100%; max-width: 800px; text-align: center;"> <!-- max-widthを800pxに設定 -->
         <div class="col">
@@ -11,7 +17,8 @@
             <h3 style="margin-bottom: 30px; font-weight: normal;">登録情報入力</h3>
             
             <!-- サインアップのフォームを配置 -->
-            <form class="ui form" action="{% url 'accounts:signup' %}" method="POST" style="text-align: center;">
+            <form class="h-adr" action="{% url 'accounts:signup' %}" method="POST" style="text-align: center;">
+                <span class="p-country-name" style="display:none;">Japan</span>
                 {% csrf_token %}
                 
                 <!-- フィールド: ユーザーネーム -->
@@ -32,7 +39,18 @@
                 </div>
                 <p style="color: red; text-align: left;">{{ form.email.errors }}</p>
 
+                
+
                 <!-- フィールド: 住所 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.post_code.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.post_code }}
+                    </div>
+                </div>
+                <p style="color: red; text-align: left;">{{ form.post_code.errors }}</p>
+
+                <!-- フィールド: 都道府県市区町村 -->
                 <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
                     <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.address.label }}</label> <!-- margin-right: 50px -->
                     <div style="flex: 1;">
@@ -40,6 +58,24 @@
                     </div>
                 </div>
                 <p style="color: red; text-align: left;">{{ form.address.errors }}</p>
+                
+                <!-- フィールド: 番地 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.address.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.street_address }}
+                    </div>
+                </div>
+                <p style="color: red; text-align: left;">{{ form.street_address.errors }}</p>
+
+                <!-- フィールド: 建物名 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.address2.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.address2 }}
+                    </div>
+                </div>
+                <p style="color: red; text-align: left;">{{ form.address2.errors }}</p>
 
                 <!-- フィールド: 電話番号 -->
                 <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">

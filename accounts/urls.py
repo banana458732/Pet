@@ -10,7 +10,7 @@ urlpatterns = [
 #          views.SignUpView.as_view(),
 #          name='signup'),
      path('signup/', views.SignUpView.as_view(template_name="accounts/signup.html"), name='signup'),
-     path('signup_confirm/', views.SignUp_ConfirmView.as_view(template_name="accounts/signup_confirm.html"), name='signup'),
+     path('signup_confirm/', views.SignUp_ConfirmView.as_view(template_name="accounts/signup_confirm.html"), name='signup_confirm'),
 
      path('signup_success/',
           views.SignUpSuccessView.as_view(),

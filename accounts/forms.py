@@ -44,7 +44,7 @@ class CustomUserCreationForm(UserCreationForm):
     post_code = forms.CharField(label="郵便番号", min_length=7,max_length=7, required=True,widget=forms.TextInput(attrs={'class': 'p-postal-code', 'placeholder': '例:8900053'}), validators=[validate_post_code])
     street_address = forms.CharField(label="番地",max_length=6, required=True,widget=forms.TextInput(attrs={'class': 'p-extended-address', 'placeholder': '例:10'}),validators=[validate_street_address])
     address = forms.CharField(label="都道府県 市区町村", max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'p-region p-locality', 'placeholder': '例: 長野県長野市長野元善町'}))
-    address2 = forms.CharField(label="建物名", max_length=20,widget=forms.TextInput(attrs={'class': '','placeholder': '記入例：キャンセビル'}) )
+    address2 = forms.CharField(label="建物名", max_length=20, required=False, widget=forms.TextInput(attrs={'class': '','placeholder': '記入例：キャンセビル'}) )
 
     class Meta:
         model = CustomUser
