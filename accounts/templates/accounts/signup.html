@@ -16,7 +16,7 @@
         <div class="col offset-2">
             <h3>登録情報入力</h3>
             <!-- サインアップのフォームを配置 -->
-            <form class="h-adr" action="{% url 'accounts:signup' %}" method="POST">
+            <form class="h-adr" action="{% url 'accounts:signup_confirm' %}" method="POST">
                 <span class="p-country-name" style="display:none;">Japan</span> 
                 {% csrf_token %}
                 <!-- formからフィールドを取り出す -->

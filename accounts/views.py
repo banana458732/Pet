@@ -31,14 +31,28 @@ class SignUpView(CreateView):
         if self.request.POST.get('next', '') == 'confirm':
             return render(self.request, 'accounts/signup_confirm.html', ctx)
 
-        if self.request.POST.get('next', '') == 'back':
-            return render(self.request, 'accounts/signup.html', ctx)
+        # if self.request.POST.get('next', '') == 'back':
+        #     return render(self.request, 'accounts/signup.html', ctx)
 
-        if self.request.POST.get('next', '') == 'create':
-            return super().form_valid(form)
+        # if self.request.POST.get('next', '') == 'create':
+        #     return super().form_valid(form)
             # フォームからデータを取得
             # モデルインスタンスの作成
         return render(self.request, 'accounts/signup.html', ctx)
+    
+class SignUp_ConfirmView(CreateView):
+    template_name = "accounts/signup_confirm.html"
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('accounts:signup_success')
+
+    def form_valid(self, form):
+        ctx = {'form': form}
+        if self.request.POST.get('next', '') == 'create':
+            return render(self.request, 'accounts/signup_success', ctx)
+        return render(self.request, 'accounts/signup_confirm', ctx)
+    
+
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,9 +67,9 @@ class SignUpSuccessView(TemplateView):
 
 def LoginView(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(username=username, password=password)
+        user = authenticate(email=email, password=password)
         # もし、ユーザーオブジェクトが存在するなら。
         if user is not None:
         # ログインする。
