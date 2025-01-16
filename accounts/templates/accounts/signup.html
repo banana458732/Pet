@@ -2,99 +2,112 @@
 {% load static %}
 {% block title %}Sign up{% endblock %}
 
-
 {% block contents %}
-
-
-<script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
-
-
-<div class="container">
-    <!-- 行を配置 -->
-    <div class="row">
-        <!-- 列の左右に余白offset-2を入れる -->
-        <div class="col offset-2">
-            <h3>登録情報入力</h3>
-            <!-- サインアップのフォームを配置 -->
-            <form class="h-adr" action="{% url 'accounts:signup_confirm' %}" method="POST">
-                <span class="p-country-name" style="display:none;">Japan</span> 
-                {% csrf_token %}
-                <!-- formからフィールドを取り出す -->
-                <div class="field">
-                    <div class="field">{{ form.username.label_tag }}</div>
-                    {{ form.username }}
-                    <p style="color: red;">{{ form.username.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
-                </div>
-
-                <div class="field">
-                    <div class="field">{{ form.email.label_tag }}</div>
-                    {{ form.email }}
-                    <p style="color: red;">{{ form.email.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
-                </div>
-
-                <div class="field">
-                    <div class="field">{{ form.post_code.label_tag }}</div>
-                    {{ form.post_code }}
-                    <p style="color: red;">{{ form.post_code.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
-                </div>
+<hr>
+<div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+    <div class="row" style="width: 100%; max-width: 800px; text-align: center;"> <!-- max-widthを800pxに設定 -->
+        <div class="col">
+            <!-- タイトルの太さを元に戻す -->
+            <h3 style="margin-bottom: 30px; font-weight: normal;">登録情報入力</h3>
             
-                <div class="field">
-                    <div class="field">{{ form.address.label_tag }}</div>
-                    {{ form.address }}
-                    <p style="color: red;">{{ form.address.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
-                </div>
-
-                <div class="field">
-                    <div class="field">{{ form.street_address.label_tag }}</div>
-                    {{ form.street_address }}
-                    <p style="color: red;">{{ form.street_address.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
-                </div>
+            <!-- サインアップのフォームを配置 -->
+            <form class="ui form" action="{% url 'accounts:signup' %}" method="POST" style="text-align: center;">
+                {% csrf_token %}
                 
-                <div class="field">
-                    <div class="field">{{ form.phone_number.label_tag }}</div>
-                    {{ form.phone_number }}
-                    <p style="color: red;">{{ form.phone_number.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
+                <!-- フィールド: ユーザーネーム -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.username.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.username }}
+                    </div>
                 </div>
+                <p style="color: red; text-align: left;">{{ form.username.errors }}</p>
 
-                <div class="field">
-                    <div class="field">{{ form.password1.label_tag }}</div>
-                    {{ form.password1 }}
-                    <p style="color: red;">{{ form.password1.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
+                <!-- フィールド: メールアドレス -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.email.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.email }}
+                    </div>
                 </div>
+                <p style="color: red; text-align: left;">{{ form.email.errors }}</p>
 
-                <div class="field">
-                    <div class="field">{{ form.password2.label_tag }}</div>
-                    {{ form.password2 }}
-                    <p style="color: red;">{{ form.password2.errors }}</p>
-                    <p style="color: red;">{{error}}</p>
+                <!-- フィールド: 住所 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.address.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.address }}
+                    </div>
                 </div>
+                <p style="color: red; text-align: left;">{{ form.address.errors }}</p>
 
-                <button class="ui button" type="submit" name="next" value="confirm" style="background:#4fd208; margin-top: 10px;">作成</button>
-              </form>
-  
-            <!-- トップページのリンクテキスト -->
+                <!-- フィールド: 電話番号 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.phone_number.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.phone_number }}
+                    </div>
+                </div>
+                <p style="color: red; text-align: left;">{{ form.phone_number.errors }}</p>
+
+                <!-- フィールド: パスワード1 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.password1.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.password1 }}
+                    </div>
+                </div>
+                <p style="color: red; text-align: left;">{{ form.password1.errors }}</p>
+
+                <!-- フィールド: パスワード2 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
+                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.password2.label }}</label> <!-- margin-right: 50px -->
+                    <div style="flex: 1;">
+                        {{ form.password2 }}
+                    </div>
+                </div>
+                <p style="color: red; text-align: left;">{{ form.password2.errors }}</p>
+
+                <!-- サブミットボタン -->
+                <button class="ui button" type="submit" name="next" value="confirm" 
+                        style="background:#4fd208; margin-top: 30px;">作成</button>
+            </form>
+
             <br>
             <p><a href="{% url 'accounts:index' %}">登録をやめてトップページに戻る</a></p>
         </div>
     </div>
 </div>
 
-<!-- パスワードを表示/非表示に切り替えるJavaScript -->
-<!-- <script>
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordField = document.getElementById('passwordField');
+<style>
+    /* タイトルの文字サイズ調整（太さを戻す） */
+    h3 {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+    }
 
-    togglePassword.addEventListener('change', function () {
-        // パスワードのタイプを切り替える
-        const type = passwordField.type === 'password' ? 'text' : 'password';
-        passwordField.type = type;
-    });
-</script> -->
+    /* 入力フィールド */
+    input[type="text"], input[type="email"], input[type="password"], textarea {
+        padding: 10px;
+        width: 100%;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    /* エラー文の配置 */
+    p {
+        margin: 0;
+    }
+
+    /* フォームのフィールド間隔 */
+    .field {
+        margin-bottom: 30px;
+    }
+
+    /* 横幅調整 */
+    .field div {
+        margin-right: 50px;  /* 隙間を50pxに設定 */
+    }
+</style>
+
 {% endblock %}
