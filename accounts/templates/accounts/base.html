@@ -25,7 +25,8 @@
                 font-size: 24px;
                 font-weight: bold;
                 color: #7a5c39;
-            ">ペットマッチシステム</div>
+            ">
+            <a href="{% url 'accounts:index' %}">ペットマッチシステム</a></div>
             <nav style=" 
                 display: flex;
                 gap: 15px;
@@ -98,6 +99,10 @@
             }
             nav a:hover {
                 background-color: #e8dfd3;
+            }
+            a {
+                text-decoration: none;
+                color: #7a5c39;
             }
         </style>
         <nav style="

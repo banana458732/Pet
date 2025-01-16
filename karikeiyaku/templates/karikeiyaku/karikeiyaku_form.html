@@ -214,8 +214,16 @@
                     <input type="email" value="{{ user.email }}" disabled>
                 </div>
                 <div class="form-group">
-                    <label>住所</label>
-                    <input type="address" value="{{ user.address }}" disabled>
+                    <label>郵便番号</label>
+                    <input type="address" value="{{ user.post_code }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>都道府県 市区町村</label>
+                    <input type="address" value="{{ user.address1 }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>番地</label>
+                    <input type="address" value="{{ user.street_address }}" disabled>
                 </div>
                 <div class="form-group">
                     <label>電話番号</label>
