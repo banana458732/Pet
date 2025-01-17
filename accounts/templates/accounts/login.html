@@ -58,17 +58,18 @@
 <html lang="ja">
   <meta charset="utf-8">
     <!-- ユーザー名とパスワードが一致しない場合のメッセージ -->
+
+    <!-- ログインのフォームを配置 -->
+    <div class="login-container">
+    <h1 style="text-align: left; font-weight: bold;">ログイン</h1>
     {% if errors %}
       <p style="color: red">{{ error }}ユーザー名とパスワードが一致しません。</p>
     {% endif %}
-    <!-- ログインのフォームを配置 -->
-    <div class="login-container">
-    <h1 style="text-align: left;">ログイン</h1>
     <form method="post">
       {% csrf_token %}
       <!-- Bootstrapのロゴを表示 -->
       <!-- 「static/img/bootstrap-logo.svg」の読み込み -->
-      <p id = accounts_signup style="font-size: 14px; text-align: left;" >アカウントが未登録の方はこちら<a id ="accounts_link"href="{% url 'accounts:signup' %}" style="color: #007bff;">アカウントを作成</a></p>
+      <p id = accounts_signup style="font-size: 14px; text-align: left;" >アカウントが未登録の方はこちら<a id ="accounts_link"href="{% url 'accounts:signup' %}"  style="color:#007bff;">アカウントを作成</a></p>
       <div class="form-group">
         <label for="username">ユーザー名</label>
         <input type="text" id="username"name="username" placeholder="ユーザー名" required/>
