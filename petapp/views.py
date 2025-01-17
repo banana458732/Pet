@@ -145,6 +145,9 @@ def pet_create_view(request):
                         'disease': pet.disease,
                         'personality': pet.personality,
                         'sex': pet.sex,
+                        'post_code': pet.post_code,
+                        'address': pet.address,
+                        'phone_number': pet.phone_number,
                         'image_urls': ', '.join(image_urls)  # 画像URLをカンマ区切りで保存
                     }
 
@@ -164,7 +167,7 @@ def pet_create_view(request):
         'form': pet_form,
         'photo_formset': photo_formset,
         'error_messages': error_messages,
-        'csv_data': data.head()  # CSVデータを表示
+        'csv_data': data.head(),  # CSVデータを表示
     })
 
 
@@ -172,9 +175,12 @@ def pet_create_view(request):
 def pet_create_comp_view(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
     pet_images = PetImage.objects.filter(pet=pet)
+    formatted_phone_number = pet.formatted_phone_number()
+
     return render(request, 'petapp/pet_create_comp.html', {
         'pet': pet,
         'pet_images': pet_images,
+        'formatted_phone_number': formatted_phone_number,  # フォーマット済み電話番号
     })
 
 
@@ -202,6 +208,9 @@ def pet_update_view(request, pet_id):
             'disease': pet.disease,
             'personality': pet.personality,
             'sex': pet.sex,
+            'post_code': pet.post_code,  # 追加
+            'address': pet.address,      # 追加
+            'phone_number': pet.phone_number
         }
 
         pet_form = PetUpdateForm(request.POST, instance=pet)
@@ -309,6 +318,9 @@ def pet_update_view(request, pet_id):
                             data.at[index, 'disease'] = pet.disease
                             data.at[index, 'personality'] = pet.personality
                             data.at[index, 'sex'] = pet.sex
+                            data.at[index, 'post_code'] = pet.post_code  # 追加
+                            data.at[index, 'address'] = pet.address  # 追加
+                            data.at[index, 'phone_number'] = pet.phone_number  # 追加
                             data.at[index, 'image_urls'] = ', '.join(final_image_urls)  # 更新された画像URLを設定
 
                             break
@@ -359,6 +371,9 @@ def pet_update_comp_view(request, pet_id):
         'disease': '病歴',
         'personality': '性格',
         'sex': '性別',
+        'post_code': '郵便番号',
+        'address': '住所',
+        'phone_number': '電話番号',  # 追加
     }
 
     # updated_fieldsを日本語ラベルに変換

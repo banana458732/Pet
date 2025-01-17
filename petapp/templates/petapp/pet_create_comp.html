@@ -121,17 +121,24 @@
     <h2>ペットの登録が完了しました！</h2>
 
     <ul class="pet-info">
+        <!-- 基本情報 -->
         <li><strong>種類 :</strong> {{ pet.get_type_display }}</li>
         <li><strong>大きさ :</strong> {{ pet.get_size_display }}</li>
-        <li><strong>色 :</strong> {{ pet.color }}</li>
-        <li><strong>歳 :</strong> {{ pet.age }}歳</li>
+        <li><strong>性別 :</strong> {{ pet.sex }}</li>
         <li><strong>品種 :</strong> {{ pet.kinds }}</li>
+
+        <!-- 状態に関する情報 -->
+        <li><strong>色 :</strong> {{ pet.color }}</li>
+        <li><strong>年齢 :</strong> {{ pet.age }}歳</li>
+        <li><strong>性格 :</strong> {{ pet.personality }}</li>
         {% if pet.disease %}
             <li><strong>病歴 :</strong> {{ pet.disease }}</li>
         {% endif %}
-        <li><strong>性格 :</strong> {{ pet.personality }}</li>
-        <li><strong>性別 :</strong> {{ pet.sex }}</li>
-        <li><strong>電話番号 :</strong> {{ pet.phone_number }}</li>
+
+        <!-- 連絡先情報 -->
+        <li><strong>郵便番号 :</strong> {{ pet.formatted_post_code }}</li>
+        <li><strong>住所 :</strong> {{ pet.address }}</li>
+        <li><strong>電話番号 :</strong> {{ pet.formatted_phone_number }}</li>
     </ul>
 
     <!-- 画像表示部分 -->

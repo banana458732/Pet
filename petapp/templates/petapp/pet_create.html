@@ -128,6 +128,7 @@
         </div>
     {% endif %}
 
+    <!-- 基本情報 -->
     <div class="form-group">
         <label for="{{ form.type.id_for_label }}">種類 (犬/猫)</label>
         {{ form.type }}
@@ -153,6 +154,31 @@
     </div>
 
     <div class="form-group">
+        <label for="{{ form.sex.id_for_label }}">性別</label>
+        {{ form.sex }}
+        {% if form.sex.errors %}
+            <div class="error-list">
+                {% for error in form.sex.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="{{ form.kinds.id_for_label }}">品種</label>
+        {{ form.kinds }}
+        {% if form.kinds.errors %}
+            <div class="error-list">
+                {% for error in form.kinds.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- 状態に関する情報 -->
+    <div class="form-group">
         <label for="{{ form.color.id_for_label }}">色</label>
         {{ form.color }}
         {% if form.color.errors %}
@@ -177,11 +203,11 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.kinds.id_for_label }}">品種</label>
-        {{ form.kinds }}
-        {% if form.kinds.errors %}
+        <label for="{{ form.personality.id_for_label }}">性格</label>
+        {{ form.personality }}
+        {% if form.personality.errors %}
             <div class="error-list">
-                {% for error in form.kinds.errors %}
+                {% for error in form.personality.errors %}
                     <p>{{ error }}</p>
                 {% endfor %}
             </div>
@@ -200,12 +226,13 @@
         {% endif %}
     </div>
 
+    <!-- 連絡先情報 -->
     <div class="form-group">
-        <label for="{{ form.personality.id_for_label }}">性格</label>
-        {{ form.personality }}
-        {% if form.personality.errors %}
+        <label for="{{ form.post_code.id_for_label }}">郵便番号</label>
+        {{ form.post_code }}
+        {% if form.post_code.errors %}
             <div class="error-list">
-                {% for error in form.personality.errors %}
+                {% for error in form.post_code.errors %}
                     <p>{{ error }}</p>
                 {% endfor %}
             </div>
@@ -213,11 +240,11 @@
     </div>
 
     <div class="form-group">
-        <label for="{{ form.sex.id_for_label }}">性別</label>
-        {{ form.sex }}
-        {% if form.sex.errors %}
+        <label for="{{ form.address.id_for_label }}">住所</label>
+        {{ form.address }}
+        {% if form.address.errors %}
             <div class="error-list">
-                {% for error in form.sex.errors %}
+                {% for error in form.address.errors %}
                     <p>{{ error }}</p>
                 {% endfor %}
             </div>

@@ -4,6 +4,7 @@ from django.dispatch import receiver  # 追加
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 import os
 import pandas as pd
+import re
 
 # 現在のスクリプトファイルのディレクトリを取得
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -23,7 +24,6 @@ class Pet(models.Model):
         ('犬', '犬'),
         ('猫', '猫'),
     ]
-
     SIZE_CHOICES = [
         ('大型', '大型'),
         ('中型', '中型'),
@@ -44,17 +44,63 @@ class Pet(models.Model):
         choices=[('オス', 'オス'), ('メス', 'メス')],
         default='', verbose_name="性別"
     )
-
+    post_code = models.CharField(
+        max_length=7,
+        blank=False,
+        null=False,
+        verbose_name="郵便番号",
+        default=''
+    )
+    address = models.CharField(
+        max_length=255,
+        blank=False,
+        null=False,
+        verbose_name="住所",
+        default=''
+    )
     phone_number = models.CharField(
-        max_length=15,
+        max_length=11,
         blank=False,
         null=True,
-        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')],
+        validators=[RegexValidator(r'^[0-9]{10,11}$', '電話番号は半角数字のみで、10,11桁までにしてください。')],
         verbose_name="電話番号"
     )
 
-    def __str__(self):
-        return f'{self.type} - {self.size} - {self.color} - {self.age}歳'
+    # 保存前に小数点とハイフンを取り除く
+    def save(self, *args, **kwargs):
+        # 小数点とハイフンを削除
+        if self.phone_number:
+            self.phone_number = self.phone_number.replace('-', '').replace('.', '')
+        if self.post_code:
+            self.post_code = self.post_code.replace('.', '')
+        super().save(*args, **kwargs)
+
+    # フォーマット済み郵便番号を返すメソッド
+    def formatted_post_code(self):
+        """郵便番号をハイフン付きで返す"""
+        return f"{self.post_code[:3]}-{self.post_code[3:]}" if self.post_code else ""
+
+    def formatted_phone_number(self):
+        """電話番号をハイフン付きで返す"""
+        phone_number = self.phone_number
+
+        # 入力からハイフンと小数点を削除
+        phone_number = phone_number.replace("-", "").replace(".", "")
+
+        # フリーダイヤル（0120-xxx-xxx）: 10桁
+        if len(phone_number) == 10 and phone_number.startswith("0120"):
+            return f"{phone_number[:4]}-{phone_number[4:7]}-{phone_number[7:]}"
+
+        # 固定電話（例: 026-267-3353など）: 10桁
+        elif len(phone_number) == 10:
+            return f"{phone_number[:3]}-{phone_number[3:6]}-{phone_number[6:]}"
+
+        # 11桁の番号（携帯電話やその他）: 11桁
+        elif len(phone_number) == 11:
+            return f"{phone_number[:3]}-{phone_number[3:7]}-{phone_number[7:]}"
+
+        # それ以外はそのまま返す
+        return phone_number
 
 
 class PhoneNumber(models.Model):
