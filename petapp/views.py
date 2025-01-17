@@ -148,6 +148,7 @@ def pet_create_view(request):
                         'post_code': pet.post_code,
                         'address': pet.address,
                         'phone_number': pet.phone_number,
+                        'location ': pet.location,
                         'image_urls': ', '.join(image_urls)  # 画像URLをカンマ区切りで保存
                     }
 
@@ -210,7 +211,8 @@ def pet_update_view(request, pet_id):
             'sex': pet.sex,
             'post_code': pet.post_code,  # 追加
             'address': pet.address,      # 追加
-            'phone_number': pet.phone_number
+            'phone_number': pet.phone_number,
+            'location': pet.location,
         }
 
         pet_form = PetUpdateForm(request.POST, instance=pet)
@@ -255,10 +257,7 @@ def pet_update_view(request, pet_id):
 
                     if old_value != new_value:
                         updated_field = f"{field}: {old_value} → {new_value}"
-                    else:
-                        updated_field = f"{field}: {old_value} （変更なし）"
-
-                    updated_fields.append(updated_field)
+                        updated_fields.append(updated_field)
 
                     for form in image_formset:
                         delete_flag = form.cleaned_data.get('DELETE', False)
@@ -321,6 +320,7 @@ def pet_update_view(request, pet_id):
                             data.at[index, 'post_code'] = pet.post_code  # 追加
                             data.at[index, 'address'] = pet.address  # 追加
                             data.at[index, 'phone_number'] = pet.phone_number  # 追加
+                            data.at[index, 'location'] = pet.location  # 追加
                             data.at[index, 'image_urls'] = ', '.join(final_image_urls)  # 更新された画像URLを設定
 
                             break
@@ -374,6 +374,7 @@ def pet_update_comp_view(request, pet_id):
         'post_code': '郵便番号',
         'address': '住所',
         'phone_number': '電話番号',  # 追加
+        'location': '保護場所',
     }
 
     # updated_fieldsを日本語ラベルに変換

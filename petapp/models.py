@@ -65,6 +65,13 @@ class Pet(models.Model):
         validators=[RegexValidator(r'^[0-9]{10,11}$', '電話番号は半角数字のみで、10,11桁までにしてください。')],
         verbose_name="電話番号"
     )
+    location = models.CharField(
+        max_length=255,
+        blank=False,
+        null=False,
+        verbose_name="保護場所",
+        default=''
+    )
 
     # 保存前に小数点とハイフンを取り除く
     def save(self, *args, **kwargs):
