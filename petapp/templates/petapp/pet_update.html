@@ -259,6 +259,32 @@
             {% endif %}
         </div>
 
+        <!-- 郵便番号 -->
+        <div class="form-group">
+            <label for="{{ pet_form.post_code.id_for_label }}">郵便番号</label>
+            {{ pet_form.post_code }}
+            {% if pet_form.post_code.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.post_code.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- 住所 -->
+        <div class="form-group">
+            <label for="{{ pet_form.address.id_for_label }}">住所</label>
+            {{ pet_form.address }}
+            {% if pet_form.address.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.address.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
         <!-- 画像の更新 -->
         <h3>画像の更新</h3>
         {{ image_formset.management_form }} <!-- 管理フォームを追加 -->
