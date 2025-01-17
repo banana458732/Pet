@@ -39,7 +39,7 @@ class Comment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Comment by {self.user.username} on {self.pet.pet_id}'
+        return f'Comment by {self.user.username}'
 
 
 class Karikeiyaku(models.Model):

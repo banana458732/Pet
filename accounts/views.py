@@ -40,6 +40,25 @@ class SignUpView(CreateView):
             # モデルインスタンスの作成
         return render(self.request, 'accounts/signup.html', ctx)
 
+
+class SignUp_ConfirmView(CreateView):
+    template_name = "accounts/signup_confirm.html"
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('accounts:signup_success')
+
+    def form_valid(self, form):
+        ctx = {'form': form}
+        if self.request.POST.get('next', '') == 'create':
+            return super().form_valid(form)
+        
+        elif self.request.POST.get('next', '') == 'back':
+            return render(self.request, 'accounts/signup.html', ctx)
+
+        return render(self.request, 'accounts/signup_confirm.html', ctx)
+    
+
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # 他の必要なコンテキストデータを渡す

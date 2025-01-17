@@ -17,14 +17,32 @@
         text-align: center;
     }
 
-    table td {
-        padding: 3px 10px;
+    table {
+    border-collapse: collapse; /* セル間の余白をなくす */
+    width: 80%; /* 表全体の幅を調整 */
+    margin: 0 auto; /* 表を中央寄せ */
     }
 
-    table {
-        border: solid 1px;
-        margin-bottom: 50px;
-        border-radius: 6px;
+    table td {
+        padding: 10px 15px; /* セル内の余白を調整 */
+        text-align: left; /* テキストを左寄せ（必要に応じて変更） */
+        border: 1px solid #ccc; /* セルの境界線を設定 */
+    }
+
+    table td:first-child {
+        font-weight: bold; /* 左側の項目を強調 */
+        text-align: right; /* 項目名を右寄せ */
+        background-color: #f9f9f9; /* 背景色を薄くする */
+        padding-right: 150px;
+    }
+
+    table td:last-child {
+        text-align: left; /* 右側のデータを左寄せ */
+        padding-left: 20px;
+    }
+
+    table tr {
+        border-bottom: 1px solid #ccc; /* 各行の間に線を追加 */
     }
 
     #accounts_bottom {
@@ -51,6 +69,10 @@
         margin-left: 0px;
     }
 
+    #showPasswordButton {
+
+    }
+
 </style>
 <div id="accounts_register_confirm">
     <p>登録内容確認</p>
@@ -62,18 +84,39 @@
     {% csrf_token %}
     <tr><td>名前</td><td>{{form.username.value}}</td></tr>
     <tr><td>メールアドレス</td><td>{{form.email.value}}</td></tr>
-    <tr><td>パスワード</td><td>{{form.password1.value}}</td></tr>
-    <tr><td>住所</td><td>{{form.address.value}}</td></tr>
+    <tr><td>パスワード</td><td style="margin: 10px;"><input type="password" id="passwordInput" value="{{form.password1.value}}" readonly>&emsp;<button id="showPasswordButton">表示</button></td></tr>
+    <tr><td>郵便番号</td><td>{{form.post_code.value}}</td></tr>
+    <tr><td>都道府県市区町村</td><td>{{form.address.value}}</td></tr>
+    <tr><td>番地</td><td>{{form.street_address.value}}</td></tr>
+
+    <tr><td>建物名</td><td>{{form.address2.value}}</td></tr>
+    
     <tr><td>電話番号</td><td>{{form.phone_number.value}}</td></tr>
+    <script>
+        var showPasswordButton = document.getElementById("showPasswordButton");
+        showPasswordButton.addEventListener("click", togglePasswordVisibility);
+
+        function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("passwordInput");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            showPasswordButton.textContent = "非表示";
+        } else {
+            passwordInput.type = "password";
+            showPasswordButton.textContent = "表示";
+        }
+        }
+    </script>
 </table>
 </div>
+
 <form class="ui form" action="{% url 'accounts:signup' %}" method="POST">
     {% csrf_token %}
     {% for field in form %}
         {{field.as_hidden}}
     {% endfor %}
     <div id="accounts_bottom">
-    <button class="ui button grey" id="back_bottom"  type="submit" name="back" value="back">戻る</button>
+    <button class="ui button grey" id="back_bottom"  type="submit" name="next" value="back">戻る</button>
     <button class="ui button orange" id="create_bottom" type="submit" name="next" value="create">作成</button>
 
 </form>
