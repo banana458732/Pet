@@ -9,7 +9,15 @@ class PetCreateForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
-                  'personality', 'sex', 'phone_number']
+                  'personality', 'sex', 'phone_number', 'post_code', 'address']
+
+    def clean_post_code(self):
+        post_code = self.cleaned_data['post_code']
+        return post_code.replace("-", "")  # ハイフンを除去
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        return phone_number.replace("-", "")  # ハイフンを除去
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -59,7 +67,7 @@ class PetUpdateForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
-                  'personality', 'sex', 'phone_number']
+                  'personality', 'sex', 'phone_number', 'post_code', 'address']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -91,7 +99,9 @@ class PetUpdateForm(forms.ModelForm):
     disease = forms.CharField(max_length=100, label='病歴', required=False)
     personality = forms.CharField(max_length=100, label='性格', required=False)
     sex = forms.CharField(label='性別', required=False, disabled=True)
-    phone_number = forms.CharField(max_length=15, label='電話番号', required=False)
+    phone_number = forms.CharField(max_length=11, label='電話番号', required=False)
+    post_code = forms.CharField(max_length=7, label='郵便番号', required=False)  # 郵便番号を入力
+    address = forms.CharField(max_length=255, label='住所', required=False)  # 住所を入力
 
 
 class PetImageUpdateForm(forms.ModelForm):

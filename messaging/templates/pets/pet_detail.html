@@ -525,47 +525,60 @@
 
     </style>
 
-    <!-- 情報セクション -->
-    <div class="pet-info-section">
-        <table class="pet-info-table">
+<!-- 情報セクション -->
+<div class="pet-info-section">
+    <table class="pet-info-table">
+        <tr>
+            <td><strong>年齢</strong></td>
+            <td>{{ pet.age }}歳</td>
+        </tr>
+        <tr>
+            <td><strong>性別</strong></td>
+            <td>{{ pet.sex }}</td>
+        </tr>
+        <tr>
+            <td><strong>サイズ</strong></td>
+            <td>{{ pet.size }}</td>
+        </tr>
+        <tr>
+            <td><strong>毛色</strong></td>
+            <td>{{ pet.color }}</td>
+        </tr>
+        {% if pet.disease %}
             <tr>
-                <td><strong>年齢</strong></td>
-                <td>{{ pet.age }}歳</td>
+                <td><strong>病歴</strong></td>
+                <td>{{ pet.disease }}</td>
             </tr>
-            <tr>
-                <td><strong>性別</strong></td>
-                <td>{{ pet.sex }}</td>
-            </tr>
-            <tr>
-                <td><strong>サイズ</strong></td>
-                <td>{{ pet.size }}</td>
-            </tr>
-            <tr>
-                <td><strong>毛色</strong></td>
-                <td>{{ pet.color }}</td>
-            </tr>
-            {% if pet.disease %}
-                <tr>
-                    <td><strong>病歴</strong></td>
-                    <td>{{ pet.disease }}</td>
-                </tr>
-            {% endif %}
-            <tr>
-                <td><strong>品種</strong></td>
-                <td>
-                    {% if pet.type == '犬' %}
-                        {{ pet.kinds }}
-                    {% else %}
-                        {{ pet.kinds }}
-                    {% endif %}
-                </td>
-            </tr>
-            <tr>
-                <td><strong>性格</strong></td>
-                <td id="formatted-personality">{{ pet.personality }}</td>
-            </tr>
-        </table>
-    </div>
+        {% endif %}
+        <tr>
+            <td><strong>品種</strong></td>
+            <td>
+                {% if pet.type == '犬' %}
+                    {{ pet.kinds }}
+                {% else %}
+                    {{ pet.kinds }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <td><strong>性格</strong></td>
+            <td id="formatted-personality">{{ pet.personality }}</td>
+        </tr>
+        <!-- 連絡先情報 -->
+        <tr>
+            <td><strong>郵便番号</strong></td>
+            <td>{{ pet.formatted_post_code }}</td>
+        </tr>
+        <tr>
+            <td><strong>住所</strong></td>
+            <td>{{ pet.address }}</td>
+        </tr>
+        <tr>
+            <td><strong>電話番号</strong></td>
+            <td>{{ pet.formatted_phone_number }}</td>
+        </tr>
+    </table>
+</div>
 
     <div class="comments-section">
         <h2>コメント</h2>

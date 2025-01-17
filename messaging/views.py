@@ -12,7 +12,6 @@ def send_message(request):
         sender_name = request.POST.get('sender_name')  # フォームから送信された名前
         sender_email = request.POST.get('sender_email')  # フォームから送信されたメールアドレス
         message_content = request.POST.get('message')
-        pet_id = request.POST.get('pet_id')  # pet_id がPOSTデータで送られる場合
 
         recipient_email = 'ngn2349602@stu.o-hara.ac.jp'  # 固定の受信者メールアドレス
 
@@ -30,7 +29,6 @@ def send_message(request):
             'sender_name': sender_name,
             'sender_email': sender_email,
             'message_content': message_content,
-            'pet_id': pet_id,
         })
     else:
         form = MessageForm()
