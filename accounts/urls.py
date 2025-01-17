@@ -25,6 +25,10 @@ urlpatterns = [
           views.LogoutView.as_view(),
           name='logout'
           ),
+          
+     path('staff_menu/',
+          views.Staff_Menu,
+          name='staff_menu'),
 
     #  path('',
     #       views.IndexView.as_view(template_name='accounts/index.html'),

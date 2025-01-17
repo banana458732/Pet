@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
-from django.contrib.auth.models import User
 from .forms import CustomUserCreationForm, CustomUserUpdateForm
 from django.views.generic import TemplateView, CreateView
 from django.views.generic.edit import FormView
@@ -18,6 +17,7 @@ from petapp.models import PetImage
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 
 class SignUpView(CreateView):
 
@@ -90,10 +90,11 @@ def LoginView(request):
 def is_staff(user):
     return user.is_staff
 
-
-@staff_member_required
-def staff_menu(request):
-    return HttpResponse('staff')
+# 管理者専用ページ
+@staff_member_required(login_url='/accounts/')
+@login_required
+def Staff_Menu(request):
+    return render(request, 'accounts/staff_menu.html')
 
 
 class MyPageView(LoginRequiredMixin, TemplateView):

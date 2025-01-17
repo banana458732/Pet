@@ -79,12 +79,13 @@
 </div>
 
 
+
 <div id="accounts_register_form">
 <table  class="ui celled table table table-hover " style="text-align: center;">
     {% csrf_token %}
     <tr><td>名前</td><td>{{form.username.value}}</td></tr>
     <tr><td>メールアドレス</td><td>{{form.email.value}}</td></tr>
-    <tr><td>パスワード</td><td style="margin: 10px;"><input type="password" id="passwordInput" value="{{form.password1.value}}" readonly>&emsp;<button id="showPasswordButton">表示</button></td></tr>
+    <tr><td>パスワード</td><td style="margin: 10px;"><input type="password" id="passwordInput" value="{{form.password1.value}}" readonly >&emsp;<button id="showPasswordButton">表示</button></td></tr>
     <tr><td>郵便番号</td><td>{{form.post_code.value}}</td></tr>
     <tr><td>都道府県市区町村</td><td>{{form.address.value}}</td></tr>
     <tr><td>番地</td><td>{{form.street_address.value}}</td></tr>
@@ -92,6 +93,9 @@
     <tr><td>建物名</td><td>{{form.address2.value}}</td></tr>
     
     <tr><td>電話番号</td><td>{{form.phone_number.value}}</td></tr>
+
+    
+
     <script>
         var showPasswordButton = document.getElementById("showPasswordButton");
         showPasswordButton.addEventListener("click", togglePasswordVisibility);
@@ -107,6 +111,20 @@
         }
         }
     </script>
+    
+    <script type="text/javascript">
+        // ドキュメントが読み込まれた後に処理を実行
+        document.addEventListener("DOMContentLoaded", function() {
+            var passwordInput = document.getElementById('passwordInput');
+            
+            // readonly フィールドに対するスタイル設定
+            passwordInput.style.backgroundColor = "#e9e9e9"; // 背景色変更
+            passwordInput.style.cursor = "not-allowed"; // カーソル変更
+            passwordInput.tabIndex = -1; // タブ遷移を不可にする
+        });
+        </script>
+    
+
 </table>
 </div>
 
