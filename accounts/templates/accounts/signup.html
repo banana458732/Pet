@@ -4,26 +4,23 @@
 
 {% block contents %}
 
-
-
-
 <hr>
 <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
 
 <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
-    <div class="row" style="width: 100%; max-width: 800px; text-align: center;"> <!-- max-widthを800pxに設定 -->
+    <div class="row" style="width: 100%; max-width: 1000px; text-align: center;">
         <div class="col">
-            <!-- タイトルの太さを元に戻す -->
             <h3 style="margin-bottom: 30px; font-weight: normal;">登録情報入力</h3>
             
-            <!-- サインアップのフォームを配置 -->
             <form class="h-adr" action="{% url 'accounts:signup' %}" method="POST" style="text-align: center;">
                 <span class="p-country-name" style="display:none;">Japan</span>
                 {% csrf_token %}
                 
                 <!-- フィールド: ユーザーネーム -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.username.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.username.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.username }}
                     </div>
@@ -31,19 +28,21 @@
                 <p style="color: red; text-align: left;">{{ form.username.errors }}</p>
 
                 <!-- フィールド: メールアドレス -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.email.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.email.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.email }}
                     </div>
                 </div>
                 <p style="color: red; text-align: left;">{{ form.email.errors }}</p>
 
-                
-
-                <!-- フィールド: 住所 -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.post_code.label }}</label> <!-- margin-right: 50px -->
+                <!-- フィールド: 郵便番号 -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.post_code.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.post_code }}
                     </div>
@@ -51,17 +50,21 @@
                 <p style="color: red; text-align: left;">{{ form.post_code.errors }}</p>
 
                 <!-- フィールド: 都道府県市区町村 -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.address.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.address.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.address }}
                     </div>
                 </div>
                 <p style="color: red; text-align: left;">{{ form.address.errors }}</p>
-                
+
                 <!-- フィールド: 番地 -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.address.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.street_address.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.street_address }}
                     </div>
@@ -69,8 +72,10 @@
                 <p style="color: red; text-align: left;">{{ form.street_address.errors }}</p>
 
                 <!-- フィールド: 建物名 -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.address2.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.address2.label }}
+                    </label>
                     <div style="flex: 1;">
                         {{ form.address2 }}
                     </div>
@@ -78,8 +83,10 @@
                 <p style="color: red; text-align: left;">{{ form.address2.errors }}</p>
 
                 <!-- フィールド: 電話番号 -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.phone_number.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.phone_number.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.phone_number }}
                     </div>
@@ -87,8 +94,10 @@
                 <p style="color: red; text-align: left;">{{ form.phone_number.errors }}</p>
 
                 <!-- フィールド: パスワード1 -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.password1.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.password1.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.password1 }}
                     </div>
@@ -96,8 +105,10 @@
                 <p style="color: red; text-align: left;">{{ form.password1.errors }}</p>
 
                 <!-- フィールド: パスワード2 -->
-                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start;">
-                    <label style="font-weight: bold; flex: 0 0 150px; text-align: right; margin-right: 50px;">{{ form.password2.label }}</label> <!-- margin-right: 50px -->
+                <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
+                    <label style="font-weight: bold; flex: 0 0 220px; text-align: right; display: flex; align-items: center;">
+                        {{ form.password2.label }}<span style="color: red; margin-left: 5px;">※必須</span>
+                    </label>
                     <div style="flex: 1;">
                         {{ form.password2 }}
                     </div>
@@ -116,13 +127,11 @@
 </div>
 
 <style>
-    /* タイトルの文字サイズ調整（太さを戻す） */
     h3 {
         font-size: 1.8em;
         margin-bottom: 30px;
     }
 
-    /* 入力フィールド */
     input[type="text"], input[type="email"], input[type="password"], textarea {
         padding: 10px;
         width: 100%;
@@ -130,19 +139,23 @@
         border: 1px solid #ccc;
     }
 
-    /* エラー文の配置 */
     p {
         margin: 0;
     }
 
-    /* フォームのフィールド間隔 */
     .field {
         margin-bottom: 30px;
     }
 
-    /* 横幅調整 */
     .field div {
-        margin-right: 50px;  /* 隙間を50pxに設定 */
+        margin-right: 60px;
+    }
+
+    .field {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 20px;
     }
 </style>
 
