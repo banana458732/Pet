@@ -263,13 +263,18 @@
         {% endif %}
     </div>
 
-    {% if photo_formset.non_form_errors %}
-        <div class="error-list">
-            {% for error in photo_formset.non_form_errors %}
-                <p class="error">{{ error }}</p>
-            {% endfor %}
-        </div>
-    {% endif %}
+    <!-- 保護場所 -->
+    <div class="form-group">
+        <label for="{{ form.location.id_for_label }}">保護場所</label>
+        {{ form.location }}
+        {% if form.location.errors %}
+            <div class="error-list">
+                {% for error in form.location.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
     <div class="formset">
         {{ photo_formset.management_form }}

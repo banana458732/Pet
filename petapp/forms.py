@@ -9,7 +9,7 @@ class PetCreateForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
-                  'personality', 'sex', 'phone_number', 'post_code', 'address']
+                  'personality', 'sex', 'phone_number', 'post_code', 'address', 'location']
 
     def clean_post_code(self):
         post_code = self.cleaned_data['post_code']
@@ -67,7 +67,7 @@ class PetUpdateForm(forms.ModelForm):
     class Meta:
         model = Pet
         fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
-                  'personality', 'sex', 'phone_number', 'post_code', 'address']
+                  'personality', 'sex', 'phone_number', 'post_code', 'address', 'location']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -102,6 +102,7 @@ class PetUpdateForm(forms.ModelForm):
     phone_number = forms.CharField(max_length=11, label='電話番号', required=False)
     post_code = forms.CharField(max_length=7, label='郵便番号', required=False)  # 郵便番号を入力
     address = forms.CharField(max_length=255, label='住所', required=False)  # 住所を入力
+    location = forms.CharField(max_length=255, label='保護場所', required=True)  # 保護場所を入力
 
 
 class PetImageUpdateForm(forms.ModelForm):

@@ -123,7 +123,7 @@
     <ul class="pet-info">
         <!-- 基本情報 -->
         <li><strong>種類 :</strong> {{ pet.get_type_display }}</li>
-        <li><strong>大きさ :</strong> {{ pet.get_size_display }}</li>
+        <li><strong>サイズ :</strong> {{ pet.get_size_display }}</li>
         <li><strong>性別 :</strong> {{ pet.sex }}</li>
         <li><strong>品種 :</strong> {{ pet.kinds }}</li>
 
@@ -139,6 +139,7 @@
         <li><strong>郵便番号 :</strong> {{ pet.formatted_post_code }}</li>
         <li><strong>住所 :</strong> {{ pet.address }}</li>
         <li><strong>電話番号 :</strong> {{ pet.formatted_phone_number }}</li>
+        <li><strong>保護場所 :</strong> {{ pet.location }}</li>
     </ul>
 
     <!-- 画像表示部分 -->

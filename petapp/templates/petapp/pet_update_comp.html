@@ -3,145 +3,166 @@
 {% block title %}更新完了{% endblock %}
 
 {% block contents %}
-
 <style>
-    /* 全体のスタイル */
-    h2 {
-        text-align: center;
-        font-size: 2rem;
-        margin-bottom: 20px;
-    }
+/* 全体のスタイル */
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #2c3e50; /* 見出しの色 */
+}
 
-    p {
-        font-size: 1.2rem;
-        text-align: center;
-        margin-bottom: 30px;
-    }
+p {
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #34495e; /* テキストの色 */
+}
 
-    /* 見出しの中央揃え */
-    h3 {
-        text-align: center; /* 見出しを中央揃え */
-        font-size: 1.8rem; /* フォントサイズを少し大きく */
-        margin-top: 30px; /* 上部のマージンを追加 */
-        margin-bottom: 20px; /* 下部のマージンを追加 */
-    }
+/* 見出しの中央揃え */
+h3 {
+    text-align: center; /* 見出しを中央揃え */
+    font-size: 1.8rem; /* フォントサイズを少し大きく */
+    margin-top: 30px; /* 上部のマージンを追加 */
+    margin-bottom: 20px; /* 下部のマージンを追加 */
+    color: #2980b9; /* 見出しの色 */
+}
 
-    /* コンテナのスタイル */
-    .container {
-        width: 100%;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+/* 更新された項目のリストスタイル */
+.updated-fields-list {
+    list-style: none;
+    padding: 0;
+    font-size: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px; /* 幅を制限 */
+    margin: 0 auto;
+    background-color: #ecf0f1; /* 背景色を追加 */
+    border-radius: 8px; /* 丸みをつける */
+    padding: 15px; /* 内部の余白 */
+}
 
-    /* 更新された項目のリストスタイル */
-    ul {
-        list-style: none;
-        padding: 0;
-        font-size: 1.1rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        max-width: 500px; /* 幅を制限 */
-        margin: 0 auto;
-    }
+.updated-fields-list li {
+    padding: 5px 0;
+    word-wrap: break-word;
+    width: 100%;
+    text-align: center;
+    background-color: #ffffff; /* 各リスト項目の背景色 */
+    border: 1px solid #ddd; /* 枠線 */
+    border-radius: 4px; /* 丸みをつける */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* 影を追加 */
+}
 
-    ul li {
-        padding: 5px 0;
-        word-wrap: break-word;
-        width: 100%;
-        text-align: center;
-    }
+.updated-fields-list li strong {
+    color: #2c3e50; /* 項目名の色 */
+}
 
-    /* 画像グリッドのスタイル */
-    .pet-images {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 20px;
-    }
+/* 変更がない場合のメッセージ */
+ul.empty {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #e74c3c; /* 警告色 */
+}
 
+/* コンテナのスタイル */
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 画像グリッドのスタイル */
+.pet-images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.pet-images img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    max-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+}
+
+/* 大画面（768px以上）でのスタイル */
+@media (min-width: 768px) {
     .pet-images img {
-        width: 100%;
-        max-width: 300px;
-        height: auto;
-        max-height: 200px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        object-fit: contain;
+        width: 30%;
     }
+}
 
-    /* 大画面（768px以上）でのスタイル */
-    @media (min-width: 768px) {
-        .pet-images img {
-            width: 30%;
-        }
+/* 小画面（768px未満）でのスタイル */
+@media (max-width: 767px) {
+    .pet-images img {
+        width: 43%;
+        max-width: 100%;
+        max-height: 150px;
     }
+}
 
-    /* 小画面（768px未満）でのスタイル */
-    @media (max-width: 767px) {
-        .pet-images img {
-            width: 43%;
-            max-width: 100%;
-            max-height: 150px;
-        }
-    }
+/* 戻るリンクのスタイル */
+.btn-back {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 30px;
+    font-size: 1.2rem;
+    text-align: center;
+    width: 40%;
+}
 
-    /* 戻るリンクのスタイル */
-    .btn-back {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-        margin-top: 30px;
-        font-size: 1.2rem;
-        text-align: center;
-        width: 40%;
-    }
-
-    .btn-back:hover {
-        background-color: #45a049;
-    }
+.btn-back:hover {
+    background-color: #45a049;
+}
 </style>
 
 <div class="container">
     <h2>更新が完了しました</h2>
-
     <p>選択したペットの情報が正常に更新されました。</p>
 
     <!-- 変更された項目を表示 -->
     {% if updated_fields %}
         <h3>変更された項目</h3>
-        <ul>
+        <ul class="updated-fields-list">
             {% for field in updated_fields %}
                 <li><strong>{{ field }}</strong></li>
             {% endfor %}
         </ul>
+    {% else %}
+        <p>変更はありませんでした。</p>  <!-- 変更がない場合のメッセージ -->
     {% endif %}
 </div>
 
-    <!-- 画像の表示 -->
-    {% if pet_images %}
-        <h3>画像一覧</h3>
-        <div class="pet-images">
-            {% for image in pet_images %}
-                <img src="{{ image.image.url }}" alt="Pet Image">
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- 戻るリンク -->
-    <div style="text-align: center;">
-        <a href="{% url 'petapp:pet-list' %}" class="btn-back">ペット一覧に戻る</a>
+<!-- 画像の表示 -->
+{% if pet_images %}
+    <h3>画像一覧</h3>
+    <div class="pet-images">
+        {% for image in pet_images %}
+            <img src="{{ image.image.url }}" alt="Pet Image">
+        {% endfor %}
     </div>
+{% endif %}
+
+<!-- 戻るリンク -->
+<div style="text-align: center;">
+    <a href="{% url 'petapp:pet-list' %}" class="btn-back">ペット一覧に戻る</a>
 </div>
 
 {% endblock %}
+

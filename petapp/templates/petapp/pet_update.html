@@ -159,13 +159,13 @@
 <div class="pet-form">
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        
+
+        <!-- 基本情報 -->
         <div class="form-group">
             <label>種類 (犬/猫)</label>
             <span>{{ pet_form.instance.type }}</span>
         </div>
 
-        <!-- サイズ -->
         <div class="form-group">
             <label for="{{ pet_form.size.id_for_label }}">サイズ (大型/中型/小型)</label>
             {{ pet_form.size }}
@@ -178,39 +178,11 @@
             {% endif %}
         </div>
 
-        <!-- 色 -->
-        <div class="form-group">
-            <label for="{{ pet_form.color.id_for_label }}">色</label>
-            {{ pet_form.color }}
-            {% if pet_form.color.errors %}
-                <ul class="error-list">
-                    {% for error in pet_form.color.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-
-        <!-- 年齢 -->
-        <div class="form-group">
-            <label for="{{ pet_form.age.id_for_label }}">年齢</label>
-            {{ pet_form.age }}
-            {% if pet_form.age.errors %}
-                <ul class="error-list">
-                    {% for error in pet_form.age.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-
-        <!-- 性別 -->
         <div class="form-group">
             <label>性別</label>
             <span>{{ pet_form.instance.sex }}</span>
         </div>
 
-        <!-- その他のフィールド -->
         <div class="form-group">
             <label for="{{ pet_form.kinds.id_for_label }}">品種</label>
             {{ pet_form.kinds }}
@@ -223,12 +195,25 @@
             {% endif %}
         </div>
 
+        <!-- 状態に関する情報 -->
         <div class="form-group">
-            <label for="{{ pet_form.disease.id_for_label }}">病歴</label>
-            {{ pet_form.disease }}
-            {% if pet_form.disease.errors %}
+            <label for="{{ pet_form.color.id_for_label }}">色</label>
+            {{ pet_form.color }}
+            {% if pet_form.color.errors %}
                 <ul class="error-list">
-                    {% for error in pet_form.disease.errors %}
+                    {% for error in pet_form.color.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ pet_form.age.id_for_label }}">年齢</label>
+            {{ pet_form.age }}
+            {% if pet_form.age.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.age.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
                 </ul>
@@ -247,19 +232,21 @@
             {% endif %}
         </div>
 
-        <div class="form-group">
-            <label for="{{ pet_form.phone_number.id_for_label }}">電話番号</label>
-            {{ pet_form.phone_number }}
-            {% if pet_form.phone_number.errors %}
-                <ul class="error-list">
-                    {% for error in pet_form.phone_number.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
+        {% if pet_form.disease %}
+            <div class="form-group">
+                <label for="{{ pet_form.disease.id_for_label }}">病歴</label>
+                {{ pet_form.disease }}
+                {% if pet_form.disease.errors %}
+                    <ul class="error-list">
+                        {% for error in pet_form.disease.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endif %}
 
-        <!-- 郵便番号 -->
+        <!-- 連絡先情報 -->
         <div class="form-group">
             <label for="{{ pet_form.post_code.id_for_label }}">郵便番号</label>
             {{ pet_form.post_code }}
@@ -272,13 +259,37 @@
             {% endif %}
         </div>
 
-        <!-- 住所 -->
         <div class="form-group">
             <label for="{{ pet_form.address.id_for_label }}">住所</label>
             {{ pet_form.address }}
             {% if pet_form.address.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.address.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ pet_form.phone_number.id_for_label }}">電話番号</label>
+            {{ pet_form.phone_number }}
+            {% if pet_form.phone_number.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.phone_number.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        
+        <!-- 保護場所の情報 -->
+        <div class="form-group">
+            <label for="{{ pet_form.location.id_for_label }}">保護場所</label>
+            {{ pet_form.location }}
+            {% if pet_form.location.errors %}
+                <ul class="error-list">
+                    {% for error in pet_form.location.errors %}
                         <li>{{ error }}</li>
                     {% endfor %}
                 </ul>
