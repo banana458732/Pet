@@ -1,0 +1,23 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %}Staff Menu{% endblock %}
+
+{% block contents %}
+
+<p>管理者専用のページです。</p>
+
+{% if user.is_superuser %} 
+<p>あなたは管理者です。このページは管理者にしか使えません。</p>
+{% else %}
+<p>あなたは管理者ではありません。</p>
+{% endif %}
+
+
+
+{% if user.is_authenticated %}
+<p>ログイン済み</p>
+{% else %}
+<p>ログインしろ</p>
+{% endif %}
+
+{% endblock %}
