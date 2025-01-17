@@ -256,7 +256,7 @@ def pet_update_view(request, pet_id):
                     new_value = getattr(pet, field) if getattr(pet, field) is not None else ""
 
                     if old_value != new_value:
-                        updated_field = f"{field}: {old_value} → {new_value}"
+                        updated_field = f"{field}: {new_value}"
                         updated_fields.append(updated_field)
 
                     for form in image_formset:

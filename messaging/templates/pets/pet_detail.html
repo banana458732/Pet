@@ -223,15 +223,6 @@
         width: 100%;
         }
 
-        .pet-phone-number {
-        background-color: #007BFF;  /* 背景色を青に */
-        color: white;               /* 文字色を白に */
-        padding: 5px 10px;          /* 上下5px、左右10pxの余白 */
-        border-radius: 5px;         /* 角を丸く */
-        font-weight: bold;          /* 文字を太字に */
-        display: inline-block;      /* 背景を文字にぴったり合わせる */
-        }
-
         .pet-details-container {
         width: 80%;
         max-width: 1200px;
@@ -522,7 +513,11 @@
             border-radius: 4px; /* 角を丸くする（オプション） */
         }
         }
-
+        /* 左側のセルに背景色をつける */
+        .pet-info-table td:first-child {
+            background-color: #f7f7f7; /* 左側のセルに背景色 */
+            
+        }
     </style>
 
 <!-- 情報セクション -->

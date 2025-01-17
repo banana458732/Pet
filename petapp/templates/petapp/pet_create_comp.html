@@ -28,31 +28,31 @@
         margin-bottom: 30px; /* より広い余白 */
     }
 
-    /* 箇条書きのスタイル */
-    .pet-info {
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border: 2px solid #ddd; /* 表全体に枠線を追加 */
+    }
+
+    th, td {
+        padding: 12px;
         text-align: left;
-        margin: 20px 0;
-        padding: 0;
-        list-style-type: none;
-        font-size: 1.2em; /* フォントサイズを大きく */
-        color: #333;
-        display: block;
-        word-wrap: break-word;
+        border: 1px solid #ddd; /* 項目と詳細の間にも枠線 */
     }
 
-    .pet-info li {
-        margin: 15px 0; /* リストアイテム間隔を広げる */
-        padding-left: 20px;
-        position: relative;
-        display: block;
-        word-wrap: break-word;
-    }
-
-    /* 箇条書きアイコン */
-    .pet-info li::before {
+    th {
+        background-color: #f7f7f7;
         font-weight: bold;
-        position: absolute;
-        left: 0;
+    }
+
+    td {
+        background-color: #fff;
+        color: #555;
+    }
+
+    tr:hover {
+        background-color: #f1f1f1;
     }
 
     /* 画像グリッドのスタイル */
@@ -115,32 +115,70 @@
             max-height: 150px; /* 高さを少し縮小 */
         }
     }
+        /* 左側のセルに背景色をつける */
+        .pet-info-table_com td:first-child {
+        background-color: #f7f7f7; /* 左側のセルに背景色 */
+        }
 </style>
+
+
 
 <div class="registration-complete">
     <h2>ペットの登録が完了しました！</h2>
 
-    <ul class="pet-info">
-        <!-- 基本情報 -->
-        <li><strong>種類 :</strong> {{ pet.get_type_display }}</li>
-        <li><strong>サイズ :</strong> {{ pet.get_size_display }}</li>
-        <li><strong>性別 :</strong> {{ pet.sex }}</li>
-        <li><strong>品種 :</strong> {{ pet.kinds }}</li>
-
-        <!-- 状態に関する情報 -->
-        <li><strong>色 :</strong> {{ pet.color }}</li>
-        <li><strong>年齢 :</strong> {{ pet.age }}歳</li>
-        <li><strong>性格 :</strong> {{ pet.personality }}</li>
+    <!-- 表形式で登録情報を表示 -->
+    <table class="pet-info-table_com">
+        <tr>
+            <td><strong>種類</strong></td>
+            <td>{{ pet.get_type_display }}</td>
+        </tr>
+        <tr>
+            <td><strong>サイズ</strong></td>
+            <td>{{ pet.get_size_display }}</td>
+        </tr>
+        <tr>
+            <td><strong>性別</strong></td>
+            <td>{{ pet.sex }}</td>
+        </tr>
+        <tr>
+            <td><strong>品種</strong></td>
+            <td>{{ pet.kinds }}</td>
+        </tr>
+        <tr>
+            <td><strong>色</strong></td>
+            <td>{{ pet.color }}</td>
+        </tr>
+        <tr>
+            <td><strong>年齢</strong></td>
+            <td>{{ pet.age }}歳</td>
+        </tr>
+        <tr>
+            <td><strong>性格</strong></td>
+            <td>{{ pet.personality }}</td>
+        </tr>
         {% if pet.disease %}
-            <li><strong>病歴 :</strong> {{ pet.disease }}</li>
+        <tr>
+            <td><strong>病歴</strong></td>
+            <td>{{ pet.disease }}</td>
+        </tr>
         {% endif %}
-
-        <!-- 連絡先情報 -->
-        <li><strong>郵便番号 :</strong> {{ pet.formatted_post_code }}</li>
-        <li><strong>住所 :</strong> {{ pet.address }}</li>
-        <li><strong>電話番号 :</strong> {{ pet.formatted_phone_number }}</li>
-        <li><strong>保護場所 :</strong> {{ pet.location }}</li>
-    </ul>
+        <tr>
+            <td><strong>郵便番号</strong></td>
+            <td>{{ pet.formatted_post_code }}</td>
+        </tr>
+        <tr>
+            <td><strong>住所</strong></td>
+            <td>{{ pet.address }}</td>
+        </tr>
+        <tr>
+            <td><strong>電話番号</strong></td>
+            <td>{{ pet.formatted_phone_number }}</td>
+        </tr>
+        <tr>
+            <td><strong>保護場所</strong></td>
+            <td>{{ pet.location }}</td>
+        </tr>
+    </table>
 
     <!-- 画像表示部分 -->
     {% if pet_images %}

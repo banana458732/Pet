@@ -109,6 +109,9 @@ class Pet(models.Model):
         # それ以外はそのまま返す
         return phone_number
 
+    def __str__(self):
+        return f"{self.id} - {self.type} - {self.sex} - {self.age}歳"
+
 
 class PhoneNumber(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='phone_numbers')

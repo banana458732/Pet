@@ -139,9 +139,34 @@
       text-align: center; /* リンクを中央揃え */
       margin-top: 30px;
   }
+  /* 小画面時にテーブルの幅を調整 */
+@media (max-width: 768px) {
+  .pet-info-table, .profile-info table {
+    width: 100%;
+    table-layout: fixed; /* テーブルのレイアウトを固定して、セルが幅いっぱいに広がるように */
+  }
 
+  .pet-info-table th, .pet-info-table td,
+  .profile-info th, .profile-info td {
+    word-wrap: break-word; /* 長い単語がある場合に折り返し */
+    overflow: hidden;
+  }
+
+  .pet-info-table {
+    overflow-x: auto; /* 横スクロールを可能にする */
+    display: block;
+    -webkit-overflow-scrolling: touch; /* スクロールをスムーズに */
+  }
+  
+  .contract-pet-card {
+    padding: 10px; /* スペースを狭くして、小さな画面でも見やすく */
+  }
+
+  .profile-container {
+    padding: 20px; /* 小さな画面での余白を調整 */
+  }
+  }
 </style>
-
 
 <div class="profile-container">
     <h1>{{ user.username }}様のマイページ</h1>
