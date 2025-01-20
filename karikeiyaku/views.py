@@ -76,15 +76,14 @@ def karikeiyaku_cancel(request, pet_id):
         # 仮契約を削除
         karikeiyaku.delete()
 
-        # 'from_mypage' クエリパラメータが渡されているか確認
-        if request.GET.get('from_mypage', False):
-            # セッションにフラグを設定し、マイページにリダイレクト
-            request.session['from_mypage'] = True
-            return redirect('accounts:my_page')  # マイページへリダイレクト
-        else:
-            return redirect('messaging:pet_detail', pet_id=pet.id)  # ペット詳細ページへリダイレクト
+        # キャンセル完了画面へリダイレクト
+        return redirect('karikeiyaku:cancel_complete')  # キャンセル完了画面へのリダイレクト
 
     return render(request, 'karikeiyaku/karikeiyaku_cancel.html', {'pet': pet})
+
+
+def cancel_complete(request):
+    return render(request, 'karikeiyaku/cancel_com.html')
 
 
 # 仮契約完了ページ

@@ -20,11 +20,12 @@
     width: 150px;
     height: 150px;
     border-radius: 50%;
-    object-fit: cover;
+    object-fit: contain; /* 画像比率を保つ */
     border: 3px solid #ddd;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
   }
+
 
   .profile-form-container {
     margin: 20px auto;
@@ -125,8 +126,12 @@
           {{ user_form.email }}
         </div>
         <div class="form-group">
-          <label for="id_address">住所</label>
-          {{ user_form.address }}
+          <label for="address1">都道府県 市区町村</label>
+          {{ user_form.address1 }}
+        </div>
+        <div class="form-group">
+          <label for="street_address">番地</label>
+          {{ user_form.street_address }}
         </div>
         <div class="form-group">
           <label for="id_phone_number">電話番号</label>

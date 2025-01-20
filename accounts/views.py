@@ -19,6 +19,7 @@ from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 
+
 class SignUpView(CreateView):
 
     template_name = "accounts/signup.html"
@@ -50,14 +51,11 @@ class SignUp_ConfirmView(CreateView):
         ctx = {'form': form}
         if self.request.POST.get('next', '') == 'create':
             return super().form_valid(form)
-        
+
         elif self.request.POST.get('next', '') == 'back':
             return render(self.request, 'accounts/signup.html', ctx)
 
         return render(self.request, 'accounts/signup_confirm.html', ctx)
-    
-
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -77,7 +75,7 @@ def LoginView(request):
         user = authenticate(username=username, password=password)
         # もし、ユーザーオブジェクトが存在するなら。
         if user is not None:
-        # ログインする。
+            # ログインする。
             login(request, user)
             return redirect('accounts:index')  # トップページのURLパターンにリダイレクト
 
@@ -86,6 +84,7 @@ def LoginView(request):
             return render(request, 'accounts/login.html', {'error': 'そのユーザーは存在しません。'})
 
     return render(request, 'accounts/login.html', {})
+
 
 def is_staff(user):
     return user.is_staff

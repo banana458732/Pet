@@ -169,143 +169,143 @@
 </style>
 
 <div class="profile-container">
-    <h1>{{ user.username }}様のマイページ</h1>
-  
-    <div>
-      {% if user.profile_image and user.profile_image.name != "profile_images/default.jpg" %}
-        <img src="{{ user.profile_image.url }}" alt="プロフィール画像" class="profile-image" />
-      {% else %}
-        <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
-      {% endif %}
-      <p>
-        <a href="{% url 'accounts:change_profile_image' %}" class="action-link">プロフィールを変更する</a>
-      </p>
-    </div>
-  
-    <div class="profile-info">
-      <h2>ユーザー情報</h2>
-      <table>
-        <tr>
-          <th>ユーザー名</th>
-          <td>{{ user.username }}</td>
-        </tr>
-        <tr>
-          <th>メールアドレス</th>
-          <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-          <th>郵便番号</th>
-          <td>{{ user.post_code }}</td>
-        </tr>
-        <tr>
-          <th>都道府県 市区町村</th>
-          <td>{{ user.address1 }}</td>
-        </tr>
-        <tr>
-          <th>番地</th>
-          <td>{{ user.street_address }}</td>
-        </tr>
-        <tr>
-          <th>電話番号</th>
-          <td>{{ user.phone_number }}</td>
-        </tr>
-      </table>
-    </div>
-  
-    <h2 class="section-title">仮契約中のペット</h2>
-    {% if pet_images %}
-      <div class="contract-pets">
-        {% for pet_data in pet_images %}
-          <div class="contract-pet-card">
-            <div class="pet-header">
-              {% if pet_data.images %}
-                <img src="{{ pet_data.images.first.image.url }}" alt="ペット画像" class="pet-image">
-              {% else %}
-                <img src="{% static 'images/default-image.jpg' %}" alt="デフォルト画像" class="pet-image">
-              {% endif %}
-            </div>
-            
-            <h3>ペット情報</h3>
-            <table class="pet-info-table">
-              <tr>
-                <th>ID</th>
-                <td>{{ pet_data.pet.id }}</td>
-              </tr>
-              <tr>
-                <th>種類</th>
-                <td>{{ pet_data.pet.type }}</td>
-              </tr>
-              <tr>
-                <th>大きさ</th>
-                <td>{{ pet_data.pet.size }}</td>
-              </tr>
-              <tr>
-                <th>色</th>
-                <td>{{ pet_data.pet.color }}</td>
-              </tr>
-              <tr>
-                <th>年齢</th>
-                <td>{{ pet_data.pet.age }}</td>
-              </tr>
-              <tr>
-                <th>品種</th>
-                <td>{{ pet_data.pet.kinds }}</td>
-              </tr>
-              <tr>
-                <th>病歴</th>
-                <td>{% if show_disease %}{{ pet_data.pet.disease }}{% else %}なし{% endif %}</td>
-              </tr>
-              <tr>
-                <th>性格</th>
-                <td>{{ pet_data.pet.personality }}</td>
-              </tr>
-              <tr>
-                <th>性別</th>
-                <td>{{ pet_data.pet.sex }}</td>
-              </tr>
-              <tr>
-                <th>契約状況</th>
-                <td>{{ pet_data.status }}</td>
-              </tr>
-              <tr>
-                <th>契約期間</th>
-                <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日" }}</td>
-              </tr>
-              <tr>
-                <th>郵便番号</th>
-                <td>{{ pet_data.pet.formatted_post_code }}</td>
-              </tr>
-              <tr>
-                <th>住所</th>
-                <td>{{ pet_data.pet.address }}</td>
-              </tr>
-              <tr>
-                <th>保護場所</th>
-                <td>{{ pet_data.pet.location }}</td>
-              </tr>
-            </table>
+  <h1>{{ user.username }}様のマイページ</h1>
+
+  <div>
+    {% if user.profile_image and user.profile_image.name != "profile_images/default.jpg" %}
+      <img src="{{ user.profile_image.url }}" alt="プロフィール画像" class="profile-image" />
+    {% else %}
+      <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
+    {% endif %}
+    <p>
+      <a href="{% url 'accounts:change_profile_image' %}" class="action-link">プロフィールを変更する</a>
+    </p>
+  </div>
+
+  <div class="profile-info">
+    <h2>ユーザー情報</h2>
+    <table>
+      <tr>
+        <th>ユーザー名</th>
+        <td>{{ user.username }}</td>
+      </tr>
+      <tr>
+        <th>メールアドレス</th>
+        <td>{{ user.email }}</td>
+      </tr>
+      <tr>
+        <th>郵便番号</th>
+        <td>{{ user.post_code }}</td>
+      </tr>
+      <tr>
+        <th>都道府県 市区町村</th>
+        <td>{{ user.address1 }}</td>
+      </tr>
+      <tr>
+        <th>番地</th>
+        <td>{{ user.street_address }}</td>
+      </tr>
+      <tr>
+        <th>電話番号</th>
+        <td>{{ user.phone_number }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <h2 class="section-title">仮契約中のペット</h2>
+  {% if pet_images %}
+    <div class="contract-pets">
+      {% for pet_data in pet_images %}
+        <div class="contract-pet-card">
+          <div class="pet-header">
+            {% if pet_data.images %}
+              <img src="{{ pet_data.images.first.image.url }}" alt="ペット画像" class="pet-image">
+            {% else %}
+              <img src="{% static 'images/default-image.jpg' %}" alt="デフォルト画像" class="pet-image">
+            {% endif %}
           </div>
 
-          <div class="google-map">
-            <iframe
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q={{ "35°46'6.29\"N 139°25'13.9\"E"|urlencode }}"
-              width="600"
-              height="450"
-              style="border:0;"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-          </div>
-          <div class="action-link-container">
-            <a href="{% url 'karikeiyaku:cancel' pet_data.pet.id %}?from_mypage=true" class="action-link">キャンセル</a>
-          </div>
+          <h3>ペット情報</h3>
+          <table class="pet-info-table">
+            <tr>
+              <th>ID</th>
+              <td>{{ pet_data.pet.id }}</td>
+            </tr>
+            <tr>
+              <th>種類</th>
+              <td>{{ pet_data.pet.type }}</td>
+            </tr>
+            <tr>
+              <th>大きさ</th>
+              <td>{{ pet_data.pet.size }}</td>
+            </tr>
+            <tr>
+              <th>色</th>
+              <td>{{ pet_data.pet.color }}</td>
+            </tr>
+            <tr>
+              <th>年齢</th>
+              <td>{{ pet_data.pet.age }}</td>
+            </tr>
+            <tr>
+              <th>品種</th>
+              <td>{{ pet_data.pet.kinds }}</td>
+            </tr>
+            <tr>
+              <th>病歴</th>
+              <td>{% if show_disease %}{{ pet_data.pet.disease }}{% else %}なし{% endif %}</td>
+            </tr>
+            <tr>
+              <th>性格</th>
+              <td>{{ pet_data.pet.personality }}</td>
+            </tr>
+            <tr>
+              <th>性別</th>
+              <td>{{ pet_data.pet.sex }}</td>
+            </tr>
+            <tr>
+              <th>契約状況</th>
+              <td>{{ pet_data.status }}</td>
+            </tr>
+            <tr>
+              <th>契約期間</th>
+              <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日" }}</td>
+            </tr>
+            <tr>
+              <th>郵便番号</th>
+              <td>{{ pet_data.pet.formatted_post_code }}</td>
+            </tr>
+            <tr>
+              <th>住所</th>
+              <td>{{ pet_data.pet.address }}</td>
+            </tr>
+            <tr>
+              <th>保護場所</th>
+              <td>{{ pet_data.pet.location }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="google-map">
+          <iframe
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q={{ "35°46'6.29\"N 139°25'13.9\"E"|urlencode }}"
+            width="600"
+            height="450"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+
+        <div class="action-link-container">
+          <a href="{% url 'karikeiyaku:cancel' pet_data.pet.id %}?from_mypage=true" class="action-link">キャンセル</a>
         </div>
       {% endfor %}
-      </div>
-          {% else %}
-      <p style="text-align: center;">現在、仮契約中のペットはありません。</p>
-    {% endif %}
+    </div>
+  {% else %}
+    <p>現在仮契約中のペットはありません。</p>
+  {% endif %}
 
     <div class="form-footer">
       <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a></p>
