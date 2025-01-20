@@ -83,7 +83,7 @@
     }
 </style>
 
-<h2 style="text-align: center;">仮契約済一覧</h2>
+<h2 style="text-align: center;">仮契約中一覧</h2>
 <ul class="pet-list">
     {% for pet_data in pet_images %}
         <li class="pet-item">
@@ -96,6 +96,7 @@
                 {% endif %}
             {% endwith %}
             <div class="pet-actions">
+                <!-- 契約状態を契約中から契約済に変更するページ -->
                 <a href="{% url 'petapp:pet-update' pet_data.pet.id %}" class="btn">更新</a>
             </div>
         </li>
