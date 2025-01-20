@@ -65,6 +65,8 @@
     </style>
 </head>
 <body>
+    <a href="{% url 'survey:pet_survey' %}">アンケート</a>
+
     <h1>現在保護されているペット</h1>
     <div class="image-container">
         {% for pet in pets %}

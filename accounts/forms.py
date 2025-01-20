@@ -87,13 +87,20 @@ class ProfileImageForm(forms.ModelForm):
 
 class CustomUserUpdateForm(forms.ModelForm):
     """ユーザー情報編集フォーム"""
-    address = forms.CharField(
-        label="住所",
+    address1 = forms.CharField(
+        label="都道府県 市区町村",
         min_length=10,
         max_length=100,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': '例: 長野県長野市元善町491'}),
-        validators=[validate_address]
+        widget=forms.TextInput(attrs={'placeholder': '例: 長野県長野市元善町'}),
+        validators=[validate_address]  # 必要に応じてカスタムバリデータを追加
+    )
+    street_address = forms.CharField(
+        label="番地",
+        max_length=6,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: 10番地'}),
+        validators=[validate_street_address]  # 必要に応じてバリデータを追加
     )
     phone_number = forms.CharField(
         label="電話番号",
@@ -105,10 +112,10 @@ class CustomUserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'address', 'phone_number']
+        fields = ['username', 'email', 'address1', 'street_address', 'phone_number']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # ラベルのコロンを削除
         for field in self.fields.values():
-            field.label_suffix = ""
+            field.label_suffix = ''

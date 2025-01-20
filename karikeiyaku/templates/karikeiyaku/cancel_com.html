@@ -1,0 +1,92 @@
+{% extends 'accounts/base.html' %}
+{% block title %}キャンセル完了{% endblock %}
+
+{% block contents %}
+
+<style>
+    /* キャンセル完了ページのスタイル */
+    .cancel-complete-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 40px; /* より広い余白 */
+        background-color: #f9f9f9;
+        border: 3px solid #ddd; /* 枠線を少し太く変更 */
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: Arial, sans-serif;
+        overflow: hidden; /* 親要素が子要素のはみ出しを隠す */
+    }
+
+    /* 見出しのスタイル */
+    .cancel-complete-container h2 {
+        color: #f4623a;
+        font-size: 2.5rem; /* 見出しサイズを少し大きく */
+        margin-bottom: 20px; /* より広い余白 */
+    }
+
+    /* メッセージのスタイル */
+    .cancel-complete-container p {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    /* ボタンのスタイル */
+    .cancel-complete-container .btn {
+        display: inline-block;
+        background-color: #f4623a;
+        color: white;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .cancel-complete-container .btn:hover {
+        background-color: #d9432a;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .cancel-complete-container .btn:active {
+        background-color: #b32e1e;
+    }
+
+    /* 戻るボタンのスタイル */
+    .return-button-wrapper {
+        display: flex;
+        justify-content: center; /* 戻るボタンも中央揃え */
+        margin-top: 20px; /* グループから少し下に配置 */
+    }
+
+    /* 戻るリンクのスタイル */
+    .return-button {
+        color: #007bff; /* リンクの色 */
+        font-size: 16px; /* フォントサイズ */
+        text-decoration: none; /* 下線を消す */
+        margin-top: 10px;
+        cursor: pointer; /* ポインターを表示 */
+    }
+
+    .return-button:hover {
+        color: #0056b3; /* ホバー時の色 */
+    }
+
+    /* ボタンの位置調整：戻るリンクは右側 */
+    .return-button-wrapper {
+        display: flex;
+        justify-content: flex-end; /* 右側に配置 */
+        width: 100%;
+    }
+</style>
+
+<div class="cancel-complete-container">
+    <h2>仮契約キャンセル完了</h2>
+    <p>仮契約は正常にキャンセルされました。</p>
+    <a href="{% url 'accounts:my_page' %}" class="btn">マイページへ戻る</a>
+</div>
+{% endblock %}
+
