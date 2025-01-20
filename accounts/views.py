@@ -7,7 +7,7 @@ from django.views.generic.edit import FormView
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import CustomUser
 from django.contrib import messages
 from petapp.models import Pet
@@ -95,6 +95,50 @@ def is_staff(user):
 def Staff_Menu(request):
     return render(request, 'accounts/staff_menu.html')
 
+
+class Staff_menu(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+
+    template_name = 'accounts/staff_pet.html'
+        # スタッフ権限をチェックする
+    def test_func(self):
+        return self.request.user.is_staff
+
+    # 権限がない場合のリダイレクト先を指定
+    def handle_no_permission(self):
+        from django.shortcuts import redirect
+        return redirect('/accounts/login/')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # 仮契約中のペット情報を取得
+        contract_pets = Karikeiyaku.objects.filter(status="仮契約中").select_related('pet')
+
+        for contract_pet in contract_pets:
+            print(f"契約開始日: {contract_pet.created_at}")
+            print(f"契約終了日: {contract_pet.end_date}")
+            print(f"契約状態: {contract_pet.status}")
+
+        # 仮契約中のペットの画像を取得
+        pet_images = []
+        for contract_pet in contract_pets:
+            pet = contract_pet.pet
+
+            if pet:  # petが存在するか確認
+                # PetImageモデルに関連する画像を取得
+                images = PetImage.objects.filter(pet=pet)
+
+                # 画像情報とペット情報をまとめて辞書に格納
+                pet_images.append({
+                    'pet': pet,
+                    'images': images if images.exists() else None,
+                    'created_at': contract_pet.created_at,
+                    'end_date': contract_pet.end_date,
+                    'status': contract_pet.status
+                })
+
+        context['pet_images'] = pet_images  # ここで画像情報を追加
+
+        return context
 
 class MyPageView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/my_page.html'
