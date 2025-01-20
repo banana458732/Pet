@@ -87,6 +87,13 @@ class ProfileImageForm(forms.ModelForm):
 
 class CustomUserUpdateForm(forms.ModelForm):
     """ユーザー情報編集フォーム"""
+    post_code = forms.CharField(
+        label="郵便番号",
+        max_length=8,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: 123-4567'}),
+        validators=[validate_post_code]  # 郵便番号のバリデーション
+    )
     address1 = forms.CharField(
         label="都道府県 市区町村",
         min_length=10,
@@ -112,7 +119,7 @@ class CustomUserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'address1', 'street_address', 'phone_number']
+        fields = ['username', 'email', 'post_code', 'address1', 'street_address', 'phone_number']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
