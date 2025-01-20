@@ -5,167 +5,215 @@
 
 {% block contents %}
 <style>
+  /* タブのスタイル */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+  }
+
+  .tabs a {
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 1.2em;
+    color: #555;
+    margin: 0 10px;
+    border-radius: 5px 5px 0 0;
+    border: 1px solid #ddd;
+  }
+
+  .tabs a.active {
+    background-color: #007BFF;
+    color: #fff;
+    border-color: #007BFF;
+  }
+
+  .tab-content {
+    display: none;
+    padding-top: 20px;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  /* その他のスタイルはそのまま */
   .profile-container {
-      text-align: center;
-      margin: 20px auto;
-      width: 90%;
-      max-width: 1000px;
-      background-color: #f9f9f9;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 1000px;
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   }
 
   .profile-image {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ddd;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px; /* 画像と下の要素との間隔を広げる */
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
   }
 
   .profile-info {
-      margin: 30px auto;
-      width: 100%;
-      max-width: 600px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-      padding: 20px;
+    margin: 30px auto;
+    width: 100%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    padding: 20px;
   }
 
   .profile-info table {
-      width: 100%;
-      border-collapse: collapse; /* テーブルのボーダーを1つにまとめる */
+    width: 100%;
+    border-collapse: collapse;
   }
 
   .profile-info th, .profile-info td {
-      padding: 15px;
-      border-bottom: 1px solid #ddd;
-      text-align: left;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
   }
 
   .profile-info th {
-      background-color: #f7f7f7;
-      color: #333;
-      font-weight: bold;
+    background-color: #f7f7f7;
+    color: #333;
+    font-weight: bold;
   }
 
   .profile-info td {
-      background-color: #fff;
-      color: #555;
+    background-color: #fff;
+    color: #555;
   }
 
-  .profile-info tr:hover {
-      background-color: #f1f1f1; /* 行にカーソルを合わせたときの背景色 */
-  }
+/* ペットカードのスタイル */
+.contract-pet-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+  box-sizing: border-box; /* ペットカードの中身がボックス内に収まるようにする */
+}
 
-  .pet-info-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+.pet-image {
+  width: 80%;
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 5px; /* 画像の角を丸くする */
+}
+
+.pet-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
 }
 
 .pet-info-table th,
 .pet-info-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
 }
 
 .pet-info-table th {
-    background-color: #f4f4f4;
-    font-weight: bold;
+  background-color: #f4f4f4;
+  font-weight: bold;
 }
 
-.contract-pet-card {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    padding: 20px;
-    max-width: 800px;
-    margin: 20px auto;
+.google-map {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 アスペクト比 */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  width: 100%;
+  background: #f1f1f1;
+  margin-top: 20px; /* 地図との間隔を調整 */
 }
-
-.pet-image {
-    width: 80%;
-    max-width: 200px;
-    height: auto;
-    margin-bottom: 15px;
-}
-  .action-link-container a {
-      font-size: 1.2em;
-      color: #007BFF;
-      text-decoration: none;
-  }
-
-  .action-link-container a:hover {
-      text-decoration: underline;
-  }
-
-  .section-title {
-    font-size: 2em;
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .google-map {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 アスペクト比 */
-    height: 0;
-    overflow: hidden;
-    max-width: 100%;
-    width: 100%;
-    background: #f1f1f1;
-  }
 
 .google-map iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .action-link-container {
-    margin-top: 20px; /* キャンセルボタンの上に間隔を追加 */
-    text-align: center;
-  }
-  .form-footer {
-      text-align: center; /* リンクを中央揃え */
-      margin-top: 30px;
-  }
-  /* 小画面時にテーブルの幅を調整 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.action-link-container a {
+  font-size: 1.2em;
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.action-link-container a:hover {
+  text-decoration: underline;
+}
+/* プロフィール変更リンクのデザイン */
+.action-link-pro {
+  font-size: 1.2em;  /* フォントサイズ */
+  color: white;      /* テキスト色を白に */
+  background-color: #007BFF;  /* 背景色を青に */
+  text-decoration: none;  /* 下線を削除 */
+  display: inline-block;  /* ボタン風に */
+  padding: 12px 24px;     /* ボタンの余白 */
+  border-radius: 5px;     /* ボタンの角を丸く */
+  margin-top: 15px;  /* 画像とリンクの間に余白 */
+  text-align: center; /* リンクを中央に */
+}
+
+.action-link-pro:hover {
+  background-color: #0056b3;  /* ホバー時に背景色を変更 */
+  color: white;      /* テキスト色を白に */
+  transform: scale(1.05); /* 少し大きくなるエフェクト */
+}
+
+/* 小画面時の調整 */
 @media (max-width: 768px) {
   .pet-info-table, .profile-info table {
     width: 100%;
-    table-layout: fixed; /* テーブルのレイアウトを固定して、セルが幅いっぱいに広がるように */
+    table-layout: fixed; /* 列幅を固定 */
   }
 
-  .pet-info-table th, .pet-info-table td,
-  .profile-info th, .profile-info td {
-    word-wrap: break-word; /* 長い単語がある場合に折り返し */
-    overflow: hidden;
+  .pet-info-table th, .profile-info th {
+    width: 30%; /* 項目側（th）の幅を狭く */
+    white-space: normal; /* 改行を許可 */
+    word-break: break-word; /* 長い文字列を折り返す */
+    text-align: left; /* 項目を左寄せ */
+    font-size: 14px; /* 小さめのフォントサイズ */
+    line-height: 1.5; /* 行間調整 */
+    padding: 6px 4px; /* 余白を小さく */
   }
 
+  .pet-info-table td, .profile-info td {
+    width: 70%; /* 値側（td）の幅を広く */
+    white-space: normal; /* 改行を許可 */
+    word-break: break-word; /* 長い文字列を折り返す */
+    text-align: left; /* 左寄せ（必要に応じて変更） */
+    font-size: 14px; /* 小さめのフォントサイズ */
+    line-height: 1.5; /* 行間調整 */
+    padding: 6px 4px; /* 余白を小さく */
+  }
+
+  /* 表全体の横スクロールを許可 */
   .pet-info-table {
-    overflow-x: auto; /* 横スクロールを可能にする */
+    overflow-x: auto;
     display: block;
-    -webkit-overflow-scrolling: touch; /* スクロールをスムーズに */
+    -webkit-overflow-scrolling: touch; /* スムーズスクロール対応 */
   }
-  
-  .contract-pet-card {
-    padding: 10px; /* スペースを狭くして、小さな画面でも見やすく */
-  }
+}
 
-  .profile-container {
-    padding: 20px; /* 小さな画面での余白を調整 */
-  }
-  }
 </style>
 
 <div class="profile-container">
@@ -178,53 +226,157 @@
       <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
     {% endif %}
     <p>
-      <a href="{% url 'accounts:change_profile_image' %}" class="action-link">プロフィールを変更する</a>
+      <a href="{% url 'accounts:change_profile_image' %}" class="action-link-pro">プロフィールを変更する</a>
     </p>
   </div>
 
   <div class="profile-info">
     <h2>ユーザー情報</h2>
-    <table>
-      <tr>
-        <th>ユーザー名</th>
-        <td>{{ user.username }}</td>
-      </tr>
-      <tr>
-        <th>メールアドレス</th>
-        <td>{{ user.email }}</td>
-      </tr>
-      <tr>
-        <th>郵便番号</th>
-        <td>{{ user.post_code }}</td>
-      </tr>
-      <tr>
-        <th>都道府県 市区町村</th>
-        <td>{{ user.address1 }}</td>
-      </tr>
-      <tr>
-        <th>番地</th>
-        <td>{{ user.street_address }}</td>
-      </tr>
-      <tr>
-        <th>電話番号</th>
-        <td>{{ user.phone_number }}</td>
-      </tr>
-    </table>
+      <table>
+        <tr>
+          <th>ユーザー名</th>
+          <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+          <th>メールアドレス</th>
+          <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+          <th>郵便番号</th>
+          <td>{{ user.post_code }}</td>
+        </tr>
+        <tr>
+          <th>都道府県 市区町村</th>
+          <td>{{ user.address1 }}</td>
+        </tr>
+        <tr>
+          <th>番地</th>
+          <td>{{ user.street_address }}</td>
+        </tr>
+        <tr>
+          <th>電話番号</th>
+          <td>{{ user.phone_number }}</td>
+        </tr>
+      </table>
+    </div>
+  <!-- タブ -->
+  <div class="tabs">
+    <a href="javascript:void(0);" class="tab-link active" data-tab="contract-pet-tab">仮契約中のペット</a>
+    <a href="javascript:void(0);" class="tab-link" data-tab="contracted-pet-tab">本契約済みのペット</a>
   </div>
 
-  <h2 class="section-title">仮契約中のペット</h2>
-  {% if pet_images %}
+  <!-- 仮契約中のペット -->
+  <div class="tab-content contract-pet-tab active">
+    <h2 class="section-title">仮契約中のペット</h2>
+    {% if pet_images %}
+      <div class="contract-pets">
+        {% for pet_data in pet_images %}
+          <div class="contract-pet-card">
+            <div class="pet-header">
+              {% if pet_data.images %}
+                <img src="{{ pet_data.images.first.image.url }}" alt="ペット画像" class="pet-image">
+              {% else %}
+                <img src="{% static 'images/default-image.jpg' %}" alt="デフォルト画像" class="pet-image">
+              {% endif %}
+            </div>
+
+            <h3>ペット情報</h3>
+            <table class="pet-info-table">
+              <tr>
+                <th>ID</th>
+                <td>{{ pet_data.pet.id }}</td>
+              </tr>
+              <tr>
+                <th>種類</th>
+                <td>{{ pet_data.pet.type }}</td>
+              </tr>
+              <tr>
+                <th>大きさ</th>
+                <td>{{ pet_data.pet.size }}</td>
+              </tr>
+              <tr>
+                <th>色</th>
+                <td>{{ pet_data.pet.color }}</td>
+              </tr>
+              <tr>
+                <th>年齢</th>
+                <td>{{ pet_data.pet.age }}</td>
+              </tr>
+              <tr>
+                <th>品種</th>
+                <td>{{ pet_data.pet.kinds }}</td>
+              </tr>
+              <tr>
+                <th>病歴</th>
+                <td>{% if show_disease %}{{ pet_data.pet.disease }}{% else %}なし{% endif %}</td>
+              </tr>
+              <tr>
+                <th>性格</th>
+                <td>{{ pet_data.pet.personality }}</td>
+              </tr>
+              <tr>
+                <th>性別</th>
+                <td>{{ pet_data.pet.sex }}</td>
+              </tr>
+              <tr>
+                <th>契約状況</th>
+                <td>{{ pet_data.status }}</td>
+              </tr>
+              <tr>
+                <th>契約期間</th>
+                <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日" }}</td>
+              </tr>
+              <tr>
+                <th>郵便番号</th>
+                <td>{{ pet_data.pet.formatted_post_code }}</td>
+              </tr>
+              <tr>
+                <th>住所</th>
+                <td>{{ pet_data.pet.address }}</td>
+              </tr>
+              <tr>
+                <th>保護場所</th>
+                <td>{{ pet_data.pet.location }}</td>
+              </tr>
+            </table>
+
+            <div class="google-map">
+              <iframe
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q={{ "35°46'6.29\"N 139°25'13.9\"E"|urlencode }}"
+                width="600"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+
+            <div class="action-link-container">
+              <a href="{% url 'karikeiyaku:cancel' pet_data.pet.id %}?from_mypage=true" class="action-link">キャンセル</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>現在仮契約中のペットはありません。</p>
+    {% endif %}
+  </div>
+
+<!-- 本契約済みのペット -->
+<div class="tab-content contracted-pet-tab">
+  <h2 class="section-title">家族になった子</h2>
+  {% if completed_pet_images %}
     <div class="contract-pets">
-      {% for pet_data in pet_images %}
+      {% for pet_data in completed_pet_images %}
         <div class="contract-pet-card">
           <div class="pet-header">
-            {% if pet_data.images %}
-              <img src="{{ pet_data.images.first.image.url }}" alt="ペット画像" class="pet-image">
+            {% if pet_data.pet.images %}
+              <img src="{{ pet_data.pet.images.first.image.url }}" alt="ペット画像" class="pet-image">
             {% else %}
               <img src="{% static 'images/default-image.jpg' %}" alt="デフォルト画像" class="pet-image">
             {% endif %}
           </div>
-
           <h3>ペット情報</h3>
           <table class="pet-info-table">
             <tr>
@@ -235,34 +387,7 @@
               <th>種類</th>
               <td>{{ pet_data.pet.type }}</td>
             </tr>
-            <tr>
-              <th>大きさ</th>
-              <td>{{ pet_data.pet.size }}</td>
-            </tr>
-            <tr>
-              <th>色</th>
-              <td>{{ pet_data.pet.color }}</td>
-            </tr>
-            <tr>
-              <th>年齢</th>
-              <td>{{ pet_data.pet.age }}</td>
-            </tr>
-            <tr>
-              <th>品種</th>
-              <td>{{ pet_data.pet.kinds }}</td>
-            </tr>
-            <tr>
-              <th>病歴</th>
-              <td>{% if show_disease %}{{ pet_data.pet.disease }}{% else %}なし{% endif %}</td>
-            </tr>
-            <tr>
-              <th>性格</th>
-              <td>{{ pet_data.pet.personality }}</td>
-            </tr>
-            <tr>
-              <th>性別</th>
-              <td>{{ pet_data.pet.sex }}</td>
-            </tr>
+            <!-- その他の情報 -->
             <tr>
               <th>契約状況</th>
               <td>{{ pet_data.status }}</td>
@@ -271,45 +396,39 @@
               <th>契約期間</th>
               <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日" }}</td>
             </tr>
-            <tr>
-              <th>郵便番号</th>
-              <td>{{ pet_data.pet.formatted_post_code }}</td>
-            </tr>
-            <tr>
-              <th>住所</th>
-              <td>{{ pet_data.pet.address }}</td>
-            </tr>
-            <tr>
-              <th>保護場所</th>
-              <td>{{ pet_data.pet.location }}</td>
-            </tr>
           </table>
-        </div>
-
-        <div class="google-map">
-          <iframe
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q={{ "35°46'6.29\"N 139°25'13.9\"E"|urlencode }}"
-            width="600"
-            height="450"
-            style="border:0;"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
-        </div>
-
-        <div class="action-link-container">
-          <a href="{% url 'karikeiyaku:cancel' pet_data.pet.id %}?from_mypage=true" class="action-link">キャンセル</a>
         </div>
       {% endfor %}
     </div>
   {% else %}
-    <p>現在仮契約中のペットはありません。</p>
+    <p>現在本契約済みのペットはありません。</p>
   {% endif %}
-
-    <div class="form-footer">
-      <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a></p>
-    </div>    
-  
 </div>
+
+  <div class="form-footer">
+    <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a>
+  </div>
+</div>
+
+<script>
+  // タブ切り替え処理
+  document.querySelectorAll('.tab-link').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      const tabName = this.getAttribute('data-tab');
+
+      // タブのアクティブ状態を切り替え
+      document.querySelectorAll('.tab-link').forEach(function(link) {
+        link.classList.remove('active');
+      });
+      this.classList.add('active');
+
+      // コンテンツの表示切り替え
+      document.querySelectorAll('.tab-content').forEach(function(content) {
+        content.classList.remove('active');
+      });
+      document.querySelector('.' + tabName).classList.add('active');
+    });
+  });
+</script>
+
 {% endblock %}
