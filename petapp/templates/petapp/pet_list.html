@@ -1,6 +1,6 @@
 {% extends 'accounts/base.html' %}
 
-{% block title %}登録一覧{% endblock %}
+{% block title %}登録一覧{% endblock title %}
 
 {% block contents %}
 <style>
@@ -37,15 +37,39 @@
         margin-bottom: 15px; /* 画像とリンクとの間にスペースを追加 */
     }
 
-    .pet-item a {
+    .pet-item .btn {
         display: inline-block;
-        margin: 5px 10px;
-        color: #007BFF;
+        padding: 8px 15px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
         text-decoration: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
     }
 
-    .pet-item a:hover {
-        text-decoration: underline;
+    .pet-item .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .add-pet {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+        padding: 15px 30px; /* ボタンを大きくする */
+        background-color: #8B4513; /* 茶色に変更 */
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px; /* ボタンの角を丸くする */
+        font-size: 1.2rem; /* フォントサイズを大きくする */
+        text-align: center;
+        transition: background-color 0.3s;
+    }
+
+    .add-pet:hover {
+        background-color: #5E3210; /* ダークブラウンに変更 */
     }
 
     /* 小画面時のスタイル調整 */
@@ -68,7 +92,7 @@
 <ul class="pet-list">
     {% for pet in object_list %}
         <li class="pet-item">
-            <h3>{{ pet }}</h3>
+            <h3>ID-{{ pet.id }}</h3>
             {% with pet.images.first as first_image %}
                 {% if first_image and first_image.image %}
                     <img src="{{ first_image.image.url }}" alt="{{ pet.id }}の画像">
@@ -77,12 +101,12 @@
                 {% endif %}
             {% endwith %}
             <div class="pet-actions">
-                <a href="{% url 'petapp:pet-update' pet.id %}">更新</a>
-                <a href="{% url 'petapp:pet-delete' pet.id %}">削除</a>
+                <a href="{% url 'petapp:pet-update' pet.id %}" class="btn">更新</a>
+                <!-- <a href="{% url 'petapp:pet-delete' pet.id %}" class="btn btn-danger">削除</a> -->
             </div>
         </li>
     {% endfor %}
 </ul>
 
-<a href="{% url 'petapp:pet-create' %}" style="display: block; text-align: center; margin-top: 20px;">新しい 犬・猫 を登録</a>
-{% endblock %}
+<a href="{% url 'petapp:pet-create' %}" class="add-pet">新しい 犬・猫 を登録</a>
+{% endblock contents %}
