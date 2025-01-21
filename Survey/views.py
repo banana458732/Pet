@@ -36,19 +36,18 @@ def pet_survey(request):
     # CSVファイルの読み込み
     try:
         pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')
-        pets_data = pets_data.fillna('')
+        pets_data = pets_data.fillna('')  # NaNを空文字に置換
     except Exception as e:
         return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
 
-    # CSVデータの性格列をひらがなに変換
-    if 'personality' in pets_data.columns:
-        pets_data['hiragana_personality'] = pets_data['personality'].apply(to_hiragana)
-    else:
-        # personality 列がない場合の処理（例えばデフォルト値を設定するなど）
-        pets_data['hiragana_personality'] = ''
+    # 必要な列をひらがなに変換
+    pets_data['hiragana_personality'] = pets_data['personality'].apply(to_hiragana)
+    pets_data['hiragana_color'] = pets_data['color'].apply(to_hiragana)
+    pets_data['hiragana_kinds'] = pets_data['kinds'].apply(to_hiragana)
+    pets_data['hiragana_disease'] = pets_data['disease'].apply(to_hiragana)
 
     if request.method == 'POST' and form.is_valid():
-        # フォームからの入力データ取得
+        # フォーム入力データを取得
         pet_type = form.cleaned_data.get('pet_type')
         size = form.cleaned_data.get('size')
         color = form.cleaned_data.get('color')
@@ -58,44 +57,40 @@ def pet_survey(request):
         sex = form.cleaned_data.get('sex')
         age_range = form.cleaned_data.get('age_range')
 
-        # 色、品種、病気をひらがなに変換
+        # 入力データをひらがなに変換
         input_hiragana_color = to_hiragana(color) if color else ""
         input_hiragana_kinds = to_hiragana(kinds) if kinds else ""
         input_hiragana_disease = to_hiragana(disease) if disease else ""
-
-        # CSVデータの色、品種、病気列をひらがなに変換
-        pets_data['hiragana_color'] = pets_data['color'].apply(to_hiragana)
-        pets_data['hiragana_kinds'] = pets_data['kinds'].apply(to_hiragana)
-        pets_data['hiragana_disease'] = pets_data['disease'].apply(to_hiragana)
+        input_hiragana_personality = to_hiragana(personality) if personality else ""
 
         # スコア計算
         pets_data['score'] = 0
+
+        # ペットタイプ（犬 or 猫）でフィルタリングし、必ずスコア1を加算
         if pet_type:
             pets_data = pets_data[pets_data['type'] == pet_type]
-            pets_data['score'] += (pets_data['type'] == pet_type).astype(int)
+            pets_data['score'] += 1
+
+        # その他条件でスコア計算
         if size:
             pets_data['score'] += (pets_data['size'] == size).astype(int)
         if color:
-            pets_data['score'] += pets_data['hiragana_color'].apply(lambda x: 1 if input_hiragana_color in x or x in input_hiragana_color else 0)
+            pets_data['score'] += pets_data['hiragana_color'].apply(
+                lambda x: 1 if input_hiragana_color in x or x in input_hiragana_color else 0
+            )
         if kinds:
-            # ひらがなに変換した品種を使用して部分一致を確認
-            input_hiragana_kinds = to_hiragana(kinds) if kinds else ""
             pets_data['score'] += pets_data['hiragana_kinds'].apply(
                 lambda x: 1 if fuzz.partial_ratio(input_hiragana_kinds, x) > 80 else 0
             )
         if disease:
-            # 入力された病歴とCSVデータの病歴に対して部分一致を使用
             pets_data['score'] += pets_data['hiragana_disease'].apply(
                 lambda x: 1 if fuzz.partial_ratio(input_hiragana_disease, x) > 80 else 0
             )
         if personality:
-            # 性格マッチング処理（スコア計算）
-            input_hiragana_personality = to_hiragana(personality) if personality else ""
             pets_data['score'] += pets_data['hiragana_personality'].apply(
                 lambda x: 1 if fuzz.partial_ratio(input_hiragana_personality, x) > 70 else 0
             )
         if sex:
-            pets_data = pets_data[pets_data['sex'] == sex]
             pets_data['score'] += (pets_data['sex'] == sex).astype(int)
         if age_range:
             selected_age_ranges = age_range.split(',')
@@ -107,55 +102,35 @@ def pet_survey(request):
                 pets_data['score'] += ((pets_data['age'] >= 8) & (pets_data['age'] <= 10)).astype(int)
 
         # スコアで並べ替え
-        final_sorted_pets = pets_data.sort_values(by=['score', 'age'], ascending=[False, True])
+        pets_data = pets_data.sort_values(by=['score', 'age'], ascending=[False, True])
 
-        # スコアによる分類
-        pets_score_0 = final_sorted_pets[final_sorted_pets['score'] == 0]
-        pets_score_1_or_more = final_sorted_pets[final_sorted_pets['score'] > 0]
+        # スコア1以上のペット
+        pets_with_score = pets_data[pets_data['score'] >= 1]
+
+        # 分岐処理
+        if not size and not color and not kinds and not disease and not personality and not sex and not age_range:
+            # 「犬または猫だけで検索した場合」
+            pets_to_display = pets_with_score
+        else:
+            # 「追加の条件が一致せずスコアが犬または猫のスコア1にプラスされなかった場合」
+            if (pets_with_score['score'] == 1).all():
+                # スコアが1のみのペットがすべての場合、最新3匹を表示
+                pets_to_display = pets_data.head(3)
+            else:
+                pets_to_display = pets_with_score
+
 
         # 画像の処理
-        pet_with_images_score_0 = []
-        pet_with_images_score_1_or_more = []
-
-        for pet in pets_score_0.to_dict('records'):
+        pets_with_images = []
+        for pet in pets_to_display.to_dict('records'):
             image_urls = pet.get('image_urls', '')
-            first_image = None  # Default to None
-            if image_urls:
-                first_image = image_urls.split(',')[0]  # Get the first image URL
-            pet_with_images_score_0.append((pet, first_image))
-
-        for pet in pets_score_1_or_more.to_dict('records'):
-            image_urls = pet.get('image_urls', '')
-            first_image = None  # Default to None
-            if image_urls:
-                first_image = image_urls.split(',')[0]  # Get the first image URL
-            pet_with_images_score_1_or_more.append((pet, first_image))
-
-        # フラグ設定
-        has_score_above_zero = len(pets_score_1_or_more) > 0
-        has_pets_score_0 = len(pets_score_0) > 0
-        only_score_0_pets = has_pets_score_0 and not has_score_above_zero
-
-        # SurveyResult保存
-        survey_result = SurveyResult.objects.create(
-            pet_type=pet_type or '',
-            size=size or '',
-            color=color or '',
-            kinds=kinds or '',
-            disease=disease or '',
-            pet_personality=personality or '',
-            sex=sex or '',
-            age_range=", ".join(age_range) if age_range else ''
-        )
+            first_image = image_urls.split(',')[0] if image_urls else None
+            pets_with_images.append((pet, first_image))
 
         return render(request, 'survey/results.html', {
-            'survey_result': survey_result,
-            'pets': pet_with_images_score_1_or_more + pet_with_images_score_0,
+            'form': form,
+            'pets': pets_with_images,
             'MEDIA_URL': settings.MEDIA_URL,
-            'pets_score_0': pets_score_0,
-            'has_pets_score_0': has_pets_score_0,
-            'has_score_above_zero': has_score_above_zero,
-            'only_score_0_pets': only_score_0_pets,
         })
 
     return render(request, 'survey/pet_survey.html', {'form': form})

@@ -46,14 +46,6 @@ class SimplePetSurveyForm(forms.Form):
         widget=forms.TextInput(attrs={'placeholder': '例: ゴールデンレトリバー, シャム猫'})
     )
 
-    # 病気
-    disease = forms.CharField(
-        max_length=100,
-        required=False,
-        label="病気",
-        widget=forms.TextInput(attrs={'placeholder': '例: アレルギー'})
-    )
-
     # 性格
     pet_personality = forms.CharField(
         max_length=500,
