@@ -84,8 +84,8 @@
 </style>
 
 <h2 style="text-align: center;">仮契約中一覧</h2>
-<ul class="pet-list">
-    {% for pet_data in pet_images %}
+    <ul class="pet-list">
+        {% for pet_data in pet_images %}
         <li class="pet-item">
             <h3>ID-{{ pet_data.pet.id }}</h3>
             {% with pet_data.images.first as first_image %}
@@ -96,28 +96,19 @@
                 {% endif %}
             {% endwith %}
             <div class="pet-actions">
-                <!-- 契約状態を契約中から契約済に変更するページ -->
-                <a href="{% url 'petapp:pet-update' pet_data.pet.id %}" class="btn">更新</a>
+                {% if pet_data.pet.id %}
+                    <a href="{% url 'karikeiyaku:contractor' pet_id=pet_data.pet.id %}">詳細を見る</a>
+                {% else %}
+                    <p>詳細情報がありません</p>
+                {% endif %}
             </div>
         </li>
     {% endfor %}
-</ul>
 
-<div class="profile-container">
-
-
-  <h2 class="section-title">仮契約済みのペット</h2>
-  {% if pet_images %}
-    <div class="contract-pets">
-      
-    </div>
-  {% else %}
-    <p>現在仮契約済みのペットはありません。</p>
-  {% endif %}
+    </ul>
 
     <div class="form-footer">
       <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a></p>
-    </div>    
-  
+    </div>
 </div>
 

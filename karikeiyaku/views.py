@@ -4,9 +4,9 @@ from .models import Karikeiyaku
 from .forms import KarikeiyakuForm
 from datetime import date, timedelta
 from django.contrib import messages
+from django.urls import reverse
 
 
-# 仮契約
 # 仮契約
 def karikeiyaku_form(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
@@ -89,3 +89,27 @@ def cancel_complete(request):
 # 仮契約完了ページ
 def karikeiyaku_comp(request):
     return render(request, 'karikeiyaku/karikeiyaku_comp.html')
+
+
+def contractor(request, pet_id):
+    # ペット情報を取得
+    pet = get_object_or_404(Pet, id=pet_id)
+
+    # 仮契約情報を取得
+    karikeiyaku = Karikeiyaku.objects.filter(pet=pet, status='仮契約中').first()
+
+    # 契約完了ボタンが押された場合
+    if request.method == "POST" and 'complete_contract' in request.POST:
+        if karikeiyaku:
+            print(f"Before update: {karikeiyaku.status}")  # デバッグ用ログ
+            karikeiyaku.status = '契約済み'  # ステータスを「契約済み」に変更
+            karikeiyaku.save()
+            print(f"After update: {karikeiyaku.status}")  # 更新後のログ
+
+        # マイページにリダイレクト
+        return redirect(reverse('accounts:my_page'))  # 'mypage'ビューにリダイレクト
+
+    return render(request, 'karikeiyaku/contractor.html', {
+        'pet': pet,
+        'karikeiyaku': karikeiyaku
+    })

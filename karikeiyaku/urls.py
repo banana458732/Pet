@@ -8,4 +8,6 @@ urlpatterns = [
     path('complete/', views.karikeiyaku_comp, name='complete'),  # 仮契約完了ページ
     path('cancel/<int:pet_id>/', views.karikeiyaku_cancel, name='cancel'),  # キャンセルフォーム
     path('cancel/complete/', views.cancel_complete, name='cancel_complete'),  # キャンセル完了ページ
+    path('contractor/<int:pet_id>/', views.contractor, name='contractor'),  # ここが正しいURLパターン
+
 ]

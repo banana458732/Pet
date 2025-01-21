@@ -1,0 +1,40 @@
+{% extends 'accounts/base.html' %}
+{% block title %}契約者{% endblock %}
+
+{% block contents %}
+
+<h2>ペット詳細</h2>
+
+<div class="contractor">
+    <h3>ID-{{ pet.id }}</h3>
+    {% if pet.images.first %}
+        <img src="{{ pet.images.first.image.url }}" alt="{{ pet.name }}の画像">
+    {% else %}
+        <p>画像が登録されていません</p>
+    {% endif %}
+    <p>種類: {{ pet.breed }}</p>
+    <p>年齢: {{ pet.age }}歳</p>
+
+    {% if karikeiyaku %}
+        <h4>契約者情報</h4>
+        <p>契約者: {{ karikeiyaku.user.username }}</p>
+        <p>契約開始日: {{ karikeiyaku.created_at }}</p>
+        <p>契約終了日: {{ karikeiyaku.end_date }}</p>
+        <p>契約状態: {{ karikeiyaku.status }}</p>
+        {% else %}
+            <p>仮契約情報がありません。</p>
+    {% endif %}
+
+    <!-- 契約完了ボタン -->
+    {% if karikeiyaku and karikeiyaku.status == '仮契約中' %}
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" name="complete_contract" class="btn btn-success">契約完了</button>
+        </form>
+    {% endif %}
+
+    <a href="{% url 'accounts:index' %}" class="btn btn-primary">戻る</a>
+</div>
+
+{% endblock %}
+

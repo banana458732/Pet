@@ -23,12 +23,17 @@
 <p>あなたは管理者です。このページは管理者にしか使えません。</p>
 
 <div class="button_menu">
-<a class="staff_button" href="{% url 'petapp:pet-list' %}">ペット一覧・更新・作成</a>
+<a class="staff_button" href="{% url 'petapp:pet-list' %}">作成・更新・削除</a>
 </div>
 
 <div class="button_menu">
 <a class="staff_button" style="        position: relative ;
-        top: 50px;" href="{% url 'petapp:pet-list' %}">ペット契約完了</a>
+        top: 50px;" href="{% url 'accounts:staff_pet' %}">仮契約中のペット</a>
+</div>
+
+<div class="button_menu">
+    <a class="staff_button" style="        position: relative ;
+            top: 50px;" href="{% url 'accounts:staff_contracted' %}">契約済みのペット</a>
 </div>
 
 

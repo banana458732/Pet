@@ -11,7 +11,12 @@ class Karikeiyaku(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name="作成日時")
     status = models.CharField(
         max_length=50,
-        choices=[('仮契約中', '仮契約中'), ('キャンセル', 'キャンセル'), ('仮契約済', '仮契約済')],
+        choices=[
+            ('仮契約中', '仮契約中'),
+            ('キャンセル', 'キャンセル'),
+            ('仮契約済', '仮契約済'),
+            ('契約済み', '契約済み')  # 契約済みを追加
+        ],
         default='仮契約中', verbose_name="ステータス"
     )
 
