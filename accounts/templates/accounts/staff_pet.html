@@ -1,0 +1,123 @@
+<style>
+    .pet-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* カード間のスペース */
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        justify-content: center; /* 中央揃え */
+    }
+
+    .pet-item {
+        flex: 1 1 calc(25% - 20px); /* 4列分の幅 (大画面時) */
+        max-width: calc(25% - 20px); /* 最大幅を4列分に調整 */
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .pet-item h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .pet-item img {
+        width: 200px;  /* 画像の幅を200pxに設定 */
+        height: 200px; /* 画像の高さを200pxに設定 */
+        object-fit: cover;  /* 画像を枠にフィットさせ、余白を切り取る */
+        margin-bottom: 15px; /* 画像とリンクとの間にスペースを追加 */
+    }
+
+    .pet-item .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .pet-item .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .add-pet {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+        padding: 15px 30px; /* ボタンを大きくする */
+        background-color: #8B4513; /* 茶色に変更 */
+        color: #fff;
+        text-decoration: none;
+        border-radius: 8px; /* ボタンの角を丸くする */
+        font-size: 1.2rem; /* フォントサイズを大きくする */
+        text-align: center;
+        transition: background-color 0.3s;
+    }
+
+    .add-pet:hover {
+        background-color: #5E3210; /* ダークブラウンに変更 */
+    }
+
+    /* 小画面時のスタイル調整 */
+    @media (max-width: 768px) {
+        .pet-item {
+            flex: 1 1 calc(50% - 20px); /* 2列分の幅 */
+            max-width: calc(50% - 20px);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .pet-item {
+            flex: 1 1 100%; /* 1列表示 */
+            max-width: 100%;
+        }
+    }
+</style>
+
+<h2 style="text-align: center;">仮契約中一覧</h2>
+<ul class="pet-list">
+    {% for pet_data in pet_images %}
+        <li class="pet-item">
+            <h3>ID-{{ pet_data.pet.id }}</h3>
+            {% with pet_data.images.first as first_image %}
+                {% if first_image and first_image.image %}
+                    <img src="{{ first_image.image.url }}" alt="{{ pet_data.id }}の画像">
+                {% else %}
+                    <p>画像が登録されていません</p>
+                {% endif %}
+            {% endwith %}
+            <div class="pet-actions">
+                <!-- 契約状態を契約中から契約済に変更するページ -->
+                <a href="{% url 'petapp:pet-update' pet_data.pet.id %}" class="btn">更新</a>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+<div class="profile-container">
+
+
+  <h2 class="section-title">仮契約済みのペット</h2>
+  {% if pet_images %}
+    <div class="contract-pets">
+      
+    </div>
+  {% else %}
+    <p>現在仮契約済みのペットはありません。</p>
+  {% endif %}
+
+    <div class="form-footer">
+      <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a></p>
+    </div>    
+  
+</div>
+
