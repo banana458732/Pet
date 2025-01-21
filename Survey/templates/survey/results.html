@@ -6,9 +6,11 @@
 {% block contents %}
 <h1 style="font-weight: bold;">マッチングしたペット情報</h1>
 
-<ul>
-    {% for pet, image_url in pets %}
-        {% if pet.score > 0 %}
+<!-- 検索結果の分岐 -->
+{% if pets and not latest_pets %}
+    <!-- 犬または猫だけの検索結果（スコア1のペットをすべて表示） -->
+    <ul>
+        {% for pet, image_url in pets %}
             <li>
                 <div class="pet-info">
                     <div class="pet-details">
@@ -59,6 +61,34 @@
             {% endif %}
         {% endfor %}
     </ul>
+
+{% elif latest_pets %}
+    <!-- 追加条件が一致しない場合（最新の3匹を表示） -->
+    <h2 style="text-align: center; margin-top: 50px;">追加条件に一致するペットが見つかりませんでした。</h2>
+    <h3 style="text-align: center;">他にもこんなペットがいます！</h3>
+    <ul>
+        {% for pet, image_url in latest_pets %}
+            <li>
+                <div class="pet-info">
+                    <div class="pet-details">
+                        <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
+                    </div>
+                    <div class="pet-image">
+                        {% if image_url %}
+                            <img src="{{ image_url }}" alt="Pet Image" width="200">
+                        {% else %}
+                            <img src="{% static 'images/default_pet.jpg' %}" alt="デフォルト画像" width="200">
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <!-- 該当するペットがいない場合 -->
+    <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
+    <hr>
 {% endif %}
 
 <!-- アンケートに戻るボタン -->

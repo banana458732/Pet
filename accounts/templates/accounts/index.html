@@ -3,88 +3,117 @@
 {% block title %}Top Page{% endblock %}
 
 {% block contents %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <style>
-        .image-container {
-            display: flex;
-            flex-wrap: wrap; /* 横に並びきれない場合、次の行に移る */
-            gap: 8px; /* 各画像間の隙間を少し狭める */
-            justify-content: space-around; /* 画像を均等に配置 */
-        }
+<style>
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
 
+    .image-container div {
+        flex: 1 1 calc(25% - 20px);
+        max-width: calc(25% - 20px);
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-container img {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        margin-bottom: 15px;
+    }
+
+    .pet-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .pet-info-table th,
+    .pet-info-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .pet-info-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    h1 {
+        margin-bottom: 40px; /* 見出しの下に余白を追加 */
+        text-align: center; /* 中央寄せ */
+    }
+
+    /* 小画面時のスタイル調整 */
+    @media (max-width: 768px) {
         .image-container div {
-            flex: 1 1 calc(33.333% - 16px); /* 横幅を3等分、パディングを考慮して少し小さく */
-            max-width: calc(33.333% - 16px);
-            box-sizing: border-box; /* パディングや境界線も幅に含める */
-            padding: 8px; /* 画像の周りの余白を少し減らす */
+            flex: 1 1 calc(50% - 20px);
+            max-width: calc(50% - 20px);
         }
+    }
 
-        a {
-            display: block; /* リンク全体をクリック可能にする */
+    @media (max-width: 480px) {
+        .image-container div {
+            flex: 1 1 100%;
+            max-width: 100%;
         }
+    }
 
-        img {
-            width: 100%; /* 画像の横幅を100%にして親要素に合わせる */
-            height: 200px; /* 画像の高さを200pxに変更 */
-            object-fit: cover; /* 画像が指定された領域に収まるように切り取る */
-            display: block; /* 画像の表示をブロックにしてクリック可能領域を確保 */
-            transition: transform 0.3s ease; /* ズームのアニメーションを追加 */
-            border-radius: 8px; /* 角を少し丸めて画像を柔らかく見せる */
-        }
+    .image-container div {
+        background: linear-gradient(145deg, #f3f3f3, #e8e8e8);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.11);
+        transition: transform 0.3s ease;
+    }
 
-        img:hover {
-            transform: scale(1.05); /* カーソルを合わせたときにズームイン */
-        }
+    .image-container div:hover {
+        transform: scale(1.01);
+    }
+</style>
 
-        /* 小さい画面 (モバイル) 用: 1列表示 */
-        @media (max-width: 600px) {
-            .image-container div {
-                flex: 1 1 calc(100% - 16px); /* 100%の幅を使って1列表示 */
-            }
-        }
+<a href="{% url 'survey:pet_survey' %}">アンケート</a>
 
-        /* 中くらいの画面 (タブレット) 用: 2列表示 */
-        @media (min-width: 600px) and (max-width: 1024px) {
-            .image-container div {
-                flex: 1 1 calc(50% - 16px); /* 2列表示 */
-            }
-        }
+<h1>現在保護されているペット</h1>
+<div class="image-container">
+    {% for pet in pets %}
+        <div>
+            {% with pet.images.first as first_image %}
+                {% if first_image %}
+                    <a href="{% url 'messaging:pet_detail' pet.id %}">
+                        <img src="{{ first_image.image.url }}" alt="{{ pet.name }}">
+                    </a>
+                {% else %}
+                    <p>画像が登録されていません</p>
+                {% endif %}
+            {% endwith %}
 
-        /* 大きい画面 (デスクトップ) 用: 4列表示 */
-        @media (min-width: 1024px) {
-            .image-container div {
-                flex: 1 1 calc(25% - 16px); /* 4列表示 */
-            }
-        }
+            <table class="pet-info-table">
+                <tr>
+                    <th>サイズ</th>
+                    <td>{{ pet.size }}</td>
+                </tr>
+                <tr>
+                    <th>性別</th>
+                    <td>{{ pet.sex }}</td>
+                </tr>
+                <tr>
+                    <th>年齢</th>
+                    <td>{{ pet.age }}</td>
+                </tr>
+            </table>
+        </div>
+    {% endfor %}
+</div>
 
-    </style>
-</head>
-<body>
-    <a href="{% url 'survey:pet_survey' %}">アンケート</a>
-
-    <h1>現在保護されているペット</h1>
-    <div class="image-container">
-        {% for pet in pets %}
-            <div>
-                <!-- 最初に登録された画像のみ表示 -->
-                {% with pet.images.first as first_image %}
-                    {% if first_image %}
-                        <a href="{% url 'messaging:pet_detail' pet.id %}">
-                            <img src="{{ first_image.image.url }}" alt="{{ pet.name }}">
-                        </a>
-                    {% else %}
-                        <p>画像が登録されていません</p>
-                    {% endif %}
-                {% endwith %}
-            </div>
-        {% endfor %}
-    </div>
-</body>
-</html>
 
 {% endblock %}
