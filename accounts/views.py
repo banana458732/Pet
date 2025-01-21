@@ -97,9 +97,9 @@ def Staff_Menu(request):
 
 
 class Staff_menu(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-
     template_name = 'accounts/staff_pet.html'
-        # スタッフ権限をチェックする
+
+    # スタッフ権限をチェックする
     def test_func(self):
         return self.request.user.is_staff
 
@@ -110,25 +110,20 @@ class Staff_menu(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # 仮契約中のペット情報を取得
-        contract_pets = Karikeiyaku.objects.filter(status="仮契約中").select_related('pet')
 
-        for contract_pet in contract_pets:
-            print(f"契約開始日: {contract_pet.created_at}")
-            print(f"契約終了日: {contract_pet.end_date}")
-            print(f"契約状態: {contract_pet.status}")
+        # 仮契約中のペット情報を取得
+        contract_pets_draft = Karikeiyaku.objects.filter(status="仮契約中").select_related('pet')
+
+        # 契約済みのペット情報を取得
+        contract_pets_completed = Karikeiyaku.objects.filter(status="契約済み").select_related('pet')
 
         # 仮契約中のペットの画像を取得
-        pet_images = []
-        for contract_pet in contract_pets:
+        pet_images_draft = []
+        for contract_pet in contract_pets_draft:
             pet = contract_pet.pet
-
             if pet:  # petが存在するか確認
-                # PetImageモデルに関連する画像を取得
                 images = PetImage.objects.filter(pet=pet)
-
-                # 画像情報とペット情報をまとめて辞書に格納
-                pet_images.append({
+                pet_images_draft.append({
                     'pet': pet,
                     'images': images if images.exists() else None,
                     'created_at': contract_pet.created_at,
@@ -136,9 +131,26 @@ class Staff_menu(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     'status': contract_pet.status
                 })
 
-        context['pet_images'] = pet_images  # ここで画像情報を追加
+        # 契約済みのペットの画像を取得
+        pet_images_completed = []
+        for contract_pet in contract_pets_completed:
+            pet = contract_pet.pet
+            if pet:  # petが存在するか確認
+                images = PetImage.objects.filter(pet=pet)
+                pet_images_completed.append({
+                    'pet': pet,
+                    'images': images if images.exists() else None,
+                    'created_at': contract_pet.created_at,
+                    'end_date': contract_pet.end_date,
+                    'status': contract_pet.status
+                })
+
+        # 仮契約中と契約済みのペットを分けてcontextに渡す
+        context['pet_images_draft'] = pet_images_draft
+        context['pet_images_completed'] = pet_images_completed
 
         return context
+
 
 class MyPageView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/my_page.html'
@@ -149,22 +161,16 @@ class MyPageView(LoginRequiredMixin, TemplateView):
 
         # 仮契約中のペット情報を取得
         contract_pets = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')
-
-        for contract_pet in contract_pets:
-            print(f"契約開始日: {contract_pet.created_at}")
-            print(f"契約終了日: {contract_pet.end_date}")
-            print(f"契約状態: {contract_pet.status}")
+        
+        # 契約済みのペット情報を取得
+        completed_pets = Karikeiyaku.objects.filter(user=user, status='契約済み').select_related('pet')
 
         # 仮契約中のペットの画像を取得
         pet_images = []
         for contract_pet in contract_pets:
             pet = contract_pet.pet
-
             if pet:  # petが存在するか確認
-                # PetImageモデルに関連する画像を取得
                 images = PetImage.objects.filter(pet=pet)
-
-                # 画像情報とペット情報をまとめて辞書に格納
                 pet_images.append({
                     'pet': pet,
                     'images': images if images.exists() else None,
@@ -173,7 +179,23 @@ class MyPageView(LoginRequiredMixin, TemplateView):
                     'status': contract_pet.status
                 })
 
-        context['pet_images'] = pet_images  # ここで画像情報を追加
+        # 契約済みのペットの画像を取得
+        completed_pet_images = []
+        for completed_pet in completed_pets:
+            pet = completed_pet.pet
+            if pet:  # petが存在するか確認
+                images = PetImage.objects.filter(pet=pet)
+                completed_pet_images.append({
+                    'pet': pet,
+                    'images': images if images.exists() else None,
+                    'created_at': completed_pet.created_at,
+                    'end_date': completed_pet.end_date,
+                    'status': completed_pet.status
+                })
+
+        # コンテキストにデータを追加
+        context['pet_images'] = pet_images  # 仮契約中のペット
+        context['completed_pet_images'] = completed_pet_images  # 契約済みのペット
 
         # プロフィール画像フォームをコンテキストに追加
         context['profile_image_form'] = ProfileImageForm(instance=user)
@@ -281,6 +303,14 @@ class LogoutView(LoginRequiredMixin, LogoutView):
 
 
 def index(request):
-    # PetImageテーブルから全ての画像データを取得
-    pets = Pet.objects.all()
+    # 仮契約中および契約済みのペットIDを取得
+    excluded_pet_ids = Karikeiyaku.objects.filter(status__in=['仮契約中', '仮契約済', '契約済み']).values_list('pet_id', flat=True)
+
+    # 除外されたペットを除いた一覧を取得
+    pets = Pet.objects.exclude(id__in=excluded_pet_ids)
+
+    # デバッグ用のログ出力
+    print(f"Excluded Pet IDs: {list(excluded_pet_ids)}")
+    print(f"Remaining Pets: {pets}")
+
     return render(request, 'accounts/index.html', {'pets': pets})

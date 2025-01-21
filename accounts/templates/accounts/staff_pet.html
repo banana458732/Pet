@@ -83,32 +83,54 @@
     }
 </style>
 
+{% extends 'accounts/base.html' %}
+
+{% block title %}スタッフ ペット管理{% endblock %}
+
+{% block contents %}
 <h2 style="text-align: center;">仮契約中一覧</h2>
-    <ul class="pet-list">
-        {% for pet_data in pet_images %}
+<ul class="pet-list">
+    {% for pet_data in pet_images_draft %}
         <li class="pet-item">
             <h3>ID-{{ pet_data.pet.id }}</h3>
             {% with pet_data.images.first as first_image %}
                 {% if first_image and first_image.image %}
-                    <img src="{{ first_image.image.url }}" alt="{{ pet_data.id }}の画像">
+                    <img src="{{ first_image.image.url }}" alt="{{ pet_data.pet.name }}の画像">
                 {% else %}
                     <p>画像が登録されていません</p>
                 {% endif %}
             {% endwith %}
             <div class="pet-actions">
-                {% if pet_data.pet.id %}
-                    <a href="{% url 'karikeiyaku:contractor' pet_id=pet_data.pet.id %}">詳細を見る</a>
-                {% else %}
-                    <p>詳細情報がありません</p>
-                {% endif %}
+                <a href="{% url 'karikeiyaku:contractor' pet_id=pet_data.pet.id %}">詳細を見る</a>
             </div>
         </li>
+    {% empty %}
+        <p>仮契約中のペットはありません。</p>
     {% endfor %}
+</ul>
 
-    </ul>
+<h2 style="text-align: center;">契約済み一覧</h2>
+<ul class="pet-list">
+    {% for pet_data in pet_images_completed %}
+        <li class="pet-item">
+            <h3>ID-{{ pet_data.pet.id }}</h3>
+            {% with pet_data.images.first as first_image %}
+                {% if first_image and first_image.image %}
+                    <img src="{{ first_image.image.url }}" alt="{{ pet_data.pet.name }}の画像">
+                {% else %}
+                    <p>画像が登録されていません</p>
+                {% endif %}
+            {% endwith %}
+            <div class="pet-actions">
+                <a href="{% url 'karikeiyaku:contractor' pet_id=pet_data.pet.id %}">詳細を見る</a>
+            </div>
+        </li>
+    {% empty %}
+        <p>契約済みのペットはありません。</p>
+    {% endfor %}
+</ul>
 
-    <div class="form-footer">
-      <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a></p>
-    </div>
+<div class="form-footer">
+  <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a>
 </div>
-
+{% endblock %}

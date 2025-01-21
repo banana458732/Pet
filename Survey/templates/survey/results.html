@@ -25,41 +25,7 @@
                     </div>
                 </div>
             </li>
-        {% endif %}
     {% endfor %}
-</ul>
-
-<!-- スコア1以上のペットがいない場合、かつスコア0のペットもいない場合のみ表示 -->
-{% if only_score_0_pets %}
-    <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
-    <hr>
-{% elif not has_score_above_zero and not has_pets_score_0 %}
-    <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
-    <hr>
-{% endif %}
-
-<!-- スコア0のペットがいる場合 -->
-{% if has_pets_score_0 %}
-    <h2 style="text-align: center;">他にもこんなペットがいます！</h2>
-    <ul>
-        {% for pet, image_url in pets %}
-            {% if pet.score == 0 %}
-                <li>
-                    <div class="pet-info">
-                        <div class="pet-details">
-                            <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
-                        </div>
-                        <div class="pet-image">
-                            {% if image_url %}
-                                <img src="{{ image_url }}" alt="Pet Image" width="200">
-                            {% else %}
-                                <img src="{% static 'images/default_pet.jpg' %}" alt="デフォルト画像" width="200">
-                            {% endif %}
-                        </div>
-                    </div>
-                </li>
-            {% endif %}
-        {% endfor %}
     </ul>
 
 {% elif latest_pets %}

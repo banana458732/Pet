@@ -9,7 +9,7 @@ from petapp.models import Pet
 from fuzzywuzzy import fuzz
 from janome.tokenizer import Tokenizer
 import unicodedata
-
+from karikeiyaku.models import Karikeiyaku
 
 # Janomeトークナイザの初期化
 tokenizer = Tokenizer()
@@ -45,6 +45,15 @@ def pet_survey(request):
     pets_data['hiragana_color'] = pets_data['color'].apply(to_hiragana)
     pets_data['hiragana_kinds'] = pets_data['kinds'].apply(to_hiragana)
     pets_data['hiragana_disease'] = pets_data['disease'].apply(to_hiragana)
+
+    # 仮契約中・契約済みのペットを除外
+    # Karikeiyakuテーブルで仮契約中および契約済みのペットIDを取得
+    pet_ids_to_exclude = Karikeiyaku.objects.filter(
+        status__in=['仮契約中', '契約済み']
+    ).values_list('pet_id', flat=True)  # ここが 'pet_id' で正しいことを確認
+
+    # CSVの'id'がPetモデルの'id'に対応している場合、除外処理
+    pets_data = pets_data[~pets_data['id'].isin(pet_ids_to_exclude)]  # 'id'はCSVのフィールド名
 
     if request.method == 'POST' and form.is_valid():
         # フォーム入力データを取得
@@ -119,7 +128,6 @@ def pet_survey(request):
             else:
                 pets_to_display = pets_with_score
 
-
         # 画像の処理
         pets_with_images = []
         for pet in pets_to_display.to_dict('records'):
@@ -134,13 +142,3 @@ def pet_survey(request):
         })
 
     return render(request, 'survey/pet_survey.html', {'form': form})
-
-
-class IndexView(TemplateView):
-    """トップページのビュー"""
-    template_name = 'Survey/index.html'
-
-
-def index(request):
-    """トップページを表示"""
-    return render(request, 'Survey/index.html')
