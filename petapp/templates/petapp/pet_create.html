@@ -4,19 +4,25 @@
 {% block contents %}
 
 <style>
+    /* 見出しの中央揃え */
     h2 {
         text-align: center;
     }
+
     /* 全体のフォームのスタイル */
-    .pet-form {
-        width: 100%;
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+    /* 全体のフォームのスタイル */
+.pet-form {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd; /* 明示的に枠線を追加 */
+    overflow: visible; /* 下部の枠線が隠れないように設定 */
+}
+
 
     /* フォームのラベルと入力のスタイル */
     .pet-form .form-group {
@@ -48,11 +54,11 @@
         margin-top: 5px;
     }
 
-    /* ボタンのスタイル */
+    /* 登録ボタンのスタイル */
     .pet-form button.btn-submit {
         width: 100%;
         padding: 10px;
-        background-color: #4CAF50;
+        background-color: #007BFF;
         color: white;
         border: none;
         border-radius: 4px;
@@ -62,56 +68,33 @@
     }
 
     .pet-form button.btn-submit:hover {
-        background-color: #45a049;
+        background-color: #0056b3;
+    }
+
+    /* 戻るボタン全体の配置 */
+    .return-button-wrapper {
+        display: flex;
+        justify-content: flex-end; /* 戻るボタンを右寄せ */
+        width: 100%;
+        margin-top: 20px; /* 間隔を調整 */
     }
 
     /* 戻るボタンのスタイル */
-    .return-button-wrapper {
-    display: flex;
-    justify-content: center; /* 戻るボタンも中央揃え */
-    margin-top: 20px; /* グループから少し下に配置 */
-    }
-
-    /* 戻るリンクのスタイル */
     .return-button {
-    color: #007bff; /* リンクの色 */
-    font-size: 16px; /* フォントサイズ */
-    text-decoration: none; /* 下線を消す */
-    margin-top: 10px;
-    cursor: pointer; /* ポインターを表示 */
+        padding: 10px 20px; /* ボタンサイズ */
+        background-color: #6c757d; /* グレーの背景色 */
+        color: white; /* 白い文字色 */
+        border: none; /* ボーダーなし */
+        border-radius: 4px; /* 角丸 */
+        font-size: 16px; /* フォントサイズ */
+        cursor: pointer; /* ポインターを表示 */
     }
 
     .return-button:hover {
-    color: #0056b3; /* ホバー時の色 */
-    }
-
-
-    /* ボタンの位置調整：戻るリンクは右側 */
-    .return-button-wrapper {
-    display: flex;
-    justify-content: flex-end; /* 右側に配置 */
-    width: 100%;
-    }
-
-    /* フォームセットのスタイル */
-    .formset .form-group {
-        margin-bottom: 10px;
-    }
-
-    .formset input[type="file"] {
-        padding: 5px;
-    }
-
-    /* エラーメッセージを目立たせる */
-    .error-list {
-        font-size: 0.9em;
-        color: red;
-    }
-
-    .error-list p {
-        margin: 0;
+        background-color: #5a6268; /* ホバー時の濃いグレー */
     }
 </style>
+
 
 <h2>新しい犬・猫の登録</h2>
 
@@ -297,8 +280,9 @@
     <button type="submit" class="btn-submit">登録</button>
 
     <div class="return-button-wrapper">
-        <a href="#" class="return-button" onclick="history.back()">戻る</a>
+        <button type="button" class="return-button" onclick="history.back()">戻る</button>
     </div>
+    
 </form>
 
 {% endblock %}
