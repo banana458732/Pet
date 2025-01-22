@@ -6,6 +6,7 @@ class CustiomUserAdmin(admin.ModelAdmin):
     '''
     list_display = ('id', 'username') # レコード一覧にid, usernameカラムを表示
     list_display_links = ('id', 'username') # list_displayに指定したカラムにリンクを表示
+    exclude = ("first_name","last_name" ,"groups")
 
 
 admin.site.register(CustomUser, CustiomUserAdmin)

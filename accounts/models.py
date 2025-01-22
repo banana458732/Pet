@@ -31,7 +31,7 @@ class CustomUser(AbstractUser):
         verbose_name='番地',max_length=6,blank=True, null=False
     )
 
-    adrress2 = models.CharField(
+    address2 = models.CharField(
         verbose_name='建物名', max_length=40,blank=True,null=True
     )
 

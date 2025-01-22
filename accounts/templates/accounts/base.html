@@ -39,7 +39,7 @@
             <div class="actions">
 
                 {% if user.is_authenticated %} 
-                    <a href="{% url 'accounts:logout' %}">ログアウト</a>
+                    <a href="{% url 'accounts:logout' %}" style="background-color: rgb(133, 133, 133);">ログアウト</a>
                 {% else %}
                     <a href="{% url 'accounts:login' %}">ログイン</a>
                     <a href="{% url 'accounts:signup' %}">アカウント登録</a>
