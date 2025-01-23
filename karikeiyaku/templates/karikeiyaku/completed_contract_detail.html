@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>契約済み詳細ページ</title>
+    <style>
+        .detail-container {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .detail-container h2 {
+            color: #333;
+        }
+        .pet-info, .contractor-info {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-container">
+        <h2>契約済み詳細ページ</h2>
+        
+        <!-- ペット情報 -->
+        <div class="pet-info">
+            <h3>ペット情報</h3>
+            <p><strong>名前:</strong> {{ pet.id }}</p>
+            <p><strong>年齢:</strong> {{ pet.age }}歳</p>
+            <p><strong>種類:</strong> {{ pet.kinds }}</p>
+            {% with pet.images.first as first_image %}
+                {% if first_image and first_image.image %}
+                    <img src="{{ first_image.image.url }}" alt="{{ pet.name }}の画像" style="max-width: 300px;">
+                {% else %}
+                    <p>画像が登録されていません。</p>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- 契約者情報 -->
+        <div class="contractor-info">
+            <h3>契約者情報</h3>
+            <p><strong>名前:</strong> {{ contract.user.username }}</p>
+            <p><strong>メールアドレス:</strong> {{ contract.user.email }}</p>
+            <p><strong>契約状況:</strong> {{ contract.status }}</p>
+            <p><strong>契約日:</strong> {{ contract.created_at|date:"Y年m月d日" }}</p>
+            <p><strong>契約終了日:</strong> {{ contract.end_date|date:"Y年m月d日" }}</p>
+        </div>
+    </div>
+</body>
+</html>

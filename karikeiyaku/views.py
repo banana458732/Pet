@@ -113,3 +113,38 @@ def contractor(request, pet_id):
         'pet': pet,
         'karikeiyaku': karikeiyaku
     })
+
+
+def com(request, pet_id):
+    # pet_idに基づいて仮契約情報を取得
+    karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet_id=pet_id, status='契約済み').first()
+
+    if not karikeiyaku:
+        messages.error(request, "契約が完了したペットがありません。")
+        return redirect('accounts:index')  # 契約が完了したペットがなければトップページへリダイレクト
+
+    pet = karikeiyaku.pet  # 仮契約が完了したペット情報を取得
+
+    # 契約完了したペットとその契約者情報をテンプレートに渡す
+    return render(request, 'karikeiyaku/comp.html', {
+        'pet': pet,
+        'karikeiyaku': karikeiyaku
+    })
+
+
+def completed_contract_detail(request, pet_id):
+    pet = get_object_or_404(Pet, id=pet_id)
+    contract = Karikeiyaku.objects.filter(pet=pet, status="契約済み").first()
+
+    if not contract:
+        return render(request, 'karikeiyaku/not_found.html', status=404)
+
+    # デバッグ出力
+    print("契約者:", contract.user.username)
+    print("メールアドレス:", contract.user.email)
+
+    context = {
+        'pet': pet,
+        'contract': contract,
+    }
+    return render(request, 'karikeiyaku/completed_contract_detail.html', context)

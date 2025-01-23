@@ -152,6 +152,41 @@ class Staff_menu(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return context
 
 
+class CompletedPetsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'accounts/completed_pets.html'
+
+    # 管理者権限をチェック
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    # 権限がない場合のリダイレクト先
+    def handle_no_permission(self):
+        return redirect('/accounts/login/')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # 契約済みのペット情報を取得
+        contract_pets_completed = Karikeiyaku.objects.filter(status="契約済み").select_related('pet')
+
+        # 契約済みのペットの画像を取得
+        pet_images_completed = []
+        for contract_pet in contract_pets_completed:
+            pet = contract_pet.pet
+            if pet:  # petが存在するか確認
+                images = PetImage.objects.filter(pet=pet)
+                pet_images_completed.append({
+                    'pet': pet,
+                    'images': images if images.exists() else None,
+                    'created_at': contract_pet.created_at,
+                    'end_date': contract_pet.end_date,
+                    'status': contract_pet.status
+                })
+
+        context['pet_images_completed'] = pet_images_completed
+        return context
+
+
 class MyPageView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/my_page.html'
 
