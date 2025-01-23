@@ -51,7 +51,14 @@
   text-decoration: underline;
   }
 
+  button:hover{
+    background-color: #409cff;
+  }
+
+
 </style>
+
+
 
 <!doctype html>
 <!-- 言語指定をenからjaに変更 -->
@@ -62,11 +69,12 @@
     <!-- ログインのフォームを配置 -->
     <div class="login-container">
     <h1 style="text-align: left; font-weight: bold;  border-left: 3px solid #007bff ; padding: 3px;">ログイン</h1>
-    {% if errors %}
-      <p style="color: red">{{ error }}ユーザー名とパスワードが一致しません。</p>
-    {% endif %}
+
     <form method="post">
       {% csrf_token %}
+      {% if errors %}
+      <p style="color: red">{{ error }}ユーザー名とパスワードが一致しません。</p>
+      {% endif %}
       <!-- Bootstrapのロゴを表示 -->
       <!-- 「static/img/bootstrap-logo.svg」の読み込み -->
       <p id = accounts_signup style="font-size: 14px; text-align: left;" >アカウントが未登録の方はこちら<a id ="accounts_link"href="{% url 'accounts:signup' %}"  style="color:#007bff;">アカウントを作成</a></p>
@@ -79,11 +87,25 @@
         <input type="password" id="password_input" name="password" required  placeholder="パスワード"/>
       </div>
         <!-- ログインボタン -->
-      <button type="submit">ログイン</button>
+      <button type="submit" id="hoverButton" >ログイン</button>
       <p style="text-align: center; padding: 10px;">
       <a href="{% url 'accounts:index' %}" style="font-size:14px; color: #007bff;">トップページに戻る</a></p>
     </form>  
     </div>
+    <script>
+      // ボタン要素を取得
+      const button = document.getElementById('hoverButton');
+    
+      // マウスポインターが触れたときのイベントリスナー
+      button.addEventListener('mouseenter', () => {
+        button.style.backgroundColor = '#0056b3'; // 濃い青色に変更
+      });
+    
+      // マウスポインターが外れたときのイベントリスナー
+      button.addEventListener('mouseleave', () => {
+        button.style.backgroundColor = '#007bff'; // 元の青色に戻す
+      });
+    </script>
 </html>
 
 {% endblock %}
