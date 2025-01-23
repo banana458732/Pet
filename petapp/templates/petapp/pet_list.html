@@ -37,22 +37,33 @@
         margin-bottom: 15px; /* 画像とリンクとの間にスペースを追加 */
     }
 
-    .pet-item .btn {
-        display: inline-block;
-        padding: 8px 15px;
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+    /* 共通のボタンスタイル */
+.pet-item .btn {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #007BFF; /* 変更ボタンは青色 */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-    .pet-item .btn:hover {
-        background-color: #0056b3;
-    }
+.pet-item .btn:hover {
+    background-color: #0056b3; /* 変更ボタンのホバー時の色 */
+}
+
+/* 削除ボタンのスタイル */
+.pet-item .btn-danger {
+    background-color: #e74b30; /* 赤色 */
+}
+
+.pet-item .btn-danger:hover {
+    background-color: #c53341; /* 削除ボタンのホバー時の色 */
+}
+
 
     .header-container {
         position: relative; /* 相対配置 */
@@ -63,7 +74,7 @@
     .header-container .add-pet {
         display: inline-block; /* インラインブロックでボタンを整列 */
         padding: 10px 20px;
-        background-color: #8B4513; /* 茶色 */
+        background-color: #6c757d; /* 茶色 */
         color: white;
         text-decoration: none;
         border-radius: 8px;
@@ -72,7 +83,7 @@
     }
 
     .header-container .add-pet:hover {
-        background-color: #5E3210; /* ダークブラウン */
+        background-color: #565e64; /* ダークブラウン */
     }
 
     /* 小画面時のスタイル調整 */
@@ -109,7 +120,7 @@
                 {% endif %}
             {% endwith %}
             <div class="pet-actions">
-                <a href="{% url 'petapp:pet-update' pet.id %}" class="btn">更新</a>
+                <a href="{% url 'petapp:pet-update' pet.id %}" class="btn">変更</a>
                 <a href="{% url 'petapp:pet-delete' pet.id %}" class="btn btn-danger">削除</a>
             </div>
         </li>
