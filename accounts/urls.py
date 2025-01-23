@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from .views import MyPageView, complete_contract, RedirectTemporaryPetView, PetSelectionView
+from .views import MyPageView, complete_contract, RedirectTemporaryPetView, PetSelectionView, CompletedPetsView
 
 app_name = 'accounts'
 
@@ -22,6 +22,8 @@ urlpatterns = [
 
     path('staff_pet', views.Staff_menu.as_view(), name='staff_pet'),
     path('staff_contracted', views.Staff_menu.as_view(), name='staff_contracted'),
+    path('completed_pets/', CompletedPetsView.as_view(), name='completed_pets'),
+
 
     #  path('',
     #       views.IndexView.as_view(template_name='accounts/index.html'),

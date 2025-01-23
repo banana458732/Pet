@@ -1,0 +1,27 @@
+
+<h1>契約済みのペット</h1>
+
+<div>
+    <ul class="pet-list">
+        {% for pet_data in pet_images_completed %}
+            <li class="pet-item">
+                <h3>ID-{{ pet_data.pet.id }}</h3>
+                <!-- 最初の画像を取得 -->
+                {% with pet_data.images.first as first_image %}
+                    {% if first_image and first_image.image %}
+                        <img src="{{ first_image.image.url }}" alt="{{ pet_data.pet.name }}の画像">
+                    {% else %}
+                        <p>画像が登録されていません</p>
+                    {% endif %}
+                {% endwith %}
+                <!-- ペットのアクション -->
+                <div class="pet-actions">
+                    <a href="{% url 'karikeiyaku:completed_contract' pet_id=pet_data.pet.id %}">詳細を見る</a>
+                </div>
+            </li>
+        {% empty %}
+            <p>契約済みのペットが存在しません。</p>
+        {% endfor %}
+    </ul>    
+</div>
+

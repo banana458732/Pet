@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}契約完了{% endblock %}
+
+{% block contents %}
+<h2>契約完了</h2>
+
+<div class="contractor">
+    <h3>ID-{{ pet.id }}</h3>
+    
+    {% if pet.images.first %}
+        <img src="{{ pet.images.first.image.url }}" alt="{{ pet.name }}の画像">
+    {% else %}
+        <p>画像が登録されていません</p>
+    {% endif %}
+    
+    <p>種類: {{ pet.kinds }}</p>
+    <p>年齢: {{ pet.age }}歳</p>
+
+    <h4>契約者情報</h4>
+    <p>契約者: {{ karikeiyaku.user.username }}</p>
+    <p>契約開始日: {{ karikeiyaku.created_at }}</p>
+    <p>契約終了日: {{ karikeiyaku.end_date }}</p>
+    <p>契約状態: {{ karikeiyaku.status }}</p>
+
+    <a href="{% url 'accounts:staff_menu' %}" class="btn btn-primary">スタッフメニューに戻る</a>
+</div>
+{% endblock %}
