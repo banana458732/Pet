@@ -1,6 +1,4 @@
-{% extends 'accounts/base.html' %}
 {% load static %}
-{% block title %}アンケート{% endblock %}
 
 {% block contents %}
 <div class="container survey-container mt-5">
@@ -97,55 +95,84 @@
         
 
 <!-- 追加CSS -->
+<!-- 追加CSS -->
+<!-- 追加CSS -->
+<!-- 追加CSS -->
 <style>
-    /* フォーム全体を中央寄せ */
+    /* サイドバーのデザインを改善 */
     .survey-container {
-        width: 50%;  /* 幅を調整してコンパクトに */
-        margin: 0 auto;  /* 中央寄せ */
+        width: 80%;  /* サイドバー内でのフォームの幅を調整 */
+        margin: 0 auto;  /* フォームを中央に配置 */
+        padding: 20px;  /* 内側にパディングを追加して余裕を作る */
+        background-color: #f8f9fa;  /* 背景色を調整 */
+        border-radius: 8px;  /* 角を丸く */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);  /* 微細な影を追加 */
     }
 
+    /* サイドバー内のタイトルを中央に配置 */
     .survey-title {
-        font-size: 24px;  /* タイトルを大きく */
+        font-size: 22px;  /* タイトルのフォントサイズを少し大きく */
         font-weight: bold;
+        margin-bottom: 20px;  /* タイトルの下にスペースを追加 */
     }
 
     .form-group {
         text-align: left;
-        margin-bottom: 10px;  /* フォーム項目間の間隔を少し縮小 */
+        margin-bottom: 15px;  /* 各項目の間隔を広げる */
     }
 
     .form-group label {
         display: block;
-        margin-bottom: 5px;
+        margin-bottom: 8px;  /* ラベルと入力フィールドの間にスペース */
         font-weight: bold;
     }
 
+    /* ラジオボタンの配置を調整 */
     .form-check {
         display: flex;
         flex-direction: column; /* ラジオボタンを縦並びに */
-        margin-left: 15px;  /* ラジオボタンとラベルの間隔を少し広げる */
+        margin-left: -30px;  /* ラジオボタンを左に寄せる */
+        align-items: flex-start;  /* ラジオボタンを左に整列 */
     }
 
     .form-check input[type="radio"] {
-        height: 15px;
-        width: 15px;
+        height: 18px;  /* ラジオボタンの大きさを少し調整 */
+        width: 18px;
         margin-bottom: 5px;  /* ラジオボタン間の間隔 */
+        margin-left: 0;  /* ラジオボタンを左寄せ */
+    }
+
+    /* ラジオボタンとラベルの高さを完全に揃える */
+    .form-check label {
+        display: inline-flex;  /* インラインのフレックスボックスでラベルを整列 */
+        align-items: center;  /* ラベルのテキストとラジオボタンを縦に揃える */
+        height: 18px;  /* ラベルの高さをラジオボタンの高さと一致させる */
+        margin-left: 10px;  /* ラベルとラジオボタンの間隔を調整 */
+        margin-bottom: 20px;  /* ラベルとラジオボタンの間隔を調整 */
+    }
+
+    .form-check input[type="radio"]:checked + label,
+    .form-check input[type="radio"]:not(:checked) + label {
+        height: 18px;  /* ラジオボタンとラベルの高さを一致させる */
+        display: inline-flex;
+        align-items: center;  /* 縦方向にラジオボタンとラベルを揃える */
     }
 
     .btn-primary {
-        background-color: blue !important;
-        border-color: blue !important;
+        background-color: #007bff !important;
+        border-color: #007bff !important;
+        padding: 10px 20px;  /* ボタンのサイズを調整 */
     }
 
     .btn-primary:hover {
-        background-color: darkblue !important;
-        border-color: darkblue !important;
+        background-color: #0056b3 !important;
+        border-color: #0056b3 !important;
     }
 
-    /* ボタンを中央寄せ */
+    /* ボタンを中央に配置 */
     .btn-primary.d-block.mx-auto {
-        width: 50%;  /* ボタンの幅をコンパクトに */
-        margin-top: 20px;
+        width: 60%;  /* ボタンの幅を調整 */
+        margin-top: 30px;  /* ボタンの上にスペースを追加 */
     }
 </style>
 

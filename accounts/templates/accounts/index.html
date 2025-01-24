@@ -81,7 +81,9 @@
     }
 </style>
 
-<a href="{% url 'survey:pet_survey' %}">アンケート</a>
+<div>
+    <a href="{% url 'survey:pet_survey' %}">アンケート</a>
+</div>
 
 <h1>現在保護されているペット</h1>
 <div class="image-container">
@@ -118,6 +120,5 @@
         </div>
     {% endfor %}
 </div>
-
 
 {% endblock %}

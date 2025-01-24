@@ -4,7 +4,7 @@
 {% block title %}ペット情報一覧{% endblock %}
 
 {% block contents %}
-<h1 style="font-weight: bold;">マッチングしたペット情報</h1>
+<h1 style="font-weight: bold; font-size: 36px;">マッチングしたペット情報</h1>
 
 <!-- 検索結果の分岐 -->
 {% if pets and not latest_pets %}
@@ -13,9 +13,6 @@
         {% for pet, image_url in pets %}
             <li>
                 <div class="pet-info">
-                    <div class="pet-details">
-                        <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
-                    </div>
                     <div class="pet-image">
                         {% if image_url %}
                             <img src="{{ image_url }}" alt="Pet Image" width="200">
@@ -23,9 +20,12 @@
                             <img src="{% static 'images/default_pet.jpg' %}" alt="デフォルト画像" width="200">
                         {% endif %}
                     </div>
+                    <div class="pet-details">
+                        <a href="{% url 'messaging:pet_detail' pet.id %}" class="pet-link">詳細はこちら</a>
+                    </div>
                 </div>
             </li>
-    {% endfor %}
+        {% endfor %}
     </ul>
 
 {% elif latest_pets %}
@@ -36,15 +36,15 @@
         {% for pet, image_url in latest_pets %}
             <li>
                 <div class="pet-info">
-                    <div class="pet-details">
-                        <a href="{% url 'messaging:pet_detail' pet.id %}">詳細を見る</a>
-                    </div>
                     <div class="pet-image">
                         {% if image_url %}
                             <img src="{{ image_url }}" alt="Pet Image" width="200">
                         {% else %}
                             <img src="{% static 'images/default_pet.jpg' %}" alt="デフォルト画像" width="200">
                         {% endif %}
+                    </div>
+                    <div class="pet-details">
+                        <a href="{% url 'messaging:pet_detail' pet.id %}" class="pet-link">詳細はこちら</a>
                     </div>
                 </div>
             </li>
@@ -61,5 +61,81 @@
 <div class="text-center" style="margin-top: 30px;">
     <a href="{% url 'survey:pet_survey' %}" class="btn btn-primary">アンケートに戻る</a>
 </div>
+
+<!-- サイドバー -->
+<div class="sidebar">
+    {% include 'survey/pet_survey_sidebar.html' %}
+</div>
+
+<style>
+    .btn-primary {
+        background-color: blue !important;
+        border-color: blue !important;
+    }
+
+    .btn-primary:hover {
+        background-color: darkblue !important;
+        border-color: darkblue !important;
+    }
+
+    .pet-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .pet-image {
+        margin-right: 15px;
+    }
+
+    .pet-details {
+        text-align: left;
+    }
+
+    .pet-link {
+        color: gray;
+        text-decoration: none;
+    }
+
+    .pet-link:hover {
+        color: #BBBBBB;
+        text-decoration: underline;
+    }
+
+    .content {
+        display: flex;
+        margin: 20px;
+    }
+
+    .main-content {
+        flex: 1;
+        margin-right: 20px;
+        padding-right: 20px; /* 右側に余白を追加して、サイドバーが重ならないように */
+    }
+
+    .sidebar {
+        width: 27%;
+        position: absolute;
+        top: 100px; /* ヘッダーの下に配置 */
+        left: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        min-height: 100vh; /* ページの高さを最低でも満たす */
+        overflow: hidden; /* スクロールなし */
+    }
+
+    .sidebar a {
+        display: block;
+        margin: 10px 0;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .sidebar a:hover {
+        color: #007bff;
+    }
+</style>
 
 {% endblock %}

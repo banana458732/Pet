@@ -121,12 +121,15 @@ def pet_survey(request):
             # 「犬または猫だけで検索した場合」
             pets_to_display = pets_with_score
         else:
-            # 「追加の条件が一致せずスコアが犬または猫のスコア1にプラスされなかった場合」
-            if (pets_with_score['score'] == 1).all():
-                # スコアが1のみのペットがすべての場合、最新3匹を表示
+            # 他の条件で一致するデータがない場合
+            if pets_with_score['score'].max() == 1 and len(pets_with_score) == len(pets_data):
+                # スコア1のペットしかいない場合、最新3匹を表示
                 pets_to_display = pets_data.head(3)
             else:
+                # スコアが1以上のペットを表示
                 pets_to_display = pets_with_score
+
+
 
         # 画像の処理
         pets_with_images = []
@@ -141,4 +144,9 @@ def pet_survey(request):
             'MEDIA_URL': settings.MEDIA_URL,
         })
 
-    return render(request, 'survey/pet_survey.html', {'form': form})
+    if form.is_valid():
+        # フォームが有効な場合、エラーメッセージを渡さない
+        return render(request, 'survey/pet_survey.html', {'form': form})
+    else:
+        # フォームが無効な場合、エラーメッセージを渡す
+        return render(request, 'survey/pet_survey.html', {'form': form, 'error_message': "必須項目です"})
