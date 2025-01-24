@@ -83,11 +83,9 @@
     }
 </style>
 
-{% extends 'accounts/base.html' %}
+<title>仮契約一覧</title>
 
-{% block title %}スタッフ ペット管理{% endblock %}
 
-{% block contents %}
 <h2 style="text-align: center;">仮契約中一覧</h2>
 <ul class="pet-list">
     {% for pet_data in pet_images_draft %}
@@ -133,4 +131,4 @@
 <div class="form-footer">
   <a href="{% url 'accounts:staff_menu' %}" id="toppage_button">スタッフメニューに戻る</a>
 </div>
-{% endblock %}
+
