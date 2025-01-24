@@ -107,27 +107,6 @@
     {% endfor %}
 </ul>
 
-<h2 style="text-align: center;">契約済み一覧</h2>
-<ul class="pet-list">
-    {% for pet_data in pet_images_completed %}
-        <li class="pet-item">
-            <h3>ID-{{ pet_data.pet.id }}</h3>
-            {% with pet_data.images.first as first_image %}
-                {% if first_image and first_image.image %}
-                    <img src="{{ first_image.image.url }}" alt="{{ pet_data.pet.name }}の画像">
-                {% else %}
-                    <p>画像が登録されていません</p>
-                {% endif %}
-            {% endwith %}
-            <div class="pet-actions">
-                <a href="{% url 'karikeiyaku:com' pet_id=pet_data.pet.id %}">詳細を見る</a>
-            </div>
-        </li>
-    {% empty %}
-        <p>契約済みのペットはありません。</p>
-    {% endfor %}
-</ul>
-
 <div class="form-footer">
   <a href="{% url 'accounts:staff_menu' %}" id="toppage_button">スタッフメニューに戻る</a>
 </div>

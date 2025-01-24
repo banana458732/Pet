@@ -107,7 +107,7 @@ def contractor(request, pet_id):
             print(f"After update: {karikeiyaku.status}")  # 更新後のログ
 
         # マイページにリダイレクト
-        return redirect(reverse('accounts:my_page'))  # 'mypage'ビューにリダイレクト
+        return redirect(reverse('karikeiyaku:com', kwargs={'pet_id': pet.id}))  # 'mypage'ビューにリダイレクト
 
     return render(request, 'karikeiyaku/contractor.html', {
         'pet': pet,
@@ -120,13 +120,13 @@ def com(request, pet_id):
     karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet_id=pet_id, status='契約済み').first()
 
     if not karikeiyaku:
-        messages.error(request, "契約が完了したペットがありません。")
-        return redirect('accounts:index')  # 契約が完了したペットがなければトップページへリダイレクト
+        messages.error(request, "仮契約中のペットがいません。")
+        return redirect('accounts:staff_menu')  # 契約が完了したペットがなければトップページへリダイレクト
 
     pet = karikeiyaku.pet  # 仮契約が完了したペット情報を取得
 
     # 契約完了したペットとその契約者情報をテンプレートに渡す
-    return render(request, 'karikeiyaku/comp.html', {
+    return render(request, 'karikeiyaku/com.html', {
         'pet': pet,
         'karikeiyaku': karikeiyaku
     })
@@ -137,7 +137,8 @@ def completed_contract_detail(request, pet_id):
     contract = Karikeiyaku.objects.filter(pet=pet, status="契約済み").first()
 
     if not contract:
-        return render(request, 'karikeiyaku/not_found.html', status=404)
+        messages.error(request, "契約済みのペットがいません。")
+        return redirect('accounts:staff_menu')
 
     # デバッグ出力
     print("契約者:", contract.user.username)

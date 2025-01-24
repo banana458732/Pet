@@ -23,6 +23,7 @@
         padding: 15px;
         text-align: center;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .image-container img {
@@ -30,6 +31,7 @@
         height: 200px;
         object-fit: cover;
         margin-bottom: 15px;
+        border-radius: 8px;
     }
 
     .pet-info-table {
@@ -51,8 +53,8 @@
     }
 
     h1 {
-        margin-bottom: 40px; /* 見出しの下に余白を追加 */
-        text-align: center; /* 中央寄せ */
+        margin-bottom: 40px;
+        text-align: center;
     }
 
     /* 小画面時のスタイル調整 */
@@ -70,14 +72,9 @@
         }
     }
 
-    .image-container div {
-        background: linear-gradient(145deg, #f3f3f3, #e8e8e8);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.11);
-        transition: transform 0.3s ease;
-    }
-
     .image-container div:hover {
-        transform: scale(1.01);
+        transform: scale(1.03);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
 </style>
 
@@ -99,26 +96,27 @@
                 {% endif %}
             {% endwith %}
 
-            <table class="pet-info-table">
-                <tr>
-                    <th>ID</th>
-                    <td>{{ pet.id }}</td>
-                </tr>
-                <tr>
-                    <th>サイズ</th>
-                    <td>{{ pet.size }}</td>
-                </tr>
-                <tr>
-                    <th>性別</th>
-                    <td>{{ pet.sex }}</td>
-                </tr>
-                <tr>
-                    <th>年齢</th>
-                    <td>{{ pet.age }}</td>
-                </tr>
-            </table>
+            <a href="{% url 'messaging:pet_detail' pet.id %}">
+                <table class="pet-info-table">
+                    <tr>
+                        <th>ID</th>
+                        <td>{{ pet.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>サイズ</th>
+                        <td>{{ pet.size }}</td>
+                    </tr>
+                    <tr>
+                        <th>性別</th>
+                        <td>{{ pet.sex }}</td>
+                    </tr>
+                    <tr>
+                        <th>年齢</th>
+                        <td>{{ pet.age }}</td>
+                    </tr>
+                </table>
+            </a>
         </div>
     {% endfor %}
 </div>
-
 {% endblock %}

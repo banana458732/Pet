@@ -161,6 +161,26 @@
         margin-bottom: 15px;
         text-align: center;
     }
+    .btn-success {
+        background-color: #007BFF !important; /* 青色 */
+        color: #fff !important; /* 白い文字 */
+        border: none !important; /* ボーダーを削除 */
+        border-radius: 5px !important; /* ボタンを少し丸く */
+        padding: 10px 20px !important; /* 余白を調整 */
+        font-size: 1rem !important; /* 文字サイズを指定 */
+        transition: background-color 0.3s ease !important; /* ホバー時のアニメーション */
+    }
+
+    .btn-success:hover {
+        background-color: #0056b3 !important; /* ホバー時の濃い青 */
+    }
+
+    .btn-success:disabled {
+        background-color: #b3d7ff !important; /* 無効時の薄い青 */
+        color: #fff !important; /* 白い文字 */
+        opacity: 0.6 !important; /* 見た目の透明感 */
+        cursor: not-allowed !important; /* カーソルを変更 */
+    }
 </style>
 
     <!-- 全体のフォームを囲む -->

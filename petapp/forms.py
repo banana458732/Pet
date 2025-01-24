@@ -13,11 +13,13 @@ class PetCreateForm(forms.ModelForm):
 
     def clean_post_code(self):
         post_code = self.cleaned_data['post_code']
-        return post_code.replace("-", "")  # ハイフンを除去
+        # ここでハイフンを除去した後、文字列型として返す
+        return str(post_code).replace("-", "")
 
     def clean_phone_number(self):
         phone_number = self.cleaned_data['phone_number']
-        return phone_number.replace("-", "")  # ハイフンを除去
+        # 同様に電話番号も文字列として処理
+        return str(phone_number).replace("-", "")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -139,14 +141,14 @@ class PetImageUpdateFormSet(modelformset_factory(PetImage, form=PetImageUpdateFo
     def clean(self):
         super().clean()
 
-        # 画像の削除と追加が同時に選ばれていないか確認
-        for form in self.forms:
-            delete_flag = form.cleaned_data.get('DELETE', False)
-            image = form.cleaned_data.get('image', None)
+        self.deleted_images = []
+        self.updated_images = []
 
-            # 削除フラグが立っているのに、画像が設定されている場合はエラー
-            if delete_flag and image:
-                form.add_error(None, "画像の削除と追加は同時に行えません。どちらか一方を選んでください。")
+        for form in self.forms:
+            if form.cleaned_data.get('DELETE'):
+                self.deleted_images.append(form.instance)  # 削除された画像
+            elif form.cleaned_data.get('image') and form.instance.image != form.cleaned_data['image']:
+                self.updated_images.append({'url': form.cleaned_data['image'].url})  # 更新された画像のURLを格納
 
         # 少なくとも1つの画像が残っていることを確認
         remaining_images = [

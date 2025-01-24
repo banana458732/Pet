@@ -343,7 +343,7 @@ def index(request):
 
     # 除外されたペットを除いた一覧を取得
     pets = Pet.objects.exclude(id__in=excluded_pet_ids)
-
+    
     # デバッグ用のログ出力
     print(f"Excluded Pet IDs: {list(excluded_pet_ids)}")
     print(f"Remaining Pets: {pets}")
