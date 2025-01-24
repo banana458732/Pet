@@ -49,6 +49,7 @@
     border-radius: 10px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
   }
+  
 
   .profile-image {
     width: 150px;
@@ -141,6 +142,7 @@
   width: 100%;
   background: #f1f1f1;
   margin-top: 20px; /* 地図との間隔を調整 */
+  margin-bottom: 20px; /* 地図とキャンセルリンクの間隔を調整 */
 }
 
 .google-map iframe {
@@ -162,21 +164,30 @@
 }
 /* プロフィール変更リンクのデザイン */
 .action-link-pro {
-  font-size: 1.2em;  /* フォントサイズ */
-  color: white;      /* テキスト色を白に */
-  background-color: #007BFF;  /* 背景色を青に */
-  text-decoration: none;  /* 下線を削除 */
-  display: inline-block;  /* ボタン風に */
-  padding: 12px 24px;     /* ボタンの余白 */
-  border-radius: 5px;     /* ボタンの角を丸く */
-  margin-top: 15px;  /* 画像とリンクの間に余白 */
-  text-align: center; /* リンクを中央に */
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6c757d; /* グレー系の背景色 */
+  color: white; /* テキストは白 */
+  text-decoration: none;
+  border-radius: 8px; /* 角を丸く */
+  font-size: 1.1rem; /* フォントサイズを調整 */
+  transition: background-color 0.3s, color 0.3s; /* スムーズな変化 */
 }
 
 .action-link-pro:hover {
-  background-color: #0056b3;  /* ホバー時に背景色を変更 */
-  color: white;      /* テキスト色を白に */
-  transform: scale(1.05); /* 少し大きくなるエフェクト */
+    background-color: #565e64; /* ホバー時の濃いグレー */
+    color: white; /* テキスト色を白に保つ */
+}
+#toppage_button {
+  font-size: 1.2em;
+  color: #6c757d; /* グレー */
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+#toppage_button:hover {
+  color: #565e64; /* 濃いグレー */
+  text-decoration: underline;
 }
 
 /* 小画面時の調整 */

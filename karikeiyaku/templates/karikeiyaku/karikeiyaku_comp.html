@@ -7,21 +7,21 @@
     .registration-complete {
         max-width: 800px;
         margin: 20px auto;
-        padding: 40px; /* より広い余白 */
+        padding: 40px;
         background-color: #f9f9f9;
-        border: 3px solid #ddd; /* 枠線を少し太く変更 */
+        border: 3px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         text-align: center;
         font-family: Arial, sans-serif;
-        overflow: hidden; /* 親要素が子要素のはみ出しを隠す */
+        overflow: hidden;
     }
 
     /* 見出しのスタイル */
     .registration-complete h2 {
-        color: #f4623a;
-        font-size: 2.5rem; /* 見出しサイズを少し大きく */
-        margin-bottom: 20px; /* より広い余白 */
+        color: #000; /* 見出しを黒に変更 */
+        font-size: 2.5rem;
+        margin-bottom: 20px;
     }
 
     /* メッセージのスタイル */
@@ -34,7 +34,7 @@
     /* ボタンのスタイル */
     .registration-complete a {
         display: inline-block;
-        background-color: #f4623a;
+        background-color: #007bff; /* 青色ボタン */
         color: white;
         padding: 10px 20px;
         font-size: 1rem;
@@ -44,7 +44,7 @@
     }
 
     .registration-complete a:hover {
-        background-color: #c34e2e;
+        background-color: #0056b3; /* ホバー時の濃い青 */
     }
 </style>
 
@@ -53,4 +53,5 @@
     <p>ご登録ありがとうございました。</p>
     <a href="{% url 'accounts:my_page' %}">マイページへ</a>
 </div>
+
 {% endblock %}

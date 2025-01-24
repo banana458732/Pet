@@ -38,31 +38,31 @@
     }
 
     /* 共通のボタンスタイル */
-.pet-item .btn {
-    display: inline-block;
-    padding: 8px 15px;
-    background-color: #007BFF; /* 変更ボタンは青色 */
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
+    .pet-item .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #007BFF; /* 変更ボタンは青色 */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
 
-.pet-item .btn:hover {
-    background-color: #0056b3; /* 変更ボタンのホバー時の色 */
-}
+    .pet-item .btn:hover {
+        background-color: #0056b3; /* 変更ボタンのホバー時の色 */
+    }
 
-/* 削除ボタンのスタイル */
-.pet-item .btn-danger {
-    background-color: #e74b30; /* 赤色 */
-}
+    /* 削除ボタンのスタイル */
+    .pet-item .btn-danger {
+        background-color: #e74b30; /* 赤色 */
+    }
 
-.pet-item .btn-danger:hover {
-    background-color: #c53341; /* 削除ボタンのホバー時の色 */
-}
+    .pet-item .btn-danger:hover {
+        background-color: #c53341; /* 削除ボタンのホバー時の色 */
+    }
 
 
     .header-container {
@@ -73,7 +73,7 @@
 
     .header-container .add-pet {
         display: inline-block; /* インラインブロックでボタンを整列 */
-        padding: 10px 20px;
+        padding: 15px 25px;
         background-color: #6c757d; /* 茶色 */
         color: white;
         text-decoration: none;
@@ -86,8 +86,14 @@
         background-color: #565e64; /* ダークブラウン */
     }
 
-    /* 小画面時のスタイル調整 */
+    /* 小画面時のペット登録ボタンの調整 */
     @media (max-width: 768px) {
+        .header-container .add-pet {
+            padding: 8px 16px; /* 小さい画面ではボタンのパディングを縮小 */
+            font-size: 1rem; /* フォントサイズを小さく */
+        }
+
+        /* ペットアイテムのレイアウト */
         .pet-item {
             flex: 1 1 calc(50% - 20px); /* 2列分の幅 */
             max-width: calc(50% - 20px);
@@ -95,6 +101,12 @@
     }
 
     @media (max-width: 480px) {
+        .header-container .add-pet {
+            padding: 6px 12px; /* より小さい画面ではさらに縮小 */
+            font-size: 0.9rem; /* フォントサイズをさらに小さく */
+        }
+
+        /* ペットアイテムのレイアウト */
         .pet-item {
             flex: 1 1 100%; /* 1列表示 */
             max-width: 100%;
@@ -120,12 +132,30 @@
                 {% endif %}
             {% endwith %}
             <div class="pet-actions">
-                <a href="{% url 'petapp:pet-update' pet.id %}" class="btn">変更</a>
+                <a href="{% url 'petapp:pet-update' pet.id %}" class="btn">編集</a>
                 <a href="{% url 'petapp:pet-delete' pet.id %}" class="btn btn-danger">削除</a>
             </div>
         </li>
     {% endfor %}
 </ul>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if object_list.has_previous %}
+            <a href="?page=1{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">&laquo; 最初</a>
+            <a href="?page={{ object_list.previous_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">前へ</a>
+        {% endif %}
+
+        <span class="current">
+            ページ {{ object_list.number }} / {{ object_list.paginator.num_pages }}。
+        </span>
+
+        {% if object_list.has_next %}
+            <a href="?page={{ object_list.next_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">次へ</a>
+            <a href="?page={{ object_list.paginator.num_pages }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">最後 &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 
 <div>
     <a href="{% url 'accounts:staff_menu' %}">スタッフメニューに戻る</a>

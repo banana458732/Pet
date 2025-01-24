@@ -128,6 +128,7 @@ class PhoneNumber(models.Model):
 class PetImage(models.Model):
     pet = models.ForeignKey(Pet, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='pet_images/', null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)  # 更新日時を追加
 
     def __str__(self):
         return f"Image for {self.pet.id}"

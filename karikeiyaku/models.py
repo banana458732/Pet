@@ -17,7 +17,8 @@ class Karikeiyaku(models.Model):
             ('仮契約済', '仮契約済'),
             ('契約済み', '契約済み')  # 契約済みを追加
         ],
-        default='仮契約中', verbose_name="ステータス"
+        default='仮契約中', verbose_name="ステータス",
+        null=True, blank=True
     )
 
     class Meta:
