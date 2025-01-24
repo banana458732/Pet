@@ -51,7 +51,7 @@ class SimplePetSurveyForm(forms.Form):
         max_length=500,
         required=False,
         label="性格",
-        widget=forms.Textarea(attrs={'rows': 5, 'cols': 50}),
+        widget=forms.TextInput(attrs={'rows': 5, 'cols': 50}),
     )
 
     # 性別
