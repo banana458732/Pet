@@ -18,6 +18,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.utils.http import url_has_allowed_host_and_scheme
 
 
 class SignUpView(CreateView):
@@ -77,7 +78,10 @@ def LoginView(request):
         if user is not None:
             # ログインする。
             login(request, user)
-            return redirect('accounts:index')  # トップページのURLパターンにリダイレクト
+            next_url = request.GET.get('next', 'accounts:index')
+            if not url_has_allowed_host_and_scheme(next_url, allowed_hosts=request.get_host()):
+                next_url = 'accounts:index'
+            return redirect(next_url)  # トップページのURLパターンにリダイレクト
 
         # ユーザーがオブジェクトが存在しないなら。
         else:
