@@ -1,3 +1,8 @@
+{% extends 'accounts/base_admin.html' %}
+
+{% block title %}仮契約中一覧{% endblock %}
+
+{% block contents %}
 <style>
     .pet-list {
         display: flex;
@@ -32,7 +37,7 @@
         margin-bottom: 15px; /* 画像とリンクとの間にスペースを追加 */
     }
 
-    .pet-item .btn {
+    .pet-item .pet-actions a {
         display: inline-block;
         padding: 8px 15px;
         background-color: #007BFF;
@@ -45,38 +50,21 @@
         transition: background-color 0.3s;
     }
 
-    .pet-item .btn:hover {
+    .pet-item .pet-actions a:hover {
         background-color: #0056b3;
     }
 
-    .add-pet {
-        display: block;
-        width: fit-content;
-        margin: 20px auto;
-        padding: 15px 30px; /* ボタンを大きくする */
-        background-color: #8B4513; /* 茶色に変更 */
-        color: #fff;
-        text-decoration: none;
-        border-radius: 8px; /* ボタンの角を丸くする */
-        font-size: 1.2rem; /* フォントサイズを大きくする */
-        text-align: center;
-        transition: background-color 0.3s;
-    }
-
-    .add-pet:hover {
-        background-color: #5E3210; /* ダークブラウンに変更 */
-    }
     .staff-menu-link {
         font-size: 1.2em;
         color: #6c757d; /* グレー */
         text-decoration: none;
         transition: color 0.3s, text-decoration 0.3s;
     }
+
     .staff-menu-link:hover {
         color: #565e64; /* 濃いグレー */
         text-decoration: underline; /* ホバー時に下線を追加 */
     }
-
 
     /* 小画面時のスタイル調整 */
     @media (max-width: 768px) {
@@ -93,8 +81,6 @@
         }
     }
 </style>
-
-{% extends 'accounts/base_admin.html' %}
 
 <h2 style="text-align: center;">仮契約中一覧</h2>
 <ul class="pet-list">
@@ -120,4 +106,4 @@
 <div style="text-align: center; margin-top: 20px;">
     <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">スタッフメニューに戻る</a>
 </div>
-
+{% endblock %}

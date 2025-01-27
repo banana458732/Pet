@@ -1,7 +1,8 @@
 {% extends 'accounts/base_admin.html' %}
 
-<title>登録・更新・更新</title>
+{% block title %} 登録・更新・削除 {% endblock %}
 
+{% block contents %}
 <style>
     .pet-list {
         display: flex;
@@ -151,4 +152,4 @@
 <div style="text-align: center; margin-top: 20px;">
     <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">スタッフメニューに戻る</a>
 </div>
-
+{% endblock %}
