@@ -4,13 +4,13 @@
 
 {% block contents %}
 
-<hr>
+
 <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
 
 <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
     <div class="row" style="width: 100%; max-width: 1000px; text-align: center;">
         <div class="col">
-            <h3 style="margin-bottom: 30px; font-weight: normal;">登録情報入力</h3>
+            <h3 style="margin: 30px; font-weight: normal;">登録情報入力</h3>
             
             <form class="h-adr" action="{% url 'accounts:signup' %}" method="POST" style="text-align: center;">
                 <span class="p-country-name" style="display:none;">Japan</span>
@@ -102,7 +102,7 @@
                         {{ form.password1 }}
                     </div>
                 </div>
-                <p style="color: red; text-align: left;">{{ form.password1.errors }}</p>
+                <p style="color: red; text-align: left; font-size: 10px;">{{ form.password1.errors }}</p>
 
                 <!-- フィールド: パスワード2 -->
                 <div class="field" style="margin-bottom: 30px; display: flex; align-items: center; justify-content: flex-start; gap: 20px;">
@@ -121,8 +121,8 @@
             </form>
 
             <br>
-            <p><a href="{% url 'accounts:index' %}" style="color: #007bff;">登録をやめてトップページに戻る</a></p>
         </div>
+        <!-- <p><a href="{% url 'accounts:index' %}" style="color: #007bff; margin: 20px;">登録をやめてトップページに戻る</a></p> -->
     </div>
 </div>
 
@@ -141,6 +141,7 @@
 
     p {
         margin: 0;
+        font-size: 1px;
     }
 
     .field {
@@ -157,6 +158,12 @@
         justify-content: flex-start;
         gap: 20px;
     }
+
+    .errorlist {
+        color: red !important;
+        font-size: 14px !important;
+    }
+
 </style>
 
 

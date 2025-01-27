@@ -72,7 +72,7 @@
 
     <form method="post">
       {% csrf_token %}
-      {% if errors %}
+      {% if error %}
       <p style="color: red">{{ error }}ユーザー名とパスワードが一致しません。</p>
       {% endif %}
       <!-- Bootstrapのロゴを表示 -->
@@ -80,7 +80,7 @@
       <p id = accounts_signup style="font-size: 14px; text-align: left;" >アカウントが未登録の方はこちら<a id ="accounts_link"href="{% url 'accounts:signup' %}"  style="color:#007bff;">アカウントを作成</a></p>
       <div class="form-group">
         <label for="username">ユーザー名</label>
-        <input type="text" id="username"name="username" placeholder="ユーザー名" required/>
+        <input type="text" id="username"name="username" maxlength="16" placeholder="ユーザー名" required/>
       </div>
       <div class="form-group">
         <label for="password">パスワード</label>

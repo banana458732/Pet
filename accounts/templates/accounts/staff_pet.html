@@ -96,9 +96,6 @@
 
 {% extends 'accounts/base_admin.html' %}
 
-{% block title %}スタッフ ペット管理{% endblock %}
-
-{% block contents %}
 <h2 style="text-align: center;">仮契約中一覧</h2>
 <ul class="pet-list">
     {% for pet_data in pet_images_draft %}
@@ -123,4 +120,4 @@
 <div style="text-align: center; margin-top: 20px;">
     <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">スタッフメニューに戻る</a>
 </div>
-{% endblock %}
+
