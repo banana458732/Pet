@@ -51,7 +51,8 @@ def write_csv(data):
 # ペットリストのビュー
 class PetListView(ListView):
     model = Pet
-    template_name = 'petapp/pet_list.html'
+    template_name = 'petapp/admin/pet_list.html'
+    ordering = ['-id']  # 新しいペットを上に表示
 
 
 def save_image(image):
@@ -425,10 +426,3 @@ class PetDeleteView(DeleteView):
             print(f"Error updating CSV file after deleting pet: {str(e)}")
 
         return response
-
-
-# インデックスビュー
-def index(request):
-    csv_data = read_csv().head()
-    return render(request, 'Survey/index.html', {'csv_data': csv_data})
-    return render(request, 'Survey/index.html', {'csv_data': data.head()})

@@ -345,9 +345,9 @@ def index(request):
     # 仮契約中および契約済みのペットIDを取得
     excluded_pet_ids = Karikeiyaku.objects.filter(status__in=['仮契約中', '仮契約済', '契約済み']).values_list('pet_id', flat=True)
 
-    # 除外されたペットを除いた一覧を取得
-    pets = Pet.objects.exclude(id__in=excluded_pet_ids)
-    
+    # 除外されたペットを除いた一覧を取得し、id順で並べ替え
+    pets = Pet.objects.exclude(id__in=excluded_pet_ids).order_by('-id')  # id順で並べ替え（新しい順）
+
     # デバッグ用のログ出力
     print(f"Excluded Pet IDs: {list(excluded_pet_ids)}")
     print(f"Remaining Pets: {pets}")
