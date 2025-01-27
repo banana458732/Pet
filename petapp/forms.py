@@ -106,6 +106,20 @@ class PetUpdateForm(forms.ModelForm):
     address = forms.CharField(max_length=255, label='住所', required=False)  # 住所を入力
     location = forms.CharField(max_length=255, label='保護場所', required=True)  # 保護場所を入力
 
+    # clean_phone_number メソッドを追加
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number', '')
+        # 小数点が含まれていた場合は削除
+        phone_number = phone_number.replace('.', '').replace('-', '')
+        return phone_number
+
+    # clean_post_code メソッドを追加
+    def clean_post_code(self):
+        post_code = self.cleaned_data.get('post_code', '')
+        # 小数点が含まれていた場合は削除
+        post_code = post_code.replace('.', '')
+        return post_code
+
 
 class PetImageUpdateForm(forms.ModelForm):
     image = forms.ImageField(

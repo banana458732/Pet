@@ -1,4 +1,4 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/base_admin.html' %}
 
 {% block title %}更新完了{% endblock %}
 
@@ -122,17 +122,18 @@
         }
     }
 
-    /* 戻るボタンのスタイル */
+    /* 戻るリンクのスタイル */
     .btn-back {
         display: inline-block;
         padding: 10px 20px;
         background-color: #6c757d;
         color: white;
         text-decoration: none;
-        border-radius: 8px;
+        border-radius: 4px;
         margin-top: 30px;
-        font-size: 1.1rem;
-        transition: background-color 0.3s;
+        font-size: 1.2rem;
+        text-align: center;
+        width: 40%;
     }
 
     .btn-back:hover {
@@ -145,37 +146,30 @@
     <h2>更新が完了しました</h2>
     <p>選択したペットの情報が正常に更新されました。</p>
 
-    <!-- 変更された項目を表示 -->
-    {% if updated_fields %}
-        <h3>変更された項目</h3>
-        <ul class="updated-fields-list">
-            {% for field in updated_fields %}
-                <li><strong>{{ field }}</strong></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+    <!-- 変更された項目と画像の変更メッセージを一緒に表示 -->
+    <div class="update-summary">
+        <!-- 変更された項目を表示 -->
+        {% if updated_fields %}
+            <h3>変更された項目</h3>
+            <ul class="updated-fields-list">
+                {% for field in updated_fields %}
+                    <li><strong>{{ field }}</strong></li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>変更はありませんでした。</p>  <!-- 変更がない場合のメッセージ -->
+        {% endif %}
 
-    <!-- 更新された画像 -->
-    {% if updated_images %}
-        <h3>更新された画像</h3>
-        <div class="updated-images-list">
-            {% for img in updated_images %}
-                <div class="updated-image">
-                    <img src="{{ img }}" alt="更新された画像">
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- 削除された画像 -->
-    {% if deleted_images %}
-        <h3>画像は削除されました</h3>
-    {% endif %}
-
-    <!-- 変更が一切なかった場合のみメッセージを表示 -->
-    {% if not updated_fields and not updated_images and not deleted_images %}
-        <p>変更はありませんでした。</p>
-    {% endif %}
+        <!-- 更新・追加・削除に関するメッセージ -->
+        {% if messages %}
+            <h3>画像の変更</h3>
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 </div>
 
 <!-- 戻るリンク -->

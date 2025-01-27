@@ -196,7 +196,7 @@ class MyPageView(LoginRequiredMixin, TemplateView):
 
         # 仮契約中のペット情報を取得
         contract_pets = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')
-        
+
         # 契約済みのペット情報を取得
         completed_pets = Karikeiyaku.objects.filter(user=user, status='契約済み').select_related('pet')
 

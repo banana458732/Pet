@@ -19,8 +19,8 @@ def send_message(request):
         send_mail(
             f'新しいメッセージ: {sender_name}さんからのお問い合わせ',
             message_content,
-            sender_email,
-            [recipient_email],
+            recipient_email,
+            [recipient_email],#, sender_email
             fail_silently=False,
         )
 

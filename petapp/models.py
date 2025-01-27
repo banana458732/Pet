@@ -75,11 +75,10 @@ class Pet(models.Model):
 
     # 保存前に小数点とハイフンを取り除く
     def save(self, *args, **kwargs):
-        # 小数点とハイフンを削除
         if self.phone_number:
-            self.phone_number = self.phone_number.replace('-', '').replace('.', '')
+            self.phone_number = self.phone_number.replace('-', '').replace('.', '')  # 小数点とハイフンを削除
         if self.post_code:
-            self.post_code = self.post_code.replace('.', '')
+            self.post_code = self.post_code.replace('.', '')  # 小数点を削除
         super().save(*args, **kwargs)
 
     # フォーマット済み郵便番号を返すメソッド

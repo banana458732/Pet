@@ -66,6 +66,17 @@
     .add-pet:hover {
         background-color: #5E3210; /* ダークブラウンに変更 */
     }
+    .staff-menu-link {
+        font-size: 1.2em;
+        color: #6c757d; /* グレー */
+        text-decoration: none;
+        transition: color 0.3s, text-decoration 0.3s;
+    }
+    .staff-menu-link:hover {
+        color: #565e64; /* 濃いグレー */
+        text-decoration: underline; /* ホバー時に下線を追加 */
+    }
+
 
     /* 小画面時のスタイル調整 */
     @media (max-width: 768px) {
@@ -83,7 +94,7 @@
     }
 </style>
 
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/base_admin.html' %}
 
 {% block title %}スタッフ ペット管理{% endblock %}
 
@@ -109,7 +120,7 @@
     {% endfor %}
 </ul>
 
-<div class="form-footer">
-  <a href="{% url 'accounts:staff_menu' %}" id="toppage_button">スタッフメニューに戻る</a>
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">スタッフメニューに戻る</a>
 </div>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/base_admin.html' %}
 
 {% block title %}登録一覧{% endblock title %}
 
@@ -85,6 +85,16 @@
     .header-container .add-pet:hover {
         background-color: #565e64; /* ダークブラウン */
     }
+    .staff-menu-link {
+        font-size: 1.2em;
+        color: #6c757d; /* グレー */
+        text-decoration: none;
+        transition: color 0.3s, text-decoration 0.3s;
+    }
+    .staff-menu-link:hover {
+        color: #565e64; /* 濃いグレー */
+        text-decoration: underline; /* ホバー時に下線を追加 */
+    }
 
     /* 小画面時のペット登録ボタンの調整 */
     @media (max-width: 768px) {
@@ -114,7 +124,7 @@
     }
 </style>
 
-<h2 style="text-align: center;">犬・猫 一覧</h2>
+<h2 style="text-align: center;">ペット一覧</h2>
 
 <div class="header-container">
     <a href="{% url 'petapp:pet-create' %}" class="add-pet">ペットを登録</a>
@@ -139,26 +149,8 @@
     {% endfor %}
 </ul>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if object_list.has_previous %}
-            <a href="?page=1{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">&laquo; 最初</a>
-            <a href="?page={{ object_list.previous_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">前へ</a>
-        {% endif %}
-
-        <span class="current">
-            ページ {{ object_list.number }} / {{ object_list.paginator.num_pages }}。
-        </span>
-
-        {% if object_list.has_next %}
-            <a href="?page={{ object_list.next_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">次へ</a>
-            <a href="?page={{ object_list.paginator.num_pages }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}">最後 &raquo;</a>
-        {% endif %}
-    </span>
-</div>
-
-<div>
-    <a href="{% url 'accounts:staff_menu' %}">スタッフメニューに戻る</a>
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">スタッフメニューに戻る</a>
 </div>
 
 {% endblock contents %}

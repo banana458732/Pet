@@ -7,17 +7,19 @@ from django.contrib import messages
 from django.urls import reverse
 
 
-# 仮契約
 def karikeiyaku_form(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
+    
     # ユーザーが現在契約中のペットを取得
     user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet, status="仮契約中").first()
+
+    # 他のユーザーが仮契約しているかをチェック
+    other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet).exclude(user=request.user).first()
 
     # 仮契約中のペット数をカウント
     current_karikeiyaku_count = Karikeiyaku.objects.filter(user=request.user, status="仮契約中").count()
 
     # 仮契約が3匹以上の場合、契約できない
-    # ただし、現在のペットが既に契約中であれば除外
     can_contract = current_karikeiyaku_count < 3 or user_karikeiyaku is not None
 
     # 病気の除外リスト
@@ -39,7 +41,7 @@ def karikeiyaku_form(request, pet_id):
     if request.method == 'POST' and not user_karikeiyaku:
         # 仮契約が3匹を超える場合は契約を許可しない
         if current_karikeiyaku_count >= 3:
-            messages.error(request, "")
+            messages.error(request, "仮契約中のペットは3匹までです。")
         else:
             if form.is_valid():
                 karikeiyaku = form.save(commit=False)
@@ -55,7 +57,7 @@ def karikeiyaku_form(request, pet_id):
     # end_dateをYYYY-MM-DD形式でテンプレートに渡す
     end_date = form.fields['end_date'].initial.strftime('%Y-%m-%d') if form.fields['end_date'].initial else None
 
-    # コンテキストにcan_contractを追加
+    # コンテキストにcan_contractとother_user_karikeiyakuを追加
     return render(request, 'karikeiyaku/karikeiyaku_form.html', {
         'form': form,
         'pet': pet,
@@ -65,6 +67,7 @@ def karikeiyaku_form(request, pet_id):
         'pet_images': pet_images,  # pet_imagesを渡す
         'current_karikeiyaku_count': current_karikeiyaku_count,  # 仮契約数をテンプレートに渡す
         'can_contract': can_contract,  # can_contractを渡す
+        'other_user_karikeiyaku': other_user_karikeiyaku,  # 他のユーザーの仮契約情報を渡す
     })
 
 
