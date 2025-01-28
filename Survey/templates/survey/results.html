@@ -4,7 +4,7 @@
 {% block title %}ペット情報一覧{% endblock %}
 
 {% block contents %}
-<h1 style="font-weight: bold; font-size: 36px;">マッチングしたペット情報</h1>
+<h1 style="font-weight: bold; font-size: 38px; margin-left: 48%; transform: translateX(-25%);">マッチングしたペット情報</h1>
 
 <!-- 検索結果の分岐 -->
 {% if pets and not latest_pets %}
@@ -27,6 +27,32 @@
             </li>
         {% endfor %}
     </ul>
+
+    <!-- ページネーション -->
+    <div class="pagination" style="text-align: center; margin-top: 20px;">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; 最初</a>
+                <a href="?page={{ page_obj.previous_page_number }}">前</a>
+            {% else %}
+                <span>最初</span>
+                <span>前</span>
+            {% endif %}
+    
+            <span class="current">
+                ページ {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">次</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a>
+            {% else %}
+                <span>次</span>
+                <span>最後</span>
+            {% endif %}
+        </span>
+    </div>
+    
 
 {% elif latest_pets %}
     <!-- 追加条件が一致しない場合（最新の3匹を表示） -->
@@ -56,11 +82,6 @@
     <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
     <hr>
 {% endif %}
-
-<!-- アンケートに戻るボタン -->
-<div class="text-center" style="margin-top: 30px;">
-    <a href="{% url 'survey:pet_survey' %}" class="btn btn-primary">アンケートに戻る</a>
-</div>
 
 <!-- サイドバー -->
 <div class="sidebar">
@@ -135,6 +156,42 @@
 
     .sidebar a:hover {
         color: #007bff;
+    }
+
+    .pet-image img {
+        width: 270px; /* 横幅を指定 */
+        height: 220px; /* 縦幅を指定 */
+        object-fit: cover; /* アスペクト比を保ちながら画像をトリミング */
+        border-radius: 10px; /* 角を少し丸くする（任意） */
+        display: block;
+        margin-bottom: 20px;
+        margin-left: 330px;
+    }
+
+    /* 小さい画面向けの調整 */
+    @media (max-width: 768px) {
+        .pet-info {
+            display: flex;
+            flex-direction: row; /* デフォルトの順番に戻す */
+            margin-bottom: 20px; /* 下に余白 */
+        }
+
+        .pet-image {
+            flex: 0 0 30%; /* 画像部分の幅を30%に設定 */
+            max-width: 30%; /* 画像がはみ出さないようにする */
+        }
+
+        .pet-image img {
+            width: 100%; /* 画像を親要素にフィット */
+            height: auto; /* 高さを自動調整 */
+            border-radius: 10px; /* 角を丸くする */
+        }
+
+        .pet-details {
+            flex: 1; /* 残りのスペースを使用 */
+            text-align: left; /* テキストを左揃え */
+            margin-right: -15px; /* 画像との間に余白を追加 */
+        }
     }
 </style>
 

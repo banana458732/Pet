@@ -30,6 +30,8 @@ def to_hiragana(text):
     return ''.join(result)
 
 
+from django.core.paginator import Paginator
+
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
@@ -47,12 +49,10 @@ def pet_survey(request):
     pets_data['hiragana_disease'] = pets_data['disease'].apply(to_hiragana)
 
     # 仮契約中・契約済みのペットを除外
-    # Karikeiyakuテーブルで仮契約中および契約済みのペットIDを取得
     pet_ids_to_exclude = Karikeiyaku.objects.filter(
         status__in=['仮契約中', '契約済み']
     ).values_list('pet_id', flat=True)  # ここが 'pet_id' で正しいことを確認
 
-    # CSVの'id'がPetモデルの'id'に対応している場合、除外処理
     pets_data = pets_data[~pets_data['id'].isin(pet_ids_to_exclude)]  # 'id'はCSVのフィールド名
 
     if request.method == 'POST' and form.is_valid():
@@ -118,22 +118,21 @@ def pet_survey(request):
 
         # 分岐処理
         if not size and not color and not kinds and not disease and not personality and not sex and not age_range:
-            # 「犬または猫だけで検索した場合」
             pets_to_display = pets_with_score
         else:
-            # 他の条件で一致するデータがない場合
             if pets_with_score['score'].max() == 1 and len(pets_with_score) == len(pets_data):
-                # スコア1のペットしかいない場合、最新3匹を表示
                 pets_to_display = pets_data.head(3)
             else:
-                # スコアが1以上のペットを表示
                 pets_to_display = pets_with_score
 
-
+        # ページネーション
+        paginator = Paginator(pets_to_display, 10)  # 1ページに表示する件数
+        page_number = request.GET.get('page')  # URLからページ番号を取得
+        page_obj = paginator.get_page(page_number)
 
         # 画像の処理
         pets_with_images = []
-        for pet in pets_to_display.to_dict('records'):
+        for pet in page_obj.object_list.to_dict('records'):
             image_urls = pet.get('image_urls', '')
             first_image = image_urls.split(',')[0] if image_urls else None
             pets_with_images.append((pet, first_image))
@@ -141,12 +140,10 @@ def pet_survey(request):
         return render(request, 'survey/results.html', {
             'form': form,
             'pets': pets_with_images,
+            'page_obj': page_obj,
             'MEDIA_URL': settings.MEDIA_URL,
         })
 
-    if form.is_valid():
-        # フォームが有効な場合、エラーメッセージを渡さない
-        return render(request, 'survey/pet_survey.html', {'form': form})
-    else:
-        # フォームが無効な場合、エラーメッセージを渡す
-        return render(request, 'survey/pet_survey.html', {'form': form, 'error_message': "必須項目です"})
+    return render(request, 'survey/pet_survey.html', {
+        'form': form,
+    })

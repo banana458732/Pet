@@ -12,9 +12,7 @@ class SimplePetSurveyForm(forms.Form):
         widget=forms.RadioSelect,
         required=True,
         label="ペットの種類",
-        error_messages={
-            'required': 'ペットの種類を選択してください。',
-        }
+        error_messages={'required': 'ペットの種類を選択してください。'},
     )
 
     # ペットのサイズ
