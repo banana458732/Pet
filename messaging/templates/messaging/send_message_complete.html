@@ -7,79 +7,110 @@
     /* 全体のスタイル */
     .registration-complete {
         max-width: 800px;
-        margin: 20px auto;
-        padding: 40px; /* より広い余白 */
-        background-color: #f9f9f9;
-        border: 3px solid #ddd; /* 枠線を少し太く変更 */
+        margin: 40px auto;
+        padding: 40px;
+        background-color: #fff; /* 背景色を白に */
+        border: 1px solid #ddd; /* 枠線をシャープに */
         border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* より柔らかな影 */
-        font-family: Arial, sans-serif;
-        overflow: hidden; /* 親要素が子要素のはみ出しを隠す */
-        text-align: center; /* 中央揃え */
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); /* 強調された影 */
+        font-family: 'Arial', sans-serif;
+        overflow: hidden;
+        text-align: center;
+        color: #333;
     }
 
     /* 見出しのスタイル */
     .registration-complete h2 {
-        color: #f4623a;
-        font-size: 2.5rem; /* 見出しサイズを少し大きく */
-        margin-bottom: 20px; /* より広い余白 */
-        font-weight: bold;
+        color: black;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        font-weight: 700;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 見出しに影を付けて立体感を */
     }
 
     /* テーブルのスタイル */
     .registration-complete table {
         width: 100%;
-        margin-top: 20px;
+        margin-top: 30px;
         border-collapse: collapse;
     }
 
     .registration-complete th,
     .registration-complete td {
-        padding: 15px 20px; /* セル内の余白を調整 */
+        padding: 18px 25px; /* セル内の余白を調整 */
         text-align: left;
-        border-bottom: 2px solid #eee; /* 柔らかな区切り線 */
-        word-wrap: break-word; /* 長い単語を改行させる */
-        white-space: normal; /* 自然に改行する */
+        border-bottom: 2px solid #eee;
+        word-wrap: break-word;
+        white-space: normal;
     }
 
     /* テーブルヘッダーのスタイル */
     .registration-complete th {
         color: #333;
-        background-color: #f5f5f5;
-        font-weight: bold;
-        width: 150px; /* thの幅を固定 */
+        background-color: #f7f7f7;
+        font-weight: 600;
+        width: 150px;
+        font-size: 1.1rem;
     }
 
     /* テーブルデータのスタイル */
     .registration-complete td {
         color: #555;
+        font-size: 1rem;
     }
 
-    /* メッセージ内容のスタイル（内容が長い場合に広がる） */
+    /* メッセージ内容のスタイル */
     .registration-complete td.message-content {
-        white-space: pre-wrap; /* 長いテキストが折り返されるように */
+        white-space: pre-wrap;
         word-wrap: break-word;
-        max-width: 500px; /* メッセージ内容の最大幅を設定 */
+        max-width: 500px;
+        font-size: 1rem;
     }
 
     /* ボタンのスタイル */
     .registration-complete a {
         display: inline-block;
-        background-color: #f4623a;
+        background-color: #6c757d;
         color: white;
-        padding: 12px 25px;
-        font-size: 1.1rem;
+        padding: 14px 30px;
+        font-size: 1.2rem;
         text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s, transform 0.2s ease;
-        margin-top: 30px;
-        text-align: center;
+        border-radius: 8px;
+        margin-top: 40px;
+        transition: background-color 0.3s, transform 0.2s ease, box-shadow 0.3s;
     }
 
     .registration-complete a:hover {
-        background-color: #c34e2e;
+        background-color: #565e64;
         transform: translateY(-2px); /* ボタンが浮き上がる */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* ホバー時に影を追加 */
     }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 768px) {
+        .registration-complete {
+            padding: 20px;
+        }
+
+        .registration-complete h2 {
+            font-size: 2rem;
+        }
+
+        .registration-complete table {
+            margin-top: 20px;
+        }
+
+        .registration-complete th,
+        .registration-complete td {
+            padding: 12px;
+        }
+
+        .registration-complete a {
+            padding: 12px 25px;
+            font-size: 1rem;
+        }
+    }
+
 </style>
 
 <div class="registration-complete">
@@ -101,4 +132,5 @@
     </table>
     <a href="{% url 'accounts:index' %}">トップページに戻る</a>
 </div>
+
 {% endblock %}

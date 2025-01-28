@@ -53,6 +53,7 @@ class PetListView(ListView):
     model = Pet
     template_name = 'petapp/admin/pet_list.html'
     ordering = ['-id']  # 新しいペットを上に表示
+    paginate_by = 10  # 1ページあたり10件のペットを表示
 
 
 def save_image(image):
