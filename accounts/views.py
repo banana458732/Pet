@@ -351,7 +351,7 @@ def index(request):
     pets = Pet.objects.exclude(id__in=excluded_pet_ids).order_by('-id')  # id順で並べ替え（新しい順）
 
     # ページネーションの設定
-    paginator = Paginator(pets, 10)  # 10匹ずつ表示
+    paginator = Paginator(pets, 12)  # 10匹ずつ表示
     page_number = request.GET.get('page')  # クエリパラメータから現在のページ番号を取得
     page_obj = paginator.get_page(page_number)  # ページオブジェクトを取得
 
