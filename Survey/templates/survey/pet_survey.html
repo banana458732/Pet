@@ -14,12 +14,16 @@
                 ペットの種類 <span style="color: red;">(*必須)</span>
             </label>
             <div class="form-check">
+                <div class="form-check-test">
                 <input type="radio" name="pet_type" value="犬" id="pet_type_dog">
                 <label for="pet_type_dog">犬</label>
             </div>
+        </div>
             <div class="form-check">
+                <div class="form-check-test">
                 <input type="radio" name="pet_type" value="猫" id="pet_type_cat">
                 <label for="pet_type_cat">猫</label>
+            </div>
             </div>
             <div id="pet-type-error" style="display: none; color: red; margin-top: 10px;">
                 ペットの種類を選択してください。
@@ -99,6 +103,11 @@
 
 <!-- 追加CSS -->
 <style>
+    .form-check-test{
+        display: flex;
+        margin-bottom: 10px;
+        align-items: center;
+    }
     /* フォーム全体を中央寄せ */
     .survey-container {
         width: 50%;  /* 幅を調整してコンパクトに */

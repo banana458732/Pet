@@ -88,6 +88,18 @@
     {% include 'survey/pet_survey_sidebar.html' %}
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const messageElement = document.querySelector('h2'); // メッセージ部分を指定
+        if (messageElement) {
+            console.log("メッセージの要素が見つかりました:", messageElement.textContent);
+            console.log("現在のスタイル:", window.getComputedStyle(messageElement).display);
+        } else {
+            console.log("メッセージ要素が見つかりません。");
+        }
+    });
+</script>
+
 <style>
     .btn-primary {
         background-color: blue !important;
@@ -169,28 +181,19 @@
     }
 
     /* 小さい画面向けの調整 */
-    @media (max-width: 768px) {
+    @media (max-width: 500px) {
         .pet-info {
-            display: flex;
-            flex-direction: row; /* デフォルトの順番に戻す */
-            margin-bottom: 20px; /* 下に余白 */
-        }
-
-        .pet-image {
-            flex: 0 0 30%; /* 画像部分の幅を30%に設定 */
-            max-width: 30%; /* 画像がはみ出さないようにする */
+            flex-direction: column; /* 画像と詳細を縦並びにする */
+            align-items: center;
         }
 
         .pet-image img {
-            width: 100%; /* 画像を親要素にフィット */
-            height: auto; /* 高さを自動調整 */
-            border-radius: 10px; /* 角を丸くする */
+            width: 40%; /* 親要素の90%に収まるよう調整 */
+            height: auto;
         }
 
         .pet-details {
-            flex: 1; /* 残りのスペースを使用 */
-            text-align: left; /* テキストを左揃え */
-            margin-right: -15px; /* 画像との間に余白を追加 */
+            text-align: center; /* 中央揃えに変更 */
         }
     }
 </style>
