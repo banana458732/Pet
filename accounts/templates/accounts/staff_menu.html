@@ -1,4 +1,10 @@
+{% extends 'accounts/base_admin.html' %}
+
+{% block title %}管理者専用ページ{% endblock %}
+
+{% block contents %}
 <p>管理者専用のページです。</p>
+
 <style>
     .staff_button {
         font-size: 20px;
@@ -13,10 +19,7 @@
 
     .staff_button:hover {
         background-color: rgb(235, 224, 208);
-        color: rgb(41, 34, 200);
-    }
-    .staff_button:hover{
-        color:rgb(126, 126, 255);
+        color: rgb(126, 126, 255);
     }
 
     .button_menu {
@@ -28,7 +31,7 @@
 <p>あなたは管理者です。このページは管理者にしか使えません。</p>
 
 <div class="button_menu">
-    <a class="staff_button" href="{% url 'petapp:pet-list' %}">作成・更新・削除</a>
+    <a class="staff_button" href="{% url 'petapp:pet-list' %}">登録・更新・削除</a>
 </div>
 
 <div class="button_menu">
@@ -36,10 +39,11 @@
 </div>
 
 <div class="button_menu">
-    <!-- 新しいリンクを追加 -->
     <a class="staff_button" href="{% url 'accounts:completed_pets' %}">契約済みのペット</a>
 </div>
 
 {% else %}
-<p>あなたは管理者ではありません。</p>
+    <p>あなたは管理者ではありません。</p>
 {% endif %}
+
+{% endblock %}

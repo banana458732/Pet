@@ -10,24 +10,29 @@
 
         <!-- ペットの種類 -->
         <div class="form-group">
-            <label for="id_pet_type" style="font-size: 18px; font-weight: bold;">
+            <label for="id_pet_type" style="font-size: 20px; font-weight: bold;">
                 ペットの種類 <span style="color: red;">(*必須)</span>
             </label>
             <div class="form-check">
-                {{ form.pet_type }}
+                <div class="form-check-test">
+                <input type="radio" name="pet_type" value="犬" id="pet_type_dog">
+                <label for="pet_type_dog">犬</label>
             </div>
-            {% if form.pet_type.errors %}
-                <div class="alert alert-danger">
-                    {% for error in form.pet_type.errors %}
-                        <p>{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>     
+        </div>
+            <div class="form-check">
+                <div class="form-check-test">
+                <input type="radio" name="pet_type" value="猫" id="pet_type_cat">
+                <label for="pet_type_cat">猫</label>
+            </div>
+            </div>
+            <div id="pet-type-error" style="display: none; color: red; margin-top: 10px;">
+                ペットの種類を選択してください。
+            </div>
+        </div>        
 
         <!-- ペットのサイズ -->
         <div class="form-group">
-            <label for="id_size" style="font-size: 18px; font-weight: bold;">ペットのサイズ</label>
+            <label for="id_size" style="font-size: 20px; font-weight: bold;">ペットのサイズ</label>
             <div class="form-check">
                 {{ form.size }}
             </div>
@@ -35,25 +40,25 @@
 
         <!-- 色 -->
         <div class="form-group">
-            <label for="id_color" style="font-size: 18px; font-weight: bold;">色</label>
+            <label for="id_color" style="font-size: 20px; font-weight: bold;">色</label>
             {{ form.color }}
         </div>
 
         <!-- 種別 -->
         <div class="form-group">
-            <label for="id_kinds" style="font-size: 18px; font-weight: bold;">品種</label>
+            <label for="id_kinds" style="font-size: 20px; font-weight: bold;">品種</label>
             {{ form.kinds }}
         </div>
 
         <!-- 性格 -->
         <div class="form-group">
-            <label for="id_personality" style="font-size: 18px; font-weight: bold;">性格</label>
+            <label for="id_personality" style="font-size: 20px; font-weight: bold;">性格</label>
             {{ form.pet_personality }}
         </div>
 
         <!-- 性別 -->
         <div class="form-group">
-            <label for="id_sex" style="font-size: 18px; font-weight: bold;">性別</label>
+            <label for="id_sex" style="font-size: 20px; font-weight: bold;">性別</label>
             <div class="form-check">
                 {{ form.sex }}
             </div>
@@ -61,7 +66,7 @@
 
         <!-- 年齢範囲 -->
         <div class="form-group">
-            <label for="id_age_range" style="font-size: 18px; font-weight: bold;">希望するペットの年齢範囲</label>
+            <label for="id_age_range" style="font-size: 20px; font-weight: bold;">希望するペットの年齢範囲</label>
             <div class="form-check">
                 {{ form.age_range }}
             </div>
@@ -77,19 +82,19 @@
         const form = document.querySelector('form'); // フォーム全体
         const petTypeRadios = document.querySelectorAll('input[name="pet_type"]'); // ラジオボタン
         const petTypeError = document.getElementById('pet-type-error'); // エラーメッセージ要素
-    
+
         form.addEventListener('submit', function (event) {
-            // ラジオボタンが1つでもチェックされているか確認
             const isChecked = Array.from(petTypeRadios).some(radio => radio.checked);
-    
+
             if (!isChecked) {
-                // チェックされていなければエラーを表示して送信を中止
-                event.preventDefault();
-                petTypeError.style.display = 'block';
-                petTypeError.scrollIntoView({ behavior: 'smooth', block: 'center' }); // スムーズにスクロール
+                event.preventDefault(); // フォーム送信を止める
+                petTypeError.style.display = 'block'; // エラーを表示
+                petTypeError.textContent = "ペットの種類を選択してください。"; // エラー文を設定
+
+                // エラー箇所へスムーズにスクロール
+                petTypeError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
-                // チェックされていればエラーを非表示
-                petTypeError.style.display = 'none';
+                petTypeError.style.display = 'none'; // エラー非表示
             }
         });
     });
@@ -98,6 +103,11 @@
 
 <!-- 追加CSS -->
 <style>
+    .form-check-test{
+        display: flex;
+        margin-bottom: 10px;
+        align-items: center;
+    }
     /* フォーム全体を中央寄せ */
     .survey-container {
         width: 50%;  /* 幅を調整してコンパクトに */
@@ -105,7 +115,7 @@
     }
 
     .survey-title {
-        font-size: 24px;  /* タイトルを大きく */
+        font-size: 36px;  /* タイトルを大きく */
         font-weight: bold;
     }
 
@@ -124,12 +134,21 @@
         display: flex;
         flex-direction: column; /* ラジオボタンを縦並びに */
         margin-left: 15px;  /* ラジオボタンとラベルの間隔を少し広げる */
+        margin-left: -30px;
     }
 
     .form-check input[type="radio"] {
         height: 15px;
         width: 15px;
         margin-bottom: 5px;  /* ラジオボタン間の間隔 */
+    }
+
+    .form-check label {
+        display: inline-flex;  /* インラインのフレックスボックスでラベルを整列 */
+        align-items: center;  /* ラベルのテキストとラジオボタンを縦に揃える */
+        height: 18px;  /* ラベルの高さをラジオボタンの高さと一致させる */
+        margin-left: 10px;  /* ラベルとラジオボタンの間隔を調整 */
+        margin-bottom: 18px;  /* ラベルとラジオボタンの間隔を調整 */
     }
 
     .btn-primary {
@@ -146,6 +165,39 @@
     .btn-primary.d-block.mx-auto {
         width: 50%;  /* ボタンの幅をコンパクトに */
         margin-top: 20px;
+    }
+
+    input[type="radio"] {
+        margin-right: 5px; /* ラジオボタンとラベルの間隔 */
+    }
+
+    #pet_type_dog, #pet_type_cat {
+        margin-right: -7px; /* 必要に応じて間隔を調整 */
+        width: 14px;  /* ラジオボタンの幅 */
+        height: 14px; /* ラジオボタンの高さ */
+        vertical-align: middle; /* ラベルと縦に揃える */
+        margin-left: 10px;
+        margin-bottom: 8px; /* 下の余白を小さく設定 */
+    }
+
+    /* ラベルの間隔をさらに調整 */
+    #pet_type_dog + label, #pet_type_cat + label {
+        margin-top: 0;  /* 上の余白をリセット */
+        margin-bottom: 0; /* 下の余白をリセット */
+    }
+
+    @media (max-width: 768px) {
+        .survey-container {
+            padding: 10px; /* 余白を調整 */
+        }
+
+        .survey-title {
+            font-size: 1.5rem; /* タイトルを少し小さく */
+        }
+
+        .form-check label {
+            font-size: 0.9rem; /* ラベルのフォントサイズを小さく */
+        }
     }
 </style>
 

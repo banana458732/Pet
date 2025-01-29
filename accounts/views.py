@@ -218,7 +218,7 @@ class MyPageView(LoginRequiredMixin, TemplateView):
 
         # 仮契約中のペット情報を取得
         contract_pets = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')
-        
+
         # 契約済みのペット情報を取得
         completed_pets = Karikeiyaku.objects.filter(user=user, status='契約済み').select_related('pet')
 
@@ -398,15 +398,23 @@ class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'accounts/login.html'
 
 
+from django.core.paginator import Paginator
+
 def index(request):
     # 仮契約中および契約済みのペットIDを取得
     excluded_pet_ids = Karikeiyaku.objects.filter(status__in=['仮契約中', '仮契約済', '契約済み']).values_list('pet_id', flat=True)
 
-    # 除外されたペットを除いた一覧を取得
-    pets = Pet.objects.exclude(id__in=excluded_pet_ids)
-    
+    # 除外されたペットを除いた一覧を取得し、id順で並べ替え
+    pets = Pet.objects.exclude(id__in=excluded_pet_ids).order_by('-id')  # id順で並べ替え（新しい順）
+
+    # ページネーションの設定
+    paginator = Paginator(pets, 12)  # 10匹ずつ表示
+    page_number = request.GET.get('page')  # クエリパラメータから現在のページ番号を取得
+    page_obj = paginator.get_page(page_number)  # ページオブジェクトを取得
+
     # デバッグ用のログ出力
     print(f"Excluded Pet IDs: {list(excluded_pet_ids)}")
     print(f"Remaining Pets: {pets}")
 
-    return render(request, 'accounts/index.html', {'pets': pets})
+    return render(request, 'accounts/index.html', {'page_obj': page_obj})
+

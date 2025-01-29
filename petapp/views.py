@@ -48,14 +48,12 @@ def write_csv(data):
     data.to_csv(CSV_FILE_PATH, index=False)
 
 
+# ペットリストのビュー
 class PetListView(ListView):
     model = Pet
-    template_name = 'petapp/pet_list.html'
-    context_object_name = 'object_list'
-    paginate_by = 10
-
-    def get_queryset(self):
-        return Pet.objects.all().order_by('id')  # idで並べる
+    template_name = 'petapp/admin/pet_list.html'
+    ordering = ['-id']  # 新しいペットを上に表示
+    paginate_by = 12  # 1ページあたり10件のペットを表示
 
 
 def save_image(image):
@@ -81,7 +79,6 @@ def read_csv():
 # CSVファイルへの書き込み
 def write_csv(data):
     data.to_csv(csv_file_path, index=False)
-    print(data.head())
 
 
 # ペット新規作成ビュー
@@ -105,6 +102,7 @@ def pet_create_view(request):
                 # トランザクション開始
                 with transaction.atomic():
                     pet = pet_form.save()  # ペット情報を保存
+                    pet_id = pet.id
 
                     # 画像保存処理
                     photo_uploaded = False
@@ -140,7 +138,6 @@ def pet_create_view(request):
                         PhoneNumber.objects.create(pet=pet, number=phone_number)
 
                     # ペットのIDを確認した後にCSVにデータを追加
-                    pet_id = pet.id
                     new_pet_data = {
                         'id': pet_id,  # 保存後に確定するIDを使用
                         'type': pet.type,
@@ -154,18 +151,16 @@ def pet_create_view(request):
                         'post_code': pet.post_code,
                         'address': pet.address,
                         'phone_number': pet.phone_number,
-                        'location ': pet.location,
+                        'location': pet.location,
                         'image_urls': ', '.join(image_urls)  # 画像URLをカンマ区切りで保存
                     }
 
                     # 新しいペットがCSVに存在しない場合は追加
-                    if pet_id not in data['id'].values:
+                    if int(pet_id) not in data['id'].astype(int).values:
                         data = pd.concat([data, pd.DataFrame([new_pet_data])], ignore_index=True)
                         write_csv(data)
 
-                    # 作成完了後、完了ページにリダイレクト
                     return redirect('petapp:pet-create-comp', pet_id=pet.id)
-
             except ValidationError as e:
                 error_messages.append(f"Validation error: {str(e)}")
                 # トランザクションがロールバックされると、何もデータベースに保存されません
@@ -228,17 +223,12 @@ def pet_update_view(request, pet_id):
         image_formset = PetImageFormSet(request.POST, request.FILES, queryset=existing_images)
 
         errors = False
-        updated_images = []
-        deleted_images = []
-        added_images = []
+        updated_images = []  # 変更された画像URLを格納するリスト
+        deleted_images = []  # 削除された画像URLを格納するリスト
+        added_images = []  # 新規追加された画像URLを格納するリスト
         error_message = None
 
         logger = logging.getLogger(__name__)
-
-        # 追加された画像のリストをログに記録
-        logger.debug(f"Added images: {added_images}")
-        # 削除された画像のリストをログに記録
-        logger.debug(f"Deleted images: {deleted_images}")
 
         if pet_form.is_valid() and image_formset.is_valid():
             # 削除後に残る画像数を計算
@@ -307,38 +297,43 @@ def pet_update_view(request, pet_id):
                                 pet_image.save()
                                 added_images.append(pet_image.image.url)  # 新規追加された画像をリストに追加
 
-                    data = read_csv()  # CSVファイルのデータを読み込む
-                    for index, row in data.iterrows():
-                        if row['id'] == pet.id:
-                            # 新しい画像URLリストを作成
-                            existing_image_urls = [
-                                image.image.url for image in existing_images
-                                if image.image and image.pk not in [img.instance.pk for img in image_formset if img.cleaned_data.get('DELETE', False)]
-                            ]
-                            final_image_urls = list(dict.fromkeys(existing_image_urls + added_images))  # 重複排除
+                    try:
+                        data = read_csv()  # CSVファイルのデータを読み込む
+                        for index, row in data.iterrows():
+                            if row['id'] == pet.id:
+                                # 新しい画像URLリストを作成
+                                existing_image_urls = [
+                                    image.image.url for image in existing_images
+                                    if image.image and image.pk not in [img.instance.pk for img in image_formset if img.cleaned_data.get('DELETE', False)]
+                                ]
+                                final_image_urls = list(dict.fromkeys(existing_image_urls + added_images))  # 重複排除
 
-                            # 行データを更新
-                            data.at[index, 'type'] = pet.type
-                            data.at[index, 'size'] = pet.size
-                            data.at[index, 'color'] = pet.color
-                            data.at[index, 'age'] = pet.age
-                            data.at[index, 'kinds'] = pet.kinds
-                            data.at[index, 'disease'] = pet.disease
-                            data.at[index, 'personality'] = pet.personality
-                            data.at[index, 'sex'] = pet.sex
-                            data['post_code'] = data['post_code'].astype(str)
-                            data.at[index, 'address'] = pet.address
-                            data['phone_number'] = data['phone_number'].astype(str)
-                            data.at[index, 'location'] = pet.location
-                            data.at[index, 'image_urls'] = ', '.join(final_image_urls)
+                                # 行データを更新
+                                data.at[index, 'type'] = pet.type
+                                data.at[index, 'size'] = pet.size
+                                data.at[index, 'color'] = pet.color
+                                data.at[index, 'age'] = pet.age
+                                data.at[index, 'kinds'] = pet.kinds
+                                data.at[index, 'disease'] = str(pet.disease) if pet.disease else ''
+                                data.at[index, 'personality'] = pet.personality
+                                data.at[index, 'sex'] = pet.sex
+                                data.at[index, 'post_code'] = str(int(pet.post_code)) if pet.post_code.isdigit() else pet.post_code
+                                data.at[index, 'address'] = pet.address
+                                data.at[index, 'phone_number'] = str(int(pet.phone_number)) if pet.phone_number.isdigit() else pet.phone_number
+                                data.at[index, 'location'] = pet.location
+                                data.at[index, 'image_urls'] = ', '.join(final_image_urls)
 
-                            break
+                                break
 
-                    write_csv(data)  # CSVに書き込み
+                        write_csv(data)  # CSVに書き込み
+                    except Exception as e:
+                        logger.error(f"CSVの書き込みに失敗しました: {e}")
+                        raise e
 
                     # セッションに変更内容を保存
                     request.session['updated_fields'] = updated_fields
                     request.session['added_images'] = added_images
+                    request.session['updated_images'] = updated_images  # 更新された画像をセッションに保存
                     request.session['deleted_images'] = deleted_images
                     request.session.modified = True
 
@@ -369,6 +364,9 @@ def pet_update_comp_view(request, pet_id):
 
     # セッションから更新されたフィールドを取得し、取得後に削除
     updated_fields = request.session.pop('updated_fields', [])
+    added_images = request.session.pop('added_images', [])
+    updated_images = request.session.pop('updated_images', [])
+    deleted_images = request.session.pop('deleted_images', [])
 
     # ラベル変換辞書
     field_labels = {
@@ -393,21 +391,20 @@ def pet_update_comp_view(request, pet_id):
         localized_field_name = field_labels.get(field_name, field_name)  # 日本語ラベルに変換
         localized_updated_fields.append(f"{localized_field_name}: {changes}")
 
-    # セッションから画像関連のデータを取得
-    updated_images = request.session.get('added_images', [])
-    deleted_images = request.session.get('deleted_images', [])
+    # 完了画面でのメッセージ表示の準備
+    messages = []
 
-    logger = logging.getLogger(__name__)
-
-    # ログでセッションデータの確認
-    logger.debug(f"Updated images in session: {updated_images}")
-    logger.debug(f"Deleted images in session: {deleted_images}")
+    if added_images:
+        messages.append("新しい画像が追加されました。")
+    if updated_images:
+        messages.append("画像が更新されました。")
+    if deleted_images:
+        messages.append("画像が削除されました。")
 
     return render(request, 'petapp/pet_update_comp.html', {
         'pet': pet,
         'updated_fields': localized_updated_fields,  # 日本語ラベルのフィールドを渡す
-        'updated_images': updated_images,  # 更新された画像の情報を渡す
-        'deleted_images': deleted_images,  # 削除された画像の情報を渡す
+        'messages': messages,  # メッセージリストを渡す
     })
 
 

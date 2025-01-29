@@ -92,11 +92,8 @@
         });
     });
 </script>
-        
 
-<!-- 追加CSS -->
-<!-- 追加CSS -->
-<!-- 追加CSS -->
+
 <!-- 追加CSS -->
 <style>
     /* サイドバーのデザインを改善 */
@@ -173,6 +170,42 @@
     .btn-primary.d-block.mx-auto {
         width: 60%;  /* ボタンの幅を調整 */
         margin-top: 30px;  /* ボタンの上にスペースを追加 */
+    }
+
+    /* 小さい画面向けの調整 */
+    @media (max-width: 768px) {
+        /* サイドバーがヘッダーの下に来るように */
+        .survey-container {
+            width: 90%;  /* 幅を少し広げる */
+            margin: 20px auto;  /* 上に少しスペースを追加 */
+            margin-top: 120px; /* ヘッダーがある場合、サイドバーを下にずらす */
+        }
+
+        /* タイトルとフォームの間隔調整 */
+        .survey-title {
+            font-size: 20px;  /* フォントサイズを小さく */
+            text-align: center;  /* タイトルを中央揃え */
+        }
+
+        /* ラベルと入力フィールドの間隔調整 */
+        .form-group {
+            margin-bottom: 12px;  /* 間隔を少し縮める */
+        }
+
+        /* ラジオボタンを中央寄せに調整 */
+        .form-check {
+            margin-left: 0;  /* ラジオボタンを中央寄せ */
+            align-items: center;  /* ラジオボタンとラベルを中央揃え */
+        }
+
+        .form-check label {
+            margin-left: 5px;  /* ラベルを少し左に寄せる */
+        }
+
+        /* ボタンのサイズ調整 */
+        .btn-primary.d-block.mx-auto {
+            width: 80%;  /* ボタンの幅を広げる */
+        }
     }
 </style>
 

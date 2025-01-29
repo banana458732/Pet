@@ -1,4 +1,8 @@
+{% extends 'accounts/base_admin.html' %}
 
+{% block title %}契約済み一覧{% endblock %}
+
+{% block contents %}
 <h1>契約済みのペット</h1>
 
 <div>
@@ -25,3 +29,8 @@
     </ul>    
 </div>
 
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">スタッフメニューに戻る</a>
+</div>
+
+{% endblock %}

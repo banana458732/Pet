@@ -3,7 +3,6 @@
 
 {% block title %}お問い合わせ{% endblock %}
 
-
 {% block contents %}
 
 <style>
@@ -20,6 +19,8 @@
         background-color: #f9f9f9;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+
     }
 
     /* フォームのラベルと入力のスタイル */
@@ -52,11 +53,11 @@
         margin-top: 5px;
     }
 
-    /* ボタンのスタイル */
+    /* 送信ボタンのスタイル（青色） */
     .inquiry-form button.btn-submit {
         width: 100%;
         padding: 10px;
-        background-color: #4CAF50;
+        background-color: #007bff; /* 青色 */
         color: white;
         border: none;
         border-radius: 4px;
@@ -66,7 +67,7 @@
     }
 
     .inquiry-form button.btn-submit:hover {
-        background-color: #45a049;
+        background-color: #0056b3; /* ホバー時の色 */
     }
 
     /* 戻るボタン */
@@ -99,6 +100,11 @@
         display: flex;
         justify-content: flex-end;
         margin-top: 20px;
+    }
+
+    /* textareaの大きさ変更を無効化 */
+    .inquiry-form textarea {
+        resize: none;
     }
 
     /* レスポンシブ対応 */
@@ -145,7 +151,6 @@
 <section class="page-section" id="contact">
     <div class="container px-4 px-lg-5">
         <h2 class="text-center mt-0">お問い合わせ</h2>
-        <hr class="divider" />
 
         <form method="post" class="inquiry-form">
             {% csrf_token %}
@@ -172,9 +177,10 @@
             {% endif %}
 
             <div class="d-flex justify-content-center mt-3">
-                <button type="submit" class="btn btn-primary">送信</button>
+                <button type="submit" class="btn btn-primary btn-submit">送信</button>
             </div>
         </form>
     </div>
 </section>
+
 {% endblock %}
