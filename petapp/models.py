@@ -72,6 +72,19 @@ class Pet(models.Model):
         verbose_name="保護場所",
         default=''
     )
+    # 緯度経度
+    latitude = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name="緯度",
+    )
+    longitude = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        verbose_name="経度",
+    )
 
     # 保存前に小数点とハイフンを取り除く
     def save(self, *args, **kwargs):
