@@ -35,17 +35,17 @@ from django.core.paginator import Paginator
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
-    # セッションからフォームデータを復元
-    if 'form_data' in request.session:
-        form_data = request.session['form_data']
-        form = SimplePetSurveyForm(form_data)
-
-    # CSVファイルの読み込み
-    try:
-        pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')
-        pets_data = pets_data.fillna('')  # NaNを空文字に置換
-    except Exception as e:
-        return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
+    # セッションからフォームデータと検索結果を復元
+    pets_data = None
+    if 'pets_data' in request.session:
+        pets_data = pd.DataFrame(request.session['pets_data'])  # DataFrameに変換
+    else:
+        # CSVファイルの読み込み
+        try:
+            pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')
+            pets_data = pets_data.fillna('')  # NaNを空文字に置換
+        except Exception as e:
+            return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
 
     # 必要な列をひらがなに変換
     pets_data['hiragana_personality'] = pets_data['personality'].apply(to_hiragana)
@@ -129,19 +129,11 @@ def pet_survey(request):
                 latest_pets = pets_data.head(3)
             else:
                 latest_pets = pets_with_score
-            
-            # もし latest_pets が pandas DataFrame なら
-            if isinstance(latest_pets, pd.DataFrame):
-                # DataFrame をリスト形式に変換してセッションに保存
-                request.session['pets_data'] = latest_pets.to_dict('records')
-            # もし latest_pets が すでにリスト型 なら
-            elif isinstance(latest_pets, list):
-                # リストをそのままセッションに保存
-                request.session['pets_data'] = latest_pets
-            else:
-                # それ以外の場合（DataFrameでもリストでもない）
-                request.session['pets_data'] = []  # 空のリストとして保存
+        
+        # 検索結果をセッションに保存
+        request.session['pets_data'] = pets_data.to_dict('records')
 
+    if pets_data is not None and not pets_data.empty:
         # ページネーション
         paginator = Paginator(latest_pets, 10)  # 1ページに表示する件数
         page_number = request.GET.get('page')  # URLからページ番号を取得
@@ -153,9 +145,6 @@ def pet_survey(request):
             image_urls = pet.get('image_urls', '')
             first_image = image_urls.split(',')[0] if image_urls else None
             pets_with_images.append((pet, first_image))
-
-        # セッションに検索条件を保存してフォームデータを引き継ぐ
-        request.session['form_data'] = form.cleaned_data
 
         return render(request, 'survey/results.html', {
             'form': form,
@@ -170,13 +159,35 @@ def pet_survey(request):
 
 
 def results(request):
-    # セッションからフォームデータを取得
+    # セッションからフォームデータと検索結果を取得
     form_data = request.session.get('form_data', None)
+    pets_data = request.session.get('pets_data', None)
 
-    # フォームデータがある場合、フォームを再表示
-    if form_data:
-        form = SimplePetSurveyForm(form_data)  # ここはそのままにしておく
-    else:
-        form = SimplePetSurveyForm()  # フォームを初期化して表示
+    # フォームデータがある場合、フォームを復元
+    form = SimplePetSurveyForm(form_data) if form_data else SimplePetSurveyForm()
 
-    return render(request, 'survey/results.html', {'form': form})
+    # 検索結果がない場合でもページネーションを表示させるために空のリストを渡す
+    if not pets_data:
+        pets_data = []  # 空のリストを渡すことで、ページネーションリンクが表示されるようにする
+
+    # ページネーション処理 (1ページ10件)
+    paginator = Paginator(pets_data, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # 最後のページが表示されない場合を考慮して、ページネーションのリンクを調整
+    if page_obj.number == paginator.num_pages:
+        page_obj.has_next = False  # 最後のページでは次ページリンクが出ないように
+
+    # 画像処理 (最初の画像を取得)
+    pets_with_images = []
+    for pet in page_obj.object_list:
+        image_urls = pet.get('image_urls', '')
+        first_image = image_urls.split(',')[0] if image_urls else None
+        pets_with_images.append((pet, first_image))
+
+    return render(request, 'survey/results.html', {
+        'form': form,
+        'pets': pets_with_images,
+        'page_obj': page_obj,
+    })

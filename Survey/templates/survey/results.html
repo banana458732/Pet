@@ -32,26 +32,26 @@
     <div class="pagination" style="text-align: center; margin-top: 20px;">
         <span class="step-links">
             {% if page_obj.has_previous %}
-                <a href="{% url 'survey:results' %}?page=1&{{ request.GET.urlencode }}" class="pagination-link">&laquo; 最初</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="pagination-link">前</a>
+                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
             {% else %}
-                <span>最初</span>
-                <span>前</span>
+                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
+                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
             {% endif %}
-
+    
             <span class="current">
                 ページ <span class="current-page">{{ page_obj.number }}</span> / {{ page_obj.paginator.num_pages }}
             </span>
-
+    
             {% if page_obj.has_next %}
-                <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="pagination-link">次</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}" class="pagination-link">最後 &raquo;</a>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
             {% else %}
-                <span>次</span>
-                <span>最後</span>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
             {% endif %}
         </span>
-    </div>
+    </div>              
 
 {% elif latest_pets %}
     <!-- 追加条件が一致しない場合（最新の3匹を表示） -->
