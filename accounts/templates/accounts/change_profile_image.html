@@ -99,6 +99,29 @@
     color: #565e64; /* 濃いグレー */
     text-decoration: underline;
   }
+  .form-group.inline {
+    display: flex;
+    align-items: center; /* 垂直方向を揃える */
+    gap: 10px; /* ラベルとチェックボックスの間隔を調整 */
+    flex-wrap: nowrap; /* 改行を防ぐ */
+  }
+
+  .form-group.inline label {
+    white-space: nowrap; /* テキストの改行を防ぐ */
+    margin: 0; /* 不要な余白をリセット */
+    font-size: 18px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column; /* 縦方向に要素を並べる */
+    align-items: start; /* 左揃えにする */
+    gap: 5px; /* ラベルとチェックボックスの間に余白を追加 */
+  }
+
+  .form-group label {
+    font-size: 14px; /* ラベルの文字サイズを調整（お好みで） */
+    margin-bottom: 5px; /* チェックボックスとの間隔を調整 */
+  }
 </style>
 
 <div class="profile-container">
@@ -140,6 +163,10 @@
           {{ user_form.street_address }}
         </div>
         <div class="form-group">
+          <label for="address2">建物名</label>
+          {{ user_form.address2 }}
+        </div>
+        <div class="form-group">
           <label for="id_phone_number">電話番号</label>
           {{ user_form.phone_number }}
         </div>
@@ -149,10 +176,10 @@
         <div class="form-group">
           {{ profile_form.profile_image }}
         </div>
-        <div class="form-group">
+        <div class="form-group inline">
           <label for="id_delete_image">画像を削除</label>
           {{ profile_form.delete_image }}
-        </div>
+        </div>            
 
         <button type="submit">変更を保存</button>
       </form>

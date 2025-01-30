@@ -10,7 +10,6 @@
     }
 
     /* 全体のフォームのスタイル */
-    /* 全体のフォームのスタイル */
 .pet-form {
     width: 100%;
     max-width: 600px;
@@ -48,15 +47,22 @@
     .pet-form .error-list {
         color: red;
         font-size: 0.9em;
+        text-align: left!important;
+        padding-left: 27px;  /* 左側に隙間を追加 */
     }
 
     .pet-form .error {
         margin-top: 5px;
     }
 
+/* 登録ボタンを中央に配置 */
+.button-bun {
+    text-align: center;
+}
+
     /* 登録ボタンのスタイル */
-    .pet-form button.btn-submit {
-        width: 100%;
+    .button-bun .btn-submit {
+        width: 50%;
         padding: 10px;
         background-color: #007BFF;
         color: white;
@@ -67,14 +73,15 @@
         margin-top: 20px;
     }
 
-    .pet-form button.btn-submit:hover {
+    /* ホバー時の色変更 */
+    .button-bun .btn-submit:hover {
         background-color: #0056b3;
     }
 
     /* 戻るボタン全体の配置 */
     .return-button-wrapper {
         display: flex;
-        justify-content: flex-end; /* 戻るボタンを右寄せ */
+        justify-content: flex-start; /* 戻るボタンを右寄せ */
         width: 100%;
         margin-top: 20px; /* 間隔を調整 */
     }
@@ -98,7 +105,7 @@
 
 <h2>新しい犬・猫の登録</h2>
 
-<form method="POST" enctype="multipart/form-data" class="pet-form">
+<form method="POST" enctype="multipart/form-data" class="pet-form" novalidate>
     {% csrf_token %}
     {{ form.non_field_errors }}
 
@@ -263,12 +270,13 @@
         {{ photo_formset.management_form }}
         {% for form in photo_formset %}
             <div class="form-group">
-                <!-- ラベルをカスタマイズ -->
-                <label for="{{ form.image.id_for_label }}">写真</label> 
-                {{ form.image }}  <!-- フォームフィールド -->
-                {% if form.image.errors %}
+                <label for="{{ form.image.id_for_label }}">写真</label>
+                {{ form.image }}
+    
+                <!-- フォームエラーを表示 -->
+                {% if form.errors %}
                     <div class="error">
-                        {% for error in form.image.errors %}
+                        {% for error in form.errors %}
                             <p>{{ error }}</p>
                         {% endfor %}
                     </div>
@@ -276,8 +284,9 @@
             </div>
         {% endfor %}
     </div>
-
-    <button type="submit" class="btn-submit">登録</button>
+    <div class="button-bun">
+        <button type="submit" class="btn-submit">登録</button>
+    </div>
 
     <div class="return-button-wrapper">
         <button type="button" class="return-button" onclick="history.back()">戻る</button>

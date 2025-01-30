@@ -11,19 +11,41 @@ class PetCreateForm(forms.ModelForm):
         fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
                   'personality', 'sex', 'phone_number', 'post_code', 'address', 'location']
 
+        # フィールドごとのエラーメッセージを設定
+        error_messages = {
+            'phone_number': {
+                'invalid': '電話番号は10桁または11桁の数字でなければなりません。',
+            },
+            'post_code': {
+                'invalid': '郵便番号は7桁の数字でなければなりません。',
+            },
+        }
+
     def clean_post_code(self):
         post_code = self.cleaned_data['post_code']
-        # ここでハイフンを除去した後、文字列型として返す
-        return str(post_code).replace("-", "")
+        # 郵便番号のバリデーション
+        if not post_code.isdigit() or len(post_code) != 7:
+            raise ValidationError('郵便番号は7桁の数字でなければなりません。')
+        return post_code
 
     def clean_phone_number(self):
         phone_number = self.cleaned_data['phone_number']
-        # 同様に電話番号も文字列として処理
-        return str(phone_number).replace("-", "")
+        # 電話番号のバリデーション
+        if not phone_number.isdigit() or len(phone_number) not in [10, 11]:
+            raise ValidationError('電話番号は10桁または11桁の数字でなければなりません。')
+        return phone_number
+
+    def clean_age(self):
+        age = self.cleaned_data['age']
+        # 年齢が整数かどうかの確認
+        if age is not None and (age < 0 or age > 10):
+            raise ValidationError('年齢は0から10歳の間でなければなりません。')
+        return age
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        print(self.fields)  # フィールド全体を出力して確認
+        # フィールドのカスタマイズ（例: エラーメッセージの設定や順序の変更）
+        # print(self.fields)  # フィールドを確認したい場合に使用
 
 
 class PetImageForm(forms.ModelForm):
@@ -40,6 +62,7 @@ class PetImageForm(forms.ModelForm):
 class RequiredPetImageFormSet(modelformset_factory(PetImage, form=PetImageForm, extra=5)):
     def clean(self):
         super().clean()
+
         # 少なくとも1つの画像がアップロードされているかチェック
         if not any(form.cleaned_data.get('image') for form in self.forms if form.cleaned_data):
             raise ValidationError("少なくとも1つの画像をアップロードしてください。")
@@ -71,6 +94,16 @@ class PetUpdateForm(forms.ModelForm):
         fields = ['type', 'size', 'color', 'age', 'kinds', 'disease',
                   'personality', 'sex', 'phone_number', 'post_code', 'address', 'location']
 
+        # フィールドごとのエラーメッセージを設定
+        error_messages = {
+            'phone_number': {
+                'invalid': '電話番号は10桁または11桁の数字でなければなりません。',
+            },
+            'post_code': {
+                'invalid': '郵便番号は7桁の数字でなければなりません。',
+            },
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -95,15 +128,15 @@ class PetUpdateForm(forms.ModelForm):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)  # idは非必須でHiddenInputにする
     type = forms.ChoiceField(choices=TYPE_CHOICES, label='種類', disabled=True)
     size = forms.ChoiceField(choices=SIZE_CHOICES, label='サイズ')
-    color = forms.CharField(max_length=100, label='毛の色')
-    age = forms.IntegerField(min_value=0, max_value=10, label='年齢')
-    kinds = forms.CharField(max_length=100, label='品種')
+    color = forms.CharField(max_length=100, label='色', required=True)
+    age = forms.IntegerField(min_value=0, max_value=10, label='年齢', required=True)
+    kinds = forms.CharField(max_length=100, label='品種', required=True)
     disease = forms.CharField(max_length=100, label='病歴', required=False)
-    personality = forms.CharField(max_length=100, label='性格', required=False)
+    personality = forms.CharField(max_length=100, label='性格', required=True)
     sex = forms.CharField(label='性別', required=False, disabled=True)
-    phone_number = forms.CharField(max_length=11, label='電話番号', required=False)
-    post_code = forms.CharField(max_length=7, label='郵便番号', required=False)  # 郵便番号を入力
-    address = forms.CharField(max_length=255, label='住所', required=False)  # 住所を入力
+    phone_number = forms.CharField(max_length=11, label='電話番号', required=True)
+    post_code = forms.CharField(max_length=7, label='郵便番号', required=True)  # 郵便番号を入力
+    address = forms.CharField(max_length=255, label='住所', required=True)  # 住所を入力
     location = forms.CharField(max_length=255, label='保護場所', required=True)  # 保護場所を入力
 
     # clean_phone_number メソッドを追加
@@ -111,6 +144,8 @@ class PetUpdateForm(forms.ModelForm):
         phone_number = self.cleaned_data.get('phone_number', '')
         # 小数点が含まれていた場合は削除
         phone_number = phone_number.replace('.', '').replace('-', '')
+        if not phone_number.isdigit() or len(phone_number) not in [10, 11]:
+            raise forms.ValidationError('電話番号は10桁または11桁の数字でなければなりません。')
         return phone_number
 
     # clean_post_code メソッドを追加
@@ -118,6 +153,8 @@ class PetUpdateForm(forms.ModelForm):
         post_code = self.cleaned_data.get('post_code', '')
         # 小数点が含まれていた場合は削除
         post_code = post_code.replace('.', '')
+        if not post_code.isdigit() or len(post_code) != 7:
+            raise forms.ValidationError('郵便番号は7桁の数字でなければなりません。')
         return post_code
 
 

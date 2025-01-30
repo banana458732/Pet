@@ -1,126 +1,239 @@
-{% extends 'accounts/base.html' %}
-{% block title %}契約者{% endblock %}
+{% extends 'accounts/base_admin.html' %}
+
+{% block title %}仮契約ペット詳細{% endblock %}
 
 {% block contents %}
 
-
 <style>
-    .pet-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* カード間のスペース */
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        justify-content: center; /* 中央揃え */
+    h3 {
+        text-align: center;
+        margin-top: 10px;
     }
 
-    .pet-item {
-        flex: 1 1 calc(25% - 20px); /* 4列分の幅 (大画面時) */
-        max-width: calc(25% - 20px); /* 最大幅を4列分に調整 */
-        background-color: #f9f9f9;
+    p {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 25px;
+    }
+
+    .contractor-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #ffffff;
         border: 1px solid #ddd;
         border-radius: 8px;
-        padding: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .contractor-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .contractor-details img {
+        width: 250px;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    .contractor-info-table,
+    .pet-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .contractor-info-table th,
+    .contractor-info-table td,
+    .pet-info-table th,
+    .pet-info-table td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    /* ペット情報テーブル */
+    .pet-info-table th {
+        background-color: #f9f9f9;
+        width: 30%; /* 見出しの幅 */
+    }
+
+    .pet-info-table td {
+        width: 70%; /* 内容部分の幅 */
+    }
+
+    /* 契約者情報テーブル */
+    .contractor-info-table th {
+        background-color: #f5f5f5;
+        width: 30%; /* 見出しの幅 */
+    }
+
+    .contractor-info-table td {
+        width: 70%; /* 内容部分の幅 */
+    }
+
+    .contract-status {
+        margin-bottom: 20px;
         text-align: center;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .pet-item h3 {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
+    .contract-status h2 {
+        margin-bottom: 15px;
+        color: black;
+        margin-top: 20px;
     }
 
-    .pet-item img {
-        width: 200px;  /* 画像の幅を200pxに設定 */
-        height: 200px; /* 画像の高さを200pxに設定 */
-        object-fit: cover;  /* 画像を枠にフィットさせ、余白を切り取る */
-        margin-bottom: 15px; /* 画像とリンクとの間にスペースを追加 */
+    .pet-info h2 {
+        margin-bottom: 15px;
+        color: black;
+        text-align: center;
+        margin-top: 20px;
     }
 
-    .pet-item .btn {
-        display: inline-block;
-        padding: 8px 15px;
-        background-color: #007BFF;
-        color: #fff;
+    /* 契約完了ボタンのスタイル */
+    button[name="complete_contract"] {
+        padding: 10px 20px;  /* ボタンの縦横サイズを調整 */
+        background-color: #007bff; /* 青色の背景 */
+        color: white; /* 文字色を白に */
+        border: none; /* ボーダーなし */
+        border-radius: 4px; /* 角丸 */
+        font-size: 18px; /* フォントサイズを大きく */
+        cursor: pointer; /* ポインターを表示 */
+        width: 50%; /* 横幅を100%にして親要素の幅に合わせる */
+        box-sizing: border-box; /* パディングを含めて幅を調整 */
+        margin-top: 20px;
+    }
+
+    button[name="complete_contract"]:hover,
+    button[name="complete_contract"]:focus,
+    button[name="complete_contract"]:active {
+        background-color: #0056b3 !important; /* ホバー時・クリック時の色を統一 */
+        color: white !important;
+        border: none !important;
+    }
+
+
+
+    .return-button-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .return-button {
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
         border: none;
         border-radius: 4px;
-        text-decoration: none;
-        font-size: 0.9rem;
+        font-size: 16px;
         cursor: pointer;
-        transition: background-color 0.3s;
     }
 
-    .pet-item .btn:hover {
-        background-color: #0056b3;
+    .return-button:hover {
+        background-color: #5a6268;
     }
 
-    .add-pet {
-        display: block;
-        width: fit-content;
-        margin: 20px auto;
-        padding: 15px 30px; /* ボタンを大きくする */
-        background-color: #8B4513; /* 茶色に変更 */
-        color: #fff;
-        text-decoration: none;
-        border-radius: 8px; /* ボタンの角を丸くする */
-        font-size: 1.2rem; /* フォントサイズを大きくする */
-        text-align: center;
-        transition: background-color 0.3s;
-    }
-
-    .add-pet:hover {
-        background-color: #5E3210; /* ダークブラウンに変更 */
-    }
-
-    /* 小画面時のスタイル調整 */
-    @media (max-width: 768px) {
-        .pet-item {
-            flex: 1 1 calc(50% - 20px); /* 2列分の幅 */
-            max-width: calc(50% - 20px);
-        }
-    }
-
-    @media (max-width: 480px) {
-        .pet-item {
-            flex: 1 1 100%; /* 1列表示 */
-            max-width: 100%;
-        }
+    .no-image {
+        font-size: 1rem;
+        color: #999;
     }
 </style>
 
-<h2>仮契約ペット詳細</h2>
+<div class="contractor-container">
+    <div class="contractor-details">
+        {% if pet.images.first %}
+            <img src="{{ pet.images.first.image.url }}" alt="{{ pet.name }}の画像">
+        {% else %}
+            <p class="no-image">画像が登録されていません</p>
+        {% endif %}
+    </div>
 
-<div class="contractor">
     <h3>ID-{{ pet.id }}</h3>
-    {% if pet.images.first %}
-        <img src="{{ pet.images.first.image.url }}" alt="{{ pet.name }}の画像">
-    {% else %}
-        <p>画像が登録されていません</p>
-    {% endif %}
-    <p>種類: {{ pet.kinds }}</p>
-    <p>年齢: {{ pet.age }}歳</p>
+
+    <!-- ペット情報 -->
+    <div class="pet-info">
+        <h2>ペット情報</h2>
+        <table class="pet-info-table">
+            <tr>
+                <th>郵便番号</th>
+                <td>{{ pet.post_code }}</td>
+            </tr>
+            <tr>
+                <th>住所</th>
+                <td>{{ pet.address }}</td>
+            </tr>
+            <tr>
+                <th>電話番号</th>
+                <td>{{ pet.phone_number }}</td>
+            </tr>
+            <tr>
+                <th>保護場所</th>
+                <td>{{ pet.location }}</td>
+            </tr>
+        </table>
+    </div>
 
     {% if karikeiyaku %}
-        <h4>契約者情報</h4>
-        <p>契約者: {{ karikeiyaku.user.username }}</p>
-        <p>契約開始日: {{ karikeiyaku.created_at }}</p>
-        <p>契約終了日: {{ karikeiyaku.end_date }}</p>
-        <p>契約状態: {{ karikeiyaku.status }}</p>
-        {% else %}
-            <p>仮契約情報がありません。</p>
+        <div class="contract-status">
+            <h2>契約者情報</h2>
+            <table class="contractor-info-table">
+                <tr>
+                    <th>契約者</th>
+                    <td>{{ karikeiyaku.user.username }}</td>
+                </tr>
+                <tr>
+                    <th>メールアドレス</th>
+                    <td>{{ karikeiyaku.user.email }}</td>
+                </tr>
+                <tr>
+                    <th>電話番号</th>
+                    <td>{{ karikeiyaku.user.phone_number }}</td>
+                </tr>
+                <tr>
+                    <th>郵便番号</th>
+                    <td>{{ karikeiyaku.user.post_code }}</td>
+                </tr>
+                <tr>
+                    <th>都道府県 市区町村</th>
+                    <td>{{ karikeiyaku.user.address1 }}</td>
+                </tr>
+                {% if karikeiyaku.user.street_address %}
+                    <tr>
+                        <th>番地</th>
+                        <td>{{ karikeiyaku.user.street_address }}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <th>契約期間</th>
+                    <td>{{ karikeiyaku.created_at }} ～ {{ karikeiyaku.end_date }}</td>
+                </tr>
+                <tr>
+                    <th>契約状態</th>
+                    <td>{{ karikeiyaku.status }}</td>
+                </tr>
+            </table>
+
+            {% if karikeiyaku.status == '仮契約中' %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <button type="submit" name="complete_contract" class="btn btn-primary">契約完了</button>
+                </form>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>仮契約情報がありません。</p>
     {% endif %}
 
-    <!-- 契約完了ボタン -->
-    {% if karikeiyaku and karikeiyaku.status == '仮契約中' %}
-        <form method="POST">
-            {% csrf_token %}
-            <button type="submit" name="complete_contract" class="btn btn-success">契約完了</button>
-        </form>
-    {% endif %}
-
-    <a href="{% url 'accounts:staff_pet' %}" class="btn btn-primary">戻る</a>
+    <div class="return-button-wrapper">
+        <button type="button" class="return-button" onclick="history.back()">戻る</button>
+    </div>
 </div>
 
 {% endblock %}
-

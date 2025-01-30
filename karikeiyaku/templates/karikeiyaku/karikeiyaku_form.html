@@ -109,33 +109,6 @@
         border-radius: 5px;
     }
 
-    /* 戻るボタンのスタイル */
-    .return-button-wrapper {
-        display: flex;
-        justify-content: center; /* 戻るボタンも中央揃え */
-        margin-top: 20px; /* グループから少し下に配置 */
-    }
-
-    /* 戻るリンクのスタイル */
-    .return-button {
-        color: #007bff; /* リンクの色 */
-        font-size: 16px; /* フォントサイズ */
-        text-decoration: none; /* 下線を消す */
-        margin-top: 10px;
-        cursor: pointer; /* ポインターを表示 */
-    }
-
-    .return-button:hover {
-        color: #0056b3; /* ホバー時の色 */
-    }
-
-    /* ボタンの位置調整：戻るリンクは右側 */
-    .return-button-wrapper {
-        display: flex;
-        justify-content: flex-end; /* 右側に配置 */
-        width: 100%;
-    }
-
     /* エラーメッセージのスタイル */
     .error-message {
         color: red;
@@ -155,31 +128,65 @@
         margin: 0 auto;
     }
 
+    /* 契約するボタンを大きくする */
+    .btn.btn-success {
+        width: 50%;
+        padding: 10px;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
     /* 見出しのスタイル */
     .section-heading {
         font-size: 1.5rem;
         margin-bottom: 15px;
         text-align: center;
     }
-    .btn-success {
-        background-color: #007BFF !important; /* 青色 */
-        color: #fff !important; /* 白い文字 */
-        border: none !important; /* ボーダーを削除 */
-        border-radius: 5px !important; /* ボタンを少し丸く */
-        padding: 10px 20px !important; /* 余白を調整 */
-        font-size: 1rem !important; /* 文字サイズを指定 */
-        transition: background-color 0.3s ease !important; /* ホバー時のアニメーション */
+    /* 戻るボタン全体の配置 */
+    .return-button-wrapper {
+        display: flex;
+        justify-content: flex-start; /* 戻るボタンを右寄せ */
+        width: 100%;
     }
 
-    .btn-success:hover {
-        background-color: #0056b3 !important; /* ホバー時の濃い青 */
+    /* 戻るボタンのスタイル（左側に空白を追加） */
+    .return-button {
+        padding: 10px 20px; /* ボタンサイズ */
+        background-color: #6c757d; /* グレーの背景色 */
+        color: white; /* 白い文字色 */
+        border: none; /* ボーダーなし */
+        border-radius: 4px; /* 角丸 */
+        font-size: 16px; /* フォントサイズ */
+        cursor: pointer; /* ポインターを表示 */
     }
 
+    .return-button:hover {
+        background-color: #5a6268; /* ホバー時の濃いグレー */
+        color: white;
+    }
     .btn-success:disabled {
         background-color: #b3d7ff !important; /* 無効時の薄い青 */
         color: #fff !important; /* 白い文字 */
         opacity: 0.6 !important; /* 見た目の透明感 */
         cursor: not-allowed !important; /* カーソルを変更 */
+    }
+     /* 大画面（768px以上）でのスタイル */
+     @media (min-width: 768px) {
+        .return-button {
+            margin-left: 15px;
+        }
+    }
+
+    /* 小画面（768px未満）でのスタイル */
+    @media (max-width: 767px) {
+        .return-button {
+            margin-left: 40px;
+        }
     }
 </style>
 

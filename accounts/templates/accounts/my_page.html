@@ -155,13 +155,26 @@
 
 .action-link-container a {
   font-size: 1.2em;
-  color: #007BFF;
+  color: #fff; /* 文字色を白に設定 */
   text-decoration: none;
+  background-color: #dc3545; /* 赤色の背景 */
+  padding: 10px 20px; /* 内側に余白を追加 */
+  border-radius: 5px; /* 角を丸く */
+  display: inline-block; /* ボタンのようにインラインブロックにする */
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 背景色とアニメーション */
 }
 
 .action-link-container a:hover {
-  text-decoration: underline;
+  background-color: #bb2d3b; /* ホバー時にさらに暗い赤色 */
+  text-decoration: none; /* アンダーラインをなくす */
+  transform: scale(1.05); /* ホバー時に少し拡大 */
 }
+
+.action-link-container a:focus {
+  outline: none; /* フォーカス時のアウトラインを消去 */
+}
+
 /* プロフィール変更リンクのデザイン */
 .action-link-pro {
   display: inline-block;
@@ -208,14 +221,14 @@
   }
 
   .pet-info-table td, .profile-info td {
-    width: 70%; /* 値側（td）の幅を広く */
-    white-space: normal; /* 改行を許可 */
-    word-break: break-word; /* 長い文字列を折り返す */
-    text-align: left; /* 左寄せ（必要に応じて変更） */
-    font-size: 14px; /* 小さめのフォントサイズ */
-    line-height: 1.5; /* 行間調整 */
-    padding: 6px 4px; /* 余白を小さく */
-  }
+  width: 75%; /* 値側（td）の幅を広く */
+  white-space: normal; /* 改行を許可 */
+  word-break: break-word; /* 長い文字列を折り返す */
+  text-align: left; /* 左寄せ（必要に応じて変更） */
+  font-size: 14px; /* 小さめのフォントサイズ */
+  line-height: 1.5; /* 行間調整 */
+  padding: 6px 8px; /* 余白を少し広くしてセルを伸ばす */
+}
 
   /* 表全体の横スクロールを許可 */
   .pet-info-table {
@@ -263,6 +276,12 @@
         <tr>
           <th>番地</th>
           <td>{{ user.street_address }}</td>
+        </tr>
+        <tr>
+          {% if user.address2 %}
+            <th>建物名</th>
+            <td>{{ user.address2 }}</td>
+          {% endif %}
         </tr>
         <tr>
           <th>電話番号</th>

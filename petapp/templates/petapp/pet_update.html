@@ -6,24 +6,27 @@
 <style>
     h2 {
         text-align: center;
+        margin-bottom: 20px; /* フォームとの間に余白を追加 */
     }
-
+    h3 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
     /* 全体のフォームのスタイル */
     .pet-form {
         width: 100%;
-        max-width: 800px; /* 最大幅を設定 */
+        max-width: 600px; /* 最大幅を設定 */
         margin: 0 auto;
         padding: 20px;
         background-color: #f9f9f9;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        border: 1px solid #ddd; /* 明示的に枠線を追加 */
         overflow: visible; /* 下部の枠線が隠れないように設定 */
     }
 
     /* フォームのラベルと入力のスタイル */
     .pet-form .form-group {
-        margin-bottom: 20px; /* フォームグループの間隔を広げる */
+        margin-bottom: 15px; /* フォームグループの間隔を広げる */
     }
 
     .pet-form label {
@@ -36,7 +39,7 @@
     .pet-form select,
     .pet-form textarea {
         width: 100%;
-        padding: 10px; /* 入力フィールドのパディングを広げる */
+        padding: 8px; /* 入力フィールドのパディングを広げる */
         border: 1px solid #ddd;
         border-radius: 4px;
         box-sizing: border-box;
@@ -45,6 +48,7 @@
     .pet-form .error-list {
         color: red;
         font-size: 0.9em;
+        text-align: start;
     }
 
     .pet-form .error {
@@ -53,8 +57,8 @@
 
     /* ボタンのスタイル */
     .pet-form button.btn-submit {
-        width: 100%;
-        padding: 12px;
+        width: 50%;
+        padding: 10px;
         background-color: #007BFF;
         color: white;
         border: none;
@@ -68,55 +72,97 @@
         background-color: #0056b3;
     }
 
-    /* 戻るボタンのスタイル */
-    .btn-back {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #6c757d;
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        transition: background-color 0.3s;
-    }
-
-    .btn-back:hover {
-        background-color: #565e64;
-        color: white;
-    }
-
-    /* フォームセットのスタイル */
-    .formset .form-group {
-        margin-bottom: 15px;
-    }
-
-    .formset input[type="file"] {
-        padding: 10px;
-    }
-
-    /* エラーメッセージを目立たせる */
-    .error-list {
-        font-size: 0.9em;
-        color: red;
-    }
-
-    .error-list p {
-        margin: 0;
-    }
-
-    /* 戻るボタンを右揃えにする */
-    .form-footer {
+    /* 戻るボタン全体の配置 */
+    .return-button-wrapper {
         display: flex;
-        justify-content: flex-end; /* ボタンを右に配置 */
-        margin-top: 20px;
+        justify-content: flex-start; /* 戻るボタンを右寄せ */
+        width: 100%;
+    }
+
+    /* 戻るボタンのスタイル */
+    .return-button {
+        padding: 10px 20px; /* ボタンサイズ */
+        background-color: #6c757d; /* グレーの背景色 */
+        color: white; /* 白い文字色 */
+        border: none; /* ボーダーなし */
+        border-radius: 4px; /* 角丸 */
+        font-size: 16px; /* フォントサイズ */
+        cursor: pointer; /* ポインターを表示 */
+        text-decoration: none; /* 下線を削除 */
+    }
+
+    .return-button:hover {
+        background-color: #5a6268; /* ホバー時の濃いグレー */
+        color: white;
     }
 
     /* 画像のスタイル */
     .pet-form img {
         max-width: 100%;
         height: auto;
-        margin-bottom: 15px;
+        margin: 0 auto 15px; /* 上下左右の中央揃え */
+        display: block; /* インライン画像をブロック化 */
     }
+
+    .form-group.inline {
+        display: flex;
+        justify-content: center; /* チェックボックスとラベルを中央揃え */
+        align-items: center;
+        gap: 5px; /* チェックボックスとラベルの間隔 */
+    }
+
+/* 画像を横並びに表示 */
+.image-container {
+    display: flex;
+    gap: 20px; /* 画像間に余白を追加 */
+    flex-wrap: wrap; /* 画面サイズが小さくなった時に折り返し */
+    justify-content: center; /* 画像を中央揃え */
+    align-items: center; /* 画像を縦方向に中央揃え */
+}
+
+/* 画像アイテム */
+.image-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 150px; /* 各画像の幅を固定 */
+    margin-bottom: 20px; /* 下に余白を追加 */
+}
+
+/* 画像の表示部分 */
+.image-preview img {
+    width: 150px; /* 幅を固定 */
+    height: 150px; /* 高さを固定 */
+    object-fit: cover; /* 画像が縦横比を維持したまま切り取られる */
+    border-radius: 8px; /* 角を丸くする */
+    margin-bottom: 10px;
+}
+
+/* 画像入力フォーム部分 */
+.image-input {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 入力フォームを中央揃え */
+    margin-bottom: 20px; /* フォーム部分に下の余白を追加 */
+    width: 150px; /* 親要素の幅を150pxに固定 */
+}
+
+/* ファイル入力部分のスタイル修正 */
+.image-input input[type="file"] {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+    width: 100%; /* 親要素の幅に合わせる */
+    box-sizing: border-box; /* パディングやボーダーを幅に含める */
+}
+
+/* フォームのラベルと入力のスタイル */
+.pet-form input[type="file"] {
+    padding: 10px;
+}
+
 
     /* レスポンシブ対応 */
     @media (max-width: 768px) {
@@ -161,8 +207,17 @@
 
 <h2>情報を更新</h2>
 <div class="pet-form">
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
+
+        <!-- エラーメッセージ表示 -->
+        {% if error_messages %}
+            <div class="error-list">
+                {% for error in error_messages %}
+                    <p class="error">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
 
         <!-- 基本情報 -->
         <div class="form-group">
@@ -176,7 +231,7 @@
             {% if pet_form.size.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.size.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -193,7 +248,7 @@
             {% if pet_form.kinds.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.kinds.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -206,7 +261,7 @@
             {% if pet_form.color.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.color.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -218,7 +273,7 @@
             {% if pet_form.age.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.age.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -230,7 +285,7 @@
             {% if pet_form.personality.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.personality.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -243,7 +298,7 @@
                 {% if pet_form.disease.errors %}
                     <ul class="error-list">
                         {% for error in pet_form.disease.errors %}
-                            <li>{{ error }}</li>
+                            <p>{{ error }}</p>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -257,7 +312,7 @@
             {% if pet_form.post_code.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.post_code.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -269,7 +324,7 @@
             {% if pet_form.address.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.address.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -281,12 +336,12 @@
             {% if pet_form.phone_number.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.phone_number.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
         </div>
-        
+
         <!-- 保護場所の情報 -->
         <div class="form-group">
             <label for="{{ pet_form.location.id_for_label }}">保護場所</label>
@@ -294,7 +349,7 @@
             {% if pet_form.location.errors %}
                 <ul class="error-list">
                     {% for error in pet_form.location.errors %}
-                        <li>{{ error }}</li>
+                        <p>{{ error }}</p>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -307,57 +362,71 @@
         {% if image_formset.non_field_errors %}
             <ul class="error-list">
                 {% for error in image_formset.non_field_errors %}
-                    <li>{{ error }}</li>
+                    <p>{{ error }}</p>
                 {% endfor %}
             </ul>
         {% endif %}
 
-        {% for form in image_formset %}
-        <div class="form-group">
-            {% if form.instance.image %}
-                <img src="{{ form.instance.image.url }}" alt="Pet Image" style="width: 150px; height: auto;">
-                {{ form.id.as_hidden }} <!-- IDを隠しフィールドで保持 -->
+        <!-- 画像フォームセット -->
+        <div class="image-container">
+            {% for form in image_formset %}
+                <div class="image-item">
+                    {% if form.instance.image %}
+                        <!-- 画像表示部分 -->
+                        <div class="image-preview">
+                            <img src="{{ form.instance.image.url }}" alt="Pet Image">
+                        </div>
+                        {{ form.id.as_hidden }} <!-- IDを隠しフィールドで保持 -->
 
-                <!-- 削除チェックボックスを表示 -->
-                <label for="{{ form.prefix }}-DELETE">この画像を削除</label>
-                {{ form.DELETE }}
-                {% if form.DELETE.errors %}
-                    <ul class="error-list">
-                        {% for error in form.DELETE.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+                        <!-- 削除チェックボックス -->
+                        <div class="form-group inline">
+                            <label for="{{ form.prefix }}-DELETE">この画像を削除</label>
+                            {{ form.DELETE }}
+                        </div>
 
-                <p style="color: orange;">更新する画像を選択</p>
-                <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
+                        {% if form.DELETE.errors %}
+                            <ul class="error-list">
+                                {% for error in form.DELETE.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
 
-                {% if form.image.errors %}
-                    <ul class="error-list">
-                        {% for error in form.image.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% else %}
-                <p>新しい画像を選択</p>
-                <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
-                {% if form.image.errors %}
-                    <ul class="error-list">
-                        {% for error in form.image.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endif %}
-        </div>
-        {% endfor %}
+                        <!-- 画像更新入力部分 -->
+                        <div class="image-input">
+                            <p>更新する画像を選択</p>
+                            <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
+
+                            {% if form.image.errors %}
+                                <ul class="error-list">
+                                    {% for error in form.image.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <!-- 新しい画像入力部分 -->
+                        <div class="image-input">
+                            <p>新しい画像を選択</p>
+                            <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
+                            {% if form.image.errors %}
+                                <ul class="error-list">
+                                    {% for error in form.image.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
 
         <button type="submit" class="btn-submit">更新</button>
     </form>
 
-    <div class="form-footer">
-        <a href="{% url 'petapp:pet-list' %}" class="btn-back">戻る</a>
+    <div class="return-button-wrapper">
+        <a type="button" href="{% url 'petapp:pet-list' %}" class="return-button">戻る</a>
     </div>
 </div>
 
