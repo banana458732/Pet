@@ -13,7 +13,7 @@ from django.core.files.storage import default_storage
 from django.db import transaction
 
 # CSVファイルのパスを指定
-CSV_FILE_PATH = 'C:\\Users\\t_yamanoi\\Documents\\卒業制作\\Pet\\pets_data.csv'
+CSV_FILE_PATH = os.getenv('PETS_CSV_PATH', 'pets_data.csv')
 
 # 現在のスクリプトファイルのディレクトリを取得
 current_dir = os.path.dirname(os.path.abspath(__file__))

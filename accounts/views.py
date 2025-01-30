@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+import requests
 from django.urls import reverse_lazy
 from django.views import View
 from .forms import CustomUserCreationForm, CustomUserUpdateForm
@@ -20,7 +21,9 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.core.paginator import Paginator
+from geopy.geocoders import Nominatim
 
+geolocator = Nominatim(user_agent="test")
 
 class SignUpView(CreateView):
 
@@ -184,6 +187,21 @@ class CompletedPetsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         return context
 
 
+def get_lat_lon_from_address(address):
+    # Nominatimインスタンスの作成
+    geolocator = Nominatim(user_agent="myGeocoder")  # user_agentに任意の名前を設定
+    try:
+        # ジオコーディングで住所を検索
+        location = geolocator.geocode(address)
+        if location:
+            return location.latitude, location.longitude
+        else:
+            return None, None  # 見つからなかった場合
+    except Exception as e:
+        print(f"エラー: {e}")
+        return None, None
+
+
 class MyPageView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/my_page.html'
 
@@ -210,7 +228,27 @@ class MyPageView(LoginRequiredMixin, TemplateView):
                     'end_date': contract_pet.end_date,
                     'status': contract_pet.status
                 })
-
+            # ペットに緯度経度の情報がなかった場合。
+            if not pet.latitude and not pet.longitude:
+                print("hoge")
+                try:
+                    adr = pet.address
+                    apikey = "AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q"
+                    # api_key = "AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q"
+                    lat, lng = get_lat_lng(adr, apikey)
+                    pet.latitude = lat
+                    pet.longitude = lng
+                    print(lat)
+                    print(lng)
+                    print(contract_pet)
+                    print(contract_pets)
+                    pet.save()
+                
+                    print(f"住所: {adr}")
+                    print(f"緯度: {lat}, 経度: {lng}")
+                except Exception as e:
+                    print(e)
+            
         # 契約済みのペットの画像を取得
         completed_pet_images = []
         for completed_pet in completed_pets:
@@ -233,6 +271,25 @@ class MyPageView(LoginRequiredMixin, TemplateView):
         context['profile_image_form'] = ProfileImageForm(instance=user)
 
         return context
+
+# 住所から緯度経度を求めるメソッド
+
+
+def get_lat_lng(address, api_key):
+
+    api_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}"
+    response = requests.get(api_url)
+    data = response.json()
+    print(api_url)
+
+    if data['status'] == 'OK':
+        print(data)
+        lat = data['results'][0]['geometry']['location']['lat']
+        lng = data['results'][0]['geometry']['location']['lng']
+        return lat, lng
+    else:
+        raise Exception(f"Error fetching coordinates for address: {address}")
+
 
 
 def add_contract_pet(request, pet_id):
