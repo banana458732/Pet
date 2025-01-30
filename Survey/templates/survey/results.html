@@ -32,31 +32,30 @@
     <div class="pagination" style="text-align: center; margin-top: 20px;">
         <span class="step-links">
             {% if page_obj.has_previous %}
-                <a href="?page=1">&laquo; 最初</a>
-                <a href="?page={{ page_obj.previous_page_number }}">前</a>
+                <a href="{% url 'survey:results' %}?page=1&{{ request.GET.urlencode }}" class="pagination-link">&laquo; 最初</a>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="pagination-link">前</a>
             {% else %}
                 <span>最初</span>
                 <span>前</span>
             {% endif %}
-    
+
             <span class="current">
-                ページ {{ page_obj.number }} / {{ page_obj.paginator.num_pages }} 
+                ページ <span class="current-page">{{ page_obj.number }}</span> / {{ page_obj.paginator.num_pages }}
             </span>
-    
+
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">次</a>
-                <a href="?page={{ page_obj.paginator.num_pages }}">最後 &raquo;</a>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="pagination-link">次</a>
+                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}&{{ request.GET.urlencode }}" class="pagination-link">最後 &raquo;</a>
             {% else %}
                 <span>次</span>
                 <span>最後</span>
             {% endif %}
         </span>
     </div>
-    
 
 {% elif latest_pets %}
     <!-- 追加条件が一致しない場合（最新の3匹を表示） -->
-    <h2 style="text-align: center; margin-top: 50px;">追加条件に一致するペットが見つかりませんでした。</h2>
+    <h2 class="message-not-found" style="text-align: center; margin-top: 50px;">追加条件に一致するペットが見つかりませんでした。</h2>
     <h3 style="text-align: center;">他にもこんなペットがいます！</h3>
     <ul>
         {% for pet, image_url in latest_pets %}
@@ -90,7 +89,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const messageElement = document.querySelector('h2'); // メッセージ部分を指定
+        const messageElement = document.querySelector('.message-not-found');
         if (messageElement) {
             console.log("メッセージの要素が見つかりました:", messageElement.textContent);
             console.log("現在のスタイル:", window.getComputedStyle(messageElement).display);

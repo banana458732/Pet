@@ -35,6 +35,11 @@ from django.core.paginator import Paginator
 def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
+    # セッションからフォームデータを復元
+    if 'form_data' in request.session:
+        form_data = request.session['form_data']
+        form = SimplePetSurveyForm(form_data)
+
     # CSVファイルの読み込み
     try:
         pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')
@@ -118,15 +123,27 @@ def pet_survey(request):
 
         # 分岐処理
         if not size and not color and not kinds and not disease and not personality and not sex and not age_range:
-            pets_to_display = pets_with_score
+            latest_pets = pets_with_score
         else:
             if pets_with_score['score'].max() == 1 and len(pets_with_score) == len(pets_data):
-                pets_to_display = pets_data.head(3)
+                latest_pets = pets_data.head(3)
             else:
-                pets_to_display = pets_with_score
+                latest_pets = pets_with_score
+            
+            # もし latest_pets が pandas DataFrame なら
+            if isinstance(latest_pets, pd.DataFrame):
+                # DataFrame をリスト形式に変換してセッションに保存
+                request.session['pets_data'] = latest_pets.to_dict('records')
+            # もし latest_pets が すでにリスト型 なら
+            elif isinstance(latest_pets, list):
+                # リストをそのままセッションに保存
+                request.session['pets_data'] = latest_pets
+            else:
+                # それ以外の場合（DataFrameでもリストでもない）
+                request.session['pets_data'] = []  # 空のリストとして保存
 
         # ページネーション
-        paginator = Paginator(pets_to_display, 10)  # 1ページに表示する件数
+        paginator = Paginator(latest_pets, 10)  # 1ページに表示する件数
         page_number = request.GET.get('page')  # URLからページ番号を取得
         page_obj = paginator.get_page(page_number)
 
@@ -136,6 +153,9 @@ def pet_survey(request):
             image_urls = pet.get('image_urls', '')
             first_image = image_urls.split(',')[0] if image_urls else None
             pets_with_images.append((pet, first_image))
+
+        # セッションに検索条件を保存してフォームデータを引き継ぐ
+        request.session['form_data'] = form.cleaned_data
 
         return render(request, 'survey/results.html', {
             'form': form,
@@ -147,3 +167,16 @@ def pet_survey(request):
     return render(request, 'survey/pet_survey.html', {
         'form': form,
     })
+
+
+def results(request):
+    # セッションからフォームデータを取得
+    form_data = request.session.get('form_data', None)
+
+    # フォームデータがある場合、フォームを再表示
+    if form_data:
+        form = SimplePetSurveyForm(form_data)  # ここはそのままにしておく
+    else:
+        form = SimplePetSurveyForm()  # フォームを初期化して表示
+
+    return render(request, 'survey/results.html', {'form': form})
