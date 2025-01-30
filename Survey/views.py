@@ -36,16 +36,20 @@ def pet_survey(request):
     form = SimplePetSurveyForm(request.POST or None)
 
     # セッションからフォームデータと検索結果を復元
-    pets_data = None
+    pets_data = request.session.get('pets_data')
+
+    # セッションデータをDataFrameに変換
     if 'pets_data' in request.session:
-        pets_data = pd.DataFrame(request.session['pets_data'])  # DataFrameに変換
+        pets_data = pd.DataFrame(request.session['pets_data'])
     else:
-        # CSVファイルの読み込み
-        try:
-            pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')
-            pets_data = pets_data.fillna('')  # NaNを空文字に置換
-        except Exception as e:
-            return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
+        pets_data = None  # セッションにデータがない場合は None にする
+
+    # CSVファイルの読み込み
+    try:
+        pets_data = pd.read_csv('pets_data.csv', encoding='utf-8')
+        pets_data = pets_data.fillna('')  # NaNを空文字に置換
+    except Exception as e:
+        return HttpResponse(f"CSVファイルの読み込みに失敗しました: {e}")
 
     # 必要な列をひらがなに変換
     pets_data['hiragana_personality'] = pets_data['personality'].apply(to_hiragana)
@@ -133,7 +137,6 @@ def pet_survey(request):
         # 検索結果をセッションに保存
         request.session['pets_data'] = pets_data.to_dict('records')
 
-    if pets_data is not None and not pets_data.empty:
         # ページネーション
         paginator = Paginator(latest_pets, 10)  # 1ページに表示する件数
         page_number = request.GET.get('page')  # URLからページ番号を取得
