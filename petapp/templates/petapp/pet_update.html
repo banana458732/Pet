@@ -1,6 +1,6 @@
 {% extends 'accounts/base_admin.html' %}
 
-{% block title %}更新{% endblock %}
+{% block title %}編集{% endblock %}
 
 {% block contents %}
 <style>
@@ -75,7 +75,7 @@
     /* 戻るボタン全体の配置 */
     .return-button-wrapper {
         display: flex;
-        justify-content: flex-start; /* 戻るボタンを右寄せ */
+        justify-content: center; /* 戻るボタンを右寄せ */
         width: 100%;
     }
 
@@ -205,7 +205,7 @@
     }
 </style>
 
-<h2>情報を更新</h2>
+<h2>情報を編集</h2>
 <div class="pet-form">
     <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
@@ -344,7 +344,7 @@
 
         <!-- 保護場所の情報 -->
         <div class="form-group">
-            <label for="{{ pet_form.location.id_for_label }}">保護場所</label>
+            <label for="{{ pet_form.location.id_for_label }}">保護施設</label>
             {{ pet_form.location }}
             {% if pet_form.location.errors %}
                 <ul class="error-list">

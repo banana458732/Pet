@@ -76,11 +76,3 @@ def pet_detail(request, pet_id):
         'user_karikeiyaku': user_karikeiyaku,
         'other_user_karikeiyaku': other_user_karikeiyaku,
     })
-
-
-class IndexView(TemplateView):
-    template_name = 'messaging/index.html'
-
-
-def index(request):
-    return render(request, 'messaging/index.html')

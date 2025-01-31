@@ -44,7 +44,15 @@ class PetCreateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # フィールドのカスタマイズ（例: エラーメッセージの設定や順序の変更）
+        self.fields['kinds'].widget.attrs['placeholder'] = '例: 柴犬, スコティッシュフォールド'
+        self.fields['color'].widget.attrs['placeholder'] = '例: 白, 白黒'
+        self.fields['age'].widget.attrs['placeholder'] = '例: 2'
+        self.fields['personality'].widget.attrs['placeholder'] = '例: おとなしい, 活発'
+        self.fields['disease'].widget.attrs['placeholder'] = '病気がある場合は入力してください'
+        self.fields['post_code'].widget.attrs['placeholder'] = '例: 1234567（ハイフンなし）'
+        self.fields['address'].widget.attrs['placeholder'] = '例: 東京都渋谷区神南1-1-1'
+        self.fields['phone_number'].widget.attrs['placeholder'] = '例: 09012345678（ハイフンなし）'
+        self.fields['location'].widget.attrs['placeholder'] = '例: アニマルハウス'
         # print(self.fields)  # フィールドを確認したい場合に使用
 
 
@@ -106,6 +114,15 @@ class PetUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['kinds'].widget.attrs['placeholder'] = '例: 柴犬, スコティッシュフォールド'
+        self.fields['color'].widget.attrs['placeholder'] = '例: 白, 白黒'
+        self.fields['age'].widget.attrs['placeholder'] = '例: 2'
+        self.fields['personality'].widget.attrs['placeholder'] = '例: おとなしい, 活発'
+        self.fields['disease'].widget.attrs['placeholder'] = '病気がある場合は入力してください'
+        self.fields['post_code'].widget.attrs['placeholder'] = '例: 1234567（ハイフンなし）'
+        self.fields['address'].widget.attrs['placeholder'] = '例: 東京都渋谷区神南1-1-1'
+        self.fields['phone_number'].widget.attrs['placeholder'] = '例: 09012345678（ハイフンなし）'
+        self.fields['location'].widget.attrs['placeholder'] = '例: アニマルハウス'
 
         # 更新時に id フィールドを非必須に設定
         if self.instance.pk:
@@ -137,7 +154,7 @@ class PetUpdateForm(forms.ModelForm):
     phone_number = forms.CharField(max_length=11, label='電話番号', required=True)
     post_code = forms.CharField(max_length=7, label='郵便番号', required=True)  # 郵便番号を入力
     address = forms.CharField(max_length=255, label='住所', required=True)  # 住所を入力
-    location = forms.CharField(max_length=255, label='保護場所', required=True)  # 保護場所を入力
+    location = forms.CharField(max_length=255, label='保護施設', required=True)  # 保護施設を入力
 
     # clean_phone_number メソッドを追加
     def clean_phone_number(self):

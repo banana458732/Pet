@@ -14,6 +14,26 @@
         margin: 10px;
     }
 
+        /* テーブルのスタイル */
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    table, th, td {
+        border: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th, td {
+        padding: 10px;
+    }
+
+    th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
     /* 仮契約のCSS */
     .contract-description {
         text-align: center;
@@ -141,6 +161,10 @@
         margin-top: 10px;
     }
 
+    .btn-success:hover {
+        background-color: #0056b3 !important; /* ホバー時・クリック時の色を統一 */
+    }
+
     /* 見出しのスタイル */
     .section-heading {
         font-size: 1.5rem;
@@ -150,7 +174,7 @@
     /* 戻るボタン全体の配置 */
     .return-button-wrapper {
         display: flex;
-        justify-content: flex-start; /* 戻るボタンを右寄せ */
+        justify-content: center;
         width: 100%;
     }
 
@@ -174,19 +198,6 @@
         color: #fff !important; /* 白い文字 */
         opacity: 0.6 !important; /* 見た目の透明感 */
         cursor: not-allowed !important; /* カーソルを変更 */
-    }
-     /* 大画面（768px以上）でのスタイル */
-     @media (min-width: 768px) {
-        .return-button {
-            margin-left: 15px;
-        }
-    }
-
-    /* 小画面（768px未満）でのスタイル */
-    @media (max-width: 767px) {
-        .return-button {
-            margin-left: 40px;
-        }
     }
 </style>
 
@@ -222,78 +233,67 @@
                     <div class="section-title">
                         <h3>ペット情報</h3>
                     </div>
-                    <div class="form-group">
-                        <label>ID</label>
-                        <input type="text" value="{{ pet.id }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>種類</label>
-                        <input type="text" value="{{ pet.type }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>サイズ</label>
-                        <input type="text" value="{{ pet.size }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>性別</label>
-                        <input type="text" value="{{ pet.sex }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>品種</label>
-                        <input type="text" value="{{ pet.kinds }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>色</label>
-                        <input type="text" value="{{ pet.color }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>年齢</label>
-                        <input type="text" value="{{ pet.age }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>性格</label>
-                        <input type="text" value="{{ pet.personality }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>病歴</label>
-                        <input type="text" value="{% if show_disease %}{{ pet.disease }}{% else %}なし{% endif %}" disabled>
-                    </div>
-                
-                    <!-- ユーザーの情報 -->
-                    <div class="section-title">
-                        <h3>ユーザー情報</h3>
-                    </div>
-                    <div class="form-group">
-                        <label>氏名</label>
-                        <input type="text" value="{{ user.username }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>メールアドレス</label>
-                        <input type="email" value="{{ user.email }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>郵便番号</label>
-                        <input type="address" value="{{ user.post_code }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>都道府県 市区町村</label>
-                        <input type="address" value="{{ user.address1 }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>番地</label>
-                        <input type="address" value="{{ user.street_address }}" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label>電話番号</label>
-                        <input type="tel" value="{{ user.phone_number }}" disabled>
-                    </div>
-                
-                    <div class="form-group">
-                        <label>契約終了日</label>
-                        <input type="text" name="end_date" value="{{ form.end_date.value|date:'Y年m月d日' }}" disabled>
-                    </div>
-                </div>
-                
+                    
+                    <!-- ペット情報をテーブルで表示 -->
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <td>{{ pet.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>種類</th>
+                            <td>{{ pet.type }}</td>
+                        </tr>
+                        <tr>
+                            <th>サイズ</th>
+                            <td>{{ pet.size }}</td>
+                        </tr>
+                        <tr>
+                            <th>性別</th>
+                            <td>{{ pet.sex }}</td>
+                        </tr>
+                        <tr>
+                            <th>品種</th>
+                            <td>{{ pet.kinds }}</td>
+                        </tr>
+                        <tr>
+                            <th>色</th>
+                            <td>{{ pet.color }}</td>
+                        </tr>
+                        <tr>
+                            <th>年齢</th>
+                            <td>{{ pet.age }}</td>
+                        </tr>
+                        <tr>
+                            <th>性格</th>
+                            <td>{{ pet.personality }}</td>
+                        </tr>
+                        <tr>
+                            <th>病歴</th>
+                            <td>{% if show_disease %}{{ pet.disease }}{% else %}なし{% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>郵便番号</th>
+                            <td>{{ pet.post_code }}</td>
+                        </tr>
+                        <tr>
+                            <th>住所</th>
+                            <td>{{ pet.address }}</td>
+                        </tr>
+                        <tr>
+                            <th>電話番号</th>
+                            <td>{{ pet.phone_number }}</td>
+                        </tr>
+                        <tr>
+                            <th>保護施設</th>
+                            <td>{{ pet.location }}</td>
+                        </tr>
+                        <tr>
+                            <th>契約期限</th>
+                            <td>{{ form.end_date.value|date:'Y年m月d日' }}</td>
+                        </tr>
+                    </table>
+                </div>                
                 <!-- 同意確認 -->
                 <div class="agree">
                     {% if not user_karikeiyaku %}

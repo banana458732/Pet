@@ -1,4 +1,4 @@
-id,type,size,color,age,kinds,disease,personality,sex,image_urls,post_code,address,phone_number,location ,location
+id,type,size,color,age,kinds,disease,personality,sex,image_urls,post_code,address,phone_number,Unnamed: 13,location
 69,犬,大型,黒,10,雑種,,ゆっくりマイペース、穏やかな女の子。 人にも犬にも優しい性格です。 食いしん坊でごはんも大好きです！,メス,"/media/pet_images/uuid_35be0c8c70654e6d9dffba26697793d9.jpg, /media/pet_images/uuid_9707a6f2bb814f16b544c55028ef2fbf.jpg",1134473.0,長野県長野市長野元善町491番地,1234567890.0,,アニマルハウス
 70,犬,大型,黒,9,雑種,乾燥性角膜炎・皮膚炎,イヌにもヒトにも優しい子です。 乾燥性角膜炎を患っており、点眼しております。 皮膚の状態も悪い為、週2回のシャンプー。 よく食べ、よく歩き、元気いっぱいです。,メス,"/media/pet_images/uuid_4d808f438316491ab0586e92f1c7dfc1.jpg, /media/pet_images/uuid_5320e353ee94431dbb300f8c747e9381.jpg, /media/pet_images/uuid_ce7da2857a53442cb2eafbfded34140b.jpg",1134473.0,長野県長野市長野元善町491番地,1234567890.0,,アニマルハウス
 71,犬,中型,茶,8,柴犬,,テリトリー意識による警戒心はありますが、穏やかな優しい性格と寂しがり屋な一面を持っています。 他のワンコとは相性がありますが、相性次第で共存は可能です。,メス,"/media/pet_images/uuid_d0fe07305ef6463089e017e161b92ff0.jpg, /media/pet_images/uuid_a01b6fc7bef74d8bbd81a7bac9e8b800.jpg, /media/pet_images/uuid_77288e507fb6452a8f3eea0d234bf36a.jpg",1134473.0,長野県長野市長野元善町491番地,1234567890.0,,アニマルハウス
@@ -22,4 +22,4 @@ id,type,size,color,age,kinds,disease,personality,sex,image_urls,post_code,addres
 89,猫,中型,白,3,雑種,,さみしがりや,メス,/media/pet_images/uuid_8b34281806a34e85bdc3a5601d420ff4.jpg,1134473.0,長野県長野市長野元善町491番地,1234567890.0,,アニマルハウス
 90,犬,中型,白,4,パグ,,おとなしいくて明るい子です。,オス,/media/pet_images/uuid_abebaa325baa46ef959f899b8f78aa24.jpeg,1134473.0,長野県長野市長野元善町491番地,1234567890.0,,アニマルハウス
 91,犬,大型,黒,3,柴犬,,明るい,オス,/media/pet_images/uuid_e7f5a52c01594b26bd3e34908574285c.jpeg,1134473.0,長野県長野市長野元善町491番地,1234567890.0,,アニマルハウス
-92,猫,大型,白,7,雑種,,明るい,オス,"/media/pet_images/39af4b3fb79c9610aa867ed49ca67cb3-150x150.jpg, /media/pet_images/________________________.jpg",1134473,長野県長野市長野元善町491番地,1234567890,,アニマルハウス
+94,犬,大型,白黒,2,シュナウザー,,活発的で好奇心旺盛,オス,/media/pet_images/uuid_6280e032260b4e62bad2d9c43b31b1b8.webp,1134477,長野県長野市栗田2288,0264453388,,アニマルハウス

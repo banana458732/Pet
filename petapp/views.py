@@ -388,7 +388,7 @@ def pet_update_comp_view(request, pet_id):
         'post_code': '郵便番号',
         'address': '住所',
         'phone_number': '電話番号',
-        'location': '保護場所',
+        'location': '保護施設',
     }
 
     # updated_fieldsを日本語ラベルに変換

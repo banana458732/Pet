@@ -1,8 +1,8 @@
-from django.db import models
 import os
+from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, Group, Permission
-from petapp.models import Pet
+from django.core.validators import RegexValidator
 
 
 class CustomUser(AbstractUser):
@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
 
     post_code = models.CharField(
         verbose_name='郵便番号',
-        max_length=8,
+        max_length=7,
         blank=False,
         null=False,
     )
@@ -21,18 +21,20 @@ class CustomUser(AbstractUser):
         max_length=15,
         blank=False,
         null=False,
+        validators=[RegexValidator(r'^[0-9]{10,11}$', '電話番号は半角数字のみで、10,11桁までにしてください。')],
+
     )
 
     address1 = models.CharField(
-        verbose_name='都道府県 市区町村', max_length=40,blank=False,null=False
+        verbose_name='都道府県 市区町村', max_length=40, blank=False, null=False
     )
 
     street_address = models.CharField(
-        verbose_name='番地',max_length=6,blank=True, null=False
+        verbose_name='番地', max_length=6, blank=True, null=False
     )
 
     address2 = models.CharField(
-        verbose_name='建物名', max_length=40,blank=True,null=True
+        verbose_name='建物名', max_length=40, blank=True, null=True
     )
 
     contract_pets = models.ManyToManyField(
@@ -68,3 +70,30 @@ class CustomUser(AbstractUser):
             pass  # 新規作成時は削除処理をスキップ
 
         super().save(*args, **kwargs)
+
+    # 郵便番号のハイフン付き表示
+    def formatted_post_code(self):
+        """郵便番号をハイフン付きで表示する"""
+        return f"{self.post_code[:3]}-{self.post_code[3:]}" if self.post_code else ""
+
+    def formatted_phone_number(self):
+        """電話番号をハイフン付きで返す"""
+        phone_number = self.phone_number
+
+        # 入力からハイフンと小数点を削除
+        phone_number = phone_number.replace("-", "").replace(".", "")
+
+        # フリーダイヤル（0120-xxx-xxx）: 10桁
+        if len(phone_number) == 10 and phone_number.startswith("0120"):
+            return f"{phone_number[:4]}-{phone_number[4:7]}-{phone_number[7:]}"
+
+        # 固定電話（例: 026-267-3353など）: 10桁
+        elif len(phone_number) == 10:
+            return f"{phone_number[:3]}-{phone_number[3:6]}-{phone_number[6:]}"
+
+        # 11桁の番号（携帯電話やその他）: 11桁
+        elif len(phone_number) == 11:
+            return f"{phone_number[:3]}-{phone_number[3:7]}-{phone_number[7:]}"
+
+        # それ以外はそのまま返す
+        return phone_number

@@ -69,7 +69,7 @@ class Pet(models.Model):
         max_length=255,
         blank=False,
         null=False,
-        verbose_name="保護場所",
+        verbose_name="保護施設",
         default=''
     )
     # 緯度経度
@@ -129,7 +129,7 @@ class PhoneNumber(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='phone_numbers')
     number = models.CharField(
         max_length=15,
-        validators=[RegexValidator(r'^[0-9]{10,15}$', '電話番号は半角数字のみで、10～15桁にしてください。')],
+        validators=[RegexValidator(r'^[0-9]{10,11}$', '電話番号は半角数字のみで、10,11桁までにしてください。')],
         verbose_name="電話番号"
     )
 

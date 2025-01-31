@@ -25,6 +25,7 @@ from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent="test")
 
+
 class SignUpView(CreateView):
 
     template_name = "accounts/signup.html"
@@ -183,7 +184,17 @@ class CompletedPetsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     'status': contract_pet.status
                 })
 
-        context['pet_images_completed'] = pet_images_completed
+        # **ページネーションの設定**
+        paginator = Paginator(pet_images_completed, 12)  # 1ページに12件表示
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # コンテキストにページネーションデータを追加
+        context['page_obj'] = page_obj
+
+        # 契約済みのペット画像情報をページネーション後のデータに更新
+        context['pet_images_completed'] = page_obj.object_list  # page_obj から object_list を使ってリストを取得
+
         return context
 
 
@@ -269,6 +280,10 @@ class MyPageView(LoginRequiredMixin, TemplateView):
 
         # プロフィール画像フォームをコンテキストに追加
         context['profile_image_form'] = ProfileImageForm(instance=user)
+
+        # フォーマット済みの郵便番号と電話番号を追加
+        context['formatted_post_code'] = user.formatted_post_code()
+        context['formatted_phone_number'] = user.formatted_phone_number()
 
         return context
 

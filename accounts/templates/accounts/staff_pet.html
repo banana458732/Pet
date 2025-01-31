@@ -4,6 +4,9 @@
 
 {% block contents %}
 <style>
+    h2 {
+        margin-bottom: 20px;
+    }
     .pet-list {
         display: flex;
         flex-wrap: wrap;
@@ -132,7 +135,7 @@
             </div>
         </li>
     {% empty %}
-        <p>仮契約中のペットはありません。</p>
+        <h4>仮契約中のペットはありません。</h4>
     {% endfor %}
 </ul>
 
