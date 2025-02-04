@@ -28,35 +28,44 @@
         {% endfor %}
     </ul>
 
-    <!-- ページネーション -->
-    <div class="pagination" style="text-align: center; margin-top: 20px;">
-        <span class="step-links">
-            {% if page_obj.has_previous %}
-                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
-            {% else %}
-                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
-                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
-            {% endif %}
-    
-            <span class="current">
-                ページ <span class="current-page">{{ page_obj.number }}</span> / {{ page_obj.paginator.num_pages }}
+    {% if request.GET.page or page_obj.paginator.num_pages > 1 %}
+        <div class="pagination" style="display: flex; justify-content: center; margin-top: 20px;">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    {% if request.GET.page %}
+                        <a href="{% url 'survey:results' %}?page=1" class="pagination-link">&laquo; 最初</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}" class="pagination-link">前</a>
+                    {% else %}
+                        <a href="{% url 'survey:results' %}?page=1{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
+                    {% endif %}
+                {% endif %}
+
+                <span class="current">
+                    ページ {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
+        
+                {% if page_obj.has_next %}
+                    {% if request.GET.page %}
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}" class="pagination-link">次</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}" class="pagination-link">最後 &raquo;</a>
+                    {% else %}
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
+                    {% endif %}
+                {% endif %}
             </span>
-    
-            {% if page_obj.has_next %}
-                <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
-            {% else %}
-                <a href="{% url 'survey:results' %}?page={{ page_obj.number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
-            {% endif %}
-        </span>
-    </div>              
+        </div>
+    {% endif %}
 
 {% elif latest_pets %}
     <!-- 追加条件が一致しない場合（最新の3匹を表示） -->
-    <h2 class="message-not-found" style="text-align: center; margin-top: 50px;">追加条件に一致するペットが見つかりませんでした。</h2>
-    <h3 style="text-align: center;">他にもこんなペットがいます！</h3>
+    <h2 class="message-not-found" style="font-weight: bold; font-size: 30px; margin-left: 48%; transform: translateX(-25%); margin-top: 50px; white-space: nowrap;">
+        追加条件に一致するペットが見つかりませんでした。
+    </h2>    
+      <h3 style="font-weight: bold; font-size: 32px; margin-left: 55%; transform: translateX(-25%);">
+        他にもこんなペットがいます！
+      </h3>      
     <ul>
         {% for pet, image_url in latest_pets %}
             <li>
