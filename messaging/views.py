@@ -20,7 +20,7 @@ def send_message(request):
             f'新しいメッセージ: {sender_name}さんからのお問い合わせ',
             message_content,
             recipient_email,
-            [recipient_email],#, sender_email
+            [recipient_email, sender_email],
             fail_silently=False,
         )
 
@@ -76,11 +76,3 @@ def pet_detail(request, pet_id):
         'user_karikeiyaku': user_karikeiyaku,
         'other_user_karikeiyaku': other_user_karikeiyaku,
     })
-
-
-class IndexView(TemplateView):
-    template_name = 'messaging/index.html'
-
-
-def index(request):
-    return render(request, 'messaging/index.html')

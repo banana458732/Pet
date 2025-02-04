@@ -9,7 +9,7 @@ from django.urls import reverse
 
 def karikeiyaku_form(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
-    
+
     # ユーザーが現在契約中のペットを取得
     user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet, status="仮契約中").first()
 

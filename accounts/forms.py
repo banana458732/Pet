@@ -1,11 +1,13 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser
-from django import forms 
+from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import CustomUser
 import re
+from django.core.validators import EmailValidator
 
 
+# バリデータ関数の整理
 def validate_phone_number(value):
     if not re.match(r'^\d{2,4}\d{2,4}\d{4}$', value):
         raise ValidationError('電話番号は半角数字のみで、10～15桁にしてください。(例: 09012345678)')
@@ -13,7 +15,7 @@ def validate_phone_number(value):
 
 def validate_address(value):
     if not re.match(r'^[\w\s\-、。、・〒]+$', value):
-        raise ValidationError('有効な住所を入力してください。記号や特殊文字は使用できません。')    
+        raise ValidationError('有効な住所を入力してください。記号や特殊文字は使用できません。')
 
 
 def validate_username(value):
@@ -36,31 +38,76 @@ def validate_email(value):
         raise ValidationError('メールアドレスエラー')
 
 
+# ユーザー作成フォーム
 class CustomUserCreationForm(UserCreationForm):
-    phone_number = forms.CharField(label='電話番号', max_length=15, required=True,widget=forms.TextInput(attrs={'placeholder': '例: 00012345678'}), validators=[validate_phone_number])
-    username = forms.CharField(label="ユーザーネーム", min_length=3, max_length=16, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet123'}), validators=[validate_username])
-    email = forms.EmailField(label="メールアドレス", min_length=7, max_length=256, required=True,widget=forms.TextInput(attrs={'placeholder': '例: pet@pet.com'}),validators=[validate_email])
-    post_code = forms.CharField(label="郵便番号", min_length=7,max_length=7, required=True,widget=forms.TextInput(attrs={'class': 'p-postal-code', 'placeholder': '例:8900053'}), validators=[validate_post_code])
-    street_address = forms.CharField(label="番地",max_length=6, required=True,widget=forms.TextInput(attrs={'class': 'p-extended-address', 'placeholder': '例:10'}),validators=[validate_street_address])
-    address1 = forms.CharField(label="都道府県 市区町村", max_length=20, required=True, widget=forms.TextInput(attrs={'class': 'p-region p-locality p-street-address p-extended-address', 'placeholder': '例: 長野県長野市長野元善町'}))
-    address2 = forms.CharField(label="建物名", max_length=20, required=False, widget=forms.TextInput(attrs={'class': '','placeholder': '記入例：キャンセビル'}) )
+    phone_number = forms.CharField(
+        label='電話番号',
+        max_length=15,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: 00012345678'}),
+        validators=[validate_phone_number]
+    )
+    username = forms.CharField(
+        label="ユーザーネーム",
+        min_length=3,
+        max_length=16,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: pet123'}),
+        validators=[validate_username]
+    )
+    email = forms.EmailField(
+        label="メールアドレス",
+        min_length=7,
+        max_length=256,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: pet@pet.com'}),
+        validators=[EmailValidator(message='有効なメールアドレスを入力してください。')]
+    )
+    post_code = forms.CharField(
+        label="郵便番号",
+        min_length=7,
+        max_length=7,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'p-postal-code', 'placeholder': '例:8900053'}),
+        validators=[validate_post_code]
+    )
+    street_address = forms.CharField(
+        label="番地",
+        max_length=6,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'p-extended-address', 'placeholder': '例:10'}),
+        validators=[validate_street_address]
+    )
+    address1 = forms.CharField(
+        label="都道府県 市区町村",
+        max_length=20,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'p-region p-locality p-street-address p-extended-address', 'placeholder': '例: 長野県長野市長野元善町'})
+    )
+    address2 = forms.CharField(
+        label="建物名",
+        max_length=20,
+        required=False,
+        widget=forms.TextInput(attrs={'class': '', 'placeholder': '例：キャンセビル'})
+    )
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password1', 'password2', 'address1', 'phone_number','post_code','street_address', 'address2')
+        fields = ('username', 'email', 'password1', 'password2', 'address1', 'phone_number', 'post_code', 'street_address', 'address2')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # ラベルからコロンを削除
         for field in self.fields.values():
-            field.label_suffix = ''  # コロンを削除
+            field.label_suffix = ''  # ラベルからコロンを削除
 
 
+# ログインフォーム
 class LoginForm(AuthenticationForm):
     class Meta:
         model = CustomUser
 
 
+# プロフィール画像フォーム
 class ProfileImageForm(forms.ModelForm):
     delete_image = forms.BooleanField(required=False, label='画像を削除', initial=False)
 
@@ -68,7 +115,6 @@ class ProfileImageForm(forms.ModelForm):
         model = CustomUser
         fields = ['profile_image']
 
-    # フィールドにカスタムウィジェットを設定
     profile_image = forms.ImageField(
         widget=forms.FileInput(attrs={'accept': 'image/*'}),
         label=''
@@ -76,52 +122,99 @@ class ProfileImageForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        if self.cleaned_data.get('delete_image'):  # 画像を削除する場合
+        if self.cleaned_data.get('delete_image'):
             instance.delete_old_image()
-            instance.profile_image = 'profile_images/default.jpg'  # デフォルト画像に戻す
+            instance.profile_image = 'profile_images/default.jpg'
         if commit:
             instance.save()
         return instance
 
 
+# ユーザー情報編集フォーム
 class CustomUserUpdateForm(forms.ModelForm):
-    """ユーザー情報編集フォーム"""
+    username = forms.CharField(
+        label="ユーザー名",
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'ユーザー名（英字と数字のみ）',
+            'class': 'form-control'
+        }),
+        validators=[RegexValidator(regex=r'^[a-zA-Z0-9]*$', message='ユーザー名は英字と数字のみで入力してください。')]
+    )
+    email = forms.EmailField(
+        label="メールアドレス",
+        min_length=7,
+        max_length=256,
+        required=True,
+        widget=forms.TextInput(attrs={'placeholder': '例: pet@pet.com'}),
+    )
     post_code = forms.CharField(
         label="郵便番号",
         max_length=8,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': '例: 123-4567'}),
-        validators=[validate_post_code]  # 郵便番号のバリデーション
+        widget=forms.TextInput(attrs={
+            'placeholder': '例: 1234567（ハイフンなし）',
+            'class': 'p-postal-code form-control'
+        }),
+        validators=[validate_post_code]
     )
     address1 = forms.CharField(
         label="都道府県 市区町村",
         min_length=10,
         max_length=100,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': '例: 長野県長野市元善町'}),
-        validators=[validate_address]  # 必要に応じてカスタムバリデータを追加
+        widget=forms.TextInput(attrs={
+            'placeholder': '例: 長野県長野市元善町',
+            'class': 'p-region p-locality p-street-address p-extended-address form-control'
+        }),
+        validators=[validate_address]
     )
     street_address = forms.CharField(
         label="番地",
         max_length=6,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': '例: 10番地'}),
-        validators=[validate_street_address]  # 必要に応じてバリデータを追加
+        widget=forms.TextInput(attrs={
+            'placeholder': '例: 10番地',
+            'class': 'form-control'
+        }),
+        validators=[validate_street_address]
+    )
+    address2 = forms.CharField(
+        label="建物名",
+        max_length=40,
+        required=False,
+        widget=forms.TextInput(attrs={
+            'placeholder': '例: キャンセビル',
+            'class': 'form-control'
+        })
     )
     phone_number = forms.CharField(
         label="電話番号",
         max_length=15,
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': '例: 090-1234-5678'}),
-        validators=[validate_phone_number]
+        widget=forms.TextInput(attrs={
+            'placeholder': '例: 09012345678（ハイフンなし）',
+            'class': 'form-control'
+        }),
+        validators=[RegexValidator(r'^[0-9]{10,11}$', '電話番号は半角数字のみで、10,11桁までにしてください。')],
     )
 
     class Meta:
         model = CustomUser
-        fields = ['username', 'email', 'post_code', 'address1', 'street_address', 'phone_number']
+        fields = ['username', 'email', 'post_code', 'address1', 'street_address', 'phone_number', 'address2']
+
+        # フィールドごとのエラーメッセージを設定
+        error_messages = {
+            'phone_number': {
+                'invalid': '電話番号は10桁または11桁の数字でなければなりません。',
+            },
+            'post_code': {
+                'invalid': '郵便番号は7桁の数字でなければなりません。',
+            },
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # ラベルのコロンを削除
         for field in self.fields.values():
-            field.label_suffix = ''
+            field.label_suffix = ''  # ラベルからコロンを削除

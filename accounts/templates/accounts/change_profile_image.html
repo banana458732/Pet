@@ -23,9 +23,8 @@
     object-fit: contain; /* 画像比率を保つ */
     border: 3px solid #ddd;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
-
 
   .profile-form-container {
     margin: 20px auto;
@@ -99,67 +98,177 @@
     color: #565e64; /* 濃いグレー */
     text-decoration: underline;
   }
+
+  .form-group.inline {
+    display: flex;
+    align-items: center; /* 垂直方向を揃える */
+    gap: 10px; /* ラベルとチェックボックスの間隔を調整 */
+    flex-wrap: nowrap; /* 改行を防ぐ */
+  }
+
+  .form-group.inline label {
+    white-space: nowrap; /* テキストの改行を防ぐ */
+    margin: 0; /* 不要な余白をリセット */
+    font-size: 18px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column; /* 縦方向に要素を並べる */
+    align-items: start; /* 左揃えにする */
+    gap: 5px; /* ラベルとチェックボックスの間に余白を追加 */
+  }
+
+  .form-group label {
+    font-size: 14px; /* ラベルの文字サイズを調整（お好みで） */
+    margin-bottom: 5px; /* チェックボックスとの間隔を調整 */
+  }
+
+  /* エラー表示を赤色・小さく変更 */
+  .error-list {
+    color: red;
+    font-size: 12px; /* 小さく設定 */
+    padding-left: 20px;
+  }
+
+  .error {
+    color: red;
+    font-size: 12px; /* 小さく設定 */
+  }
 </style>
+
 
 <div class="profile-container">
     <h1>プロフィールの変更</h1>
 
-    <!-- 現在のプロフィール画像を表示 -->
-    <div>
-      {% if user.profile_image and user.profile_image.name != "profile_images/default.jpg" %}
-        <img src="{{ user.profile_image.url }}" alt="現在のプロフィール画像" class="profile-image" />
-      {% else %}
-        <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
-      {% endif %}
-    </div>
-
     <div class="profile-form-container">
-      <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-        <!-- ユーザー情報編集 -->
-        <h2>ユーザー情報を編集</h2>
-        <div class="form-group">
-          <label for="id_username">ユーザー名</label>
-          {{ user_form.username }}
-        </div>
-        <div class="form-group">
-          <label for="id_email">メールアドレス</label>
-          {{ user_form.email }}
-        </div>
-        <div class="form-group">
-          <label for="post_code">郵便番号</label>
-          {{ user_form.post_code }}
-        </div>
-        <div class="form-group">
-          <label for="address1">都道府県 市区町村</label>
-          {{ user_form.address1 }}
-        </div>
-        <div class="form-group">
-          <label for="street_address">番地</label>
-          {{ user_form.street_address }}
-        </div>
-        <div class="form-group">
-          <label for="id_phone_number">電話番号</label>
-          {{ user_form.phone_number }}
-        </div>
+              {% if messages %}
+              <div class="alert alert-dismissible">
+                  {% for message in messages %}
+                      <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              </div>
+          {% endif %}
 
-        <!-- プロフィール画像編集 -->
-        <h2>プロフィール画像の変更</h2>
-        <div class="form-group">
-          {{ profile_form.profile_image }}
-        </div>
-        <div class="form-group">
-          <label for="id_delete_image">画像を削除</label>
-          {{ profile_form.delete_image }}
-        </div>
+            <!-- ユーザー情報編集 -->
+            <h2>ユーザー情報を編集</h2>
+            <div class="form-group">
+                <label for="id_username">ユーザー名</label>
+                {{ user_form.username }}
+                {% if user_form.username.errors %}
+                    <ul class="error-list">
+                        {% for error in user_form.username.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
 
-        <button type="submit">変更を保存</button>
-      </form>
+            <div class="form-group">
+                <label for="id_email">メールアドレス</label>
+                {{ user_form.email }}
+                {% if user_form.email.errors %}
+                    <ul class="error-list">
+                        {% for error in user_form.email.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_post_code">郵便番号</label>
+                {{ user_form.post_code }}
+                {% if user_form.post_code.errors %}
+                    <ul class="error-list">
+                        {% for error in user_form.post_code.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_address1">都道府県 市区町村</label>
+                {{ user_form.address1 }}
+                {% if user_form.address1.errors %}
+                    <ul class="error-list">
+                        {% for error in user_form.address1.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_street_address">番地</label>
+                {{ user_form.street_address }}
+                {% if user_form.street_address.errors %}
+                    <ul class="error-list">
+                        {% for error in user_form.street_address.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_address2">建物名</label>
+                {{ user_form.address2 }}
+                {% if user_form.address2.errors %}
+                    <ul class="error-list">
+                        {% for error in user_form.address2.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_phone_number">電話番号</label>
+                {{ user_form.phone_number }}
+                {% if user_form.phone_number.errors %}
+                    <ul class="error-list">
+                        {% for error in user_form.phone_number.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <!-- プロフィール画像編集 -->
+            <h2>プロフィール画像の変更</h2>
+            <div class="form-group">
+                {{ profile_form.profile_image }}
+                {% if profile_form.profile_image.errors %}
+                    <ul class="error-list">
+                        {% for error in profile_form.profile_image.errors %}
+                            <li class="error">{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group inline">
+                <label for="id_delete_image">画像を削除</label>
+                {{ profile_form.delete_image }}
+            </div>
+
+            <button type="submit">変更を保存</button>
+        </form>
     </div>
 
     <div class="form-footer">
-      <p><a href="{% url 'accounts:my_page' %}" class="action-link">マイページに戻る</a></p>
+        <p><a href="{% url 'accounts:my_page' %}" class="action-link">マイページに戻る</a></p>
     </div>
 </div>
+
+<!-- Yubinbango.js の読み込み -->
+<script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+
 {% endblock %}

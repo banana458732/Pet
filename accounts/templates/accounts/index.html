@@ -36,6 +36,7 @@
 
     .pet-info-table {
         width: 100%;
+        table-layout: fixed; /* 列幅を固定 */
         border-collapse: collapse;
         margin-top: 10px;
     }
@@ -150,8 +151,8 @@
                         <td>{{ pet.id }}</td>
                     </tr>
                     <tr>
-                        <th>サイズ</th>
-                        <td>{{ pet.size }}</td>
+                        <th>品種</th>
+                        <td>{{ pet.kinds }}</td>
                     </tr>
                     <tr>
                         <th>性別</th>

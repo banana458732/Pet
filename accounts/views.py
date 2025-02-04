@@ -20,9 +20,11 @@ from django.http import HttpResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils.http import url_has_allowed_host_and_scheme
+from django.core.paginator import Paginator
 from geopy.geocoders import Nominatim
 
 geolocator = Nominatim(user_agent="test")
+
 
 class SignUpView(CreateView):
 
@@ -121,9 +123,6 @@ class Staff_menu(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         # 仮契約中のペット情報を取得
         contract_pets_draft = Karikeiyaku.objects.filter(status="仮契約中").select_related('pet')
 
-        # 契約済みのペット情報を取得
-        contract_pets_completed = Karikeiyaku.objects.filter(status="契約済み").select_related('pet')
-
         # 仮契約中のペットの画像を取得
         pet_images_draft = []
         for contract_pet in contract_pets_draft:
@@ -138,23 +137,18 @@ class Staff_menu(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     'status': contract_pet.status
                 })
 
-        # 契約済みのペットの画像を取得
-        pet_images_completed = []
-        for contract_pet in contract_pets_completed:
-            pet = contract_pet.pet
-            if pet:  # petが存在するか確認
-                images = PetImage.objects.filter(pet=pet)
-                pet_images_completed.append({
-                    'pet': pet,
-                    'images': images if images.exists() else None,
-                    'created_at': contract_pet.created_at,
-                    'end_date': contract_pet.end_date,
-                    'status': contract_pet.status
-                })
+        # **ページネーションの設定**
+        from django.core.paginator import Paginator
+
+        paginator = Paginator(pet_images_draft, 12)  # 1ページに12件表示
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # コンテキストにページネーションデータを追加
+        context['page_obj'] = page_obj
 
         # 仮契約中と契約済みのペットを分けてcontextに渡す
-        context['pet_images_draft'] = pet_images_draft
-        context['pet_images_completed'] = pet_images_completed
+        context['pet_images_draft'] = page_obj  # 修正: ここを page_obj に変更
 
         return context
 
@@ -190,7 +184,17 @@ class CompletedPetsView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     'status': contract_pet.status
                 })
 
-        context['pet_images_completed'] = pet_images_completed
+        # **ページネーションの設定**
+        paginator = Paginator(pet_images_completed, 12)  # 1ページに12件表示
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # コンテキストにページネーションデータを追加
+        context['page_obj'] = page_obj
+
+        # 契約済みのペット画像情報をページネーション後のデータに更新
+        context['pet_images_completed'] = page_obj.object_list  # page_obj から object_list を使ってリストを取得
+
         return context
 
 
@@ -270,6 +274,10 @@ class MyPageView(LoginRequiredMixin, TemplateView):
 
         # プロフィール画像フォームをコンテキストに追加
         context['profile_image_form'] = ProfileImageForm(instance=user)
+
+        # フォーマット済みの郵便番号と電話番号を追加
+        context['formatted_post_code'] = user.formatted_post_code()
+        context['formatted_phone_number'] = user.formatted_phone_number()
 
         return context
 
@@ -392,8 +400,6 @@ class LogoutView(LoginRequiredMixin, LogoutView):
     template_name = 'accounts/login.html'
 
 
-from django.core.paginator import Paginator
-
 def index(request):
     # 仮契約中および契約済みのペットIDを取得
     excluded_pet_ids = Karikeiyaku.objects.filter(status__in=['仮契約中', '仮契約済', '契約済み']).values_list('pet_id', flat=True)
@@ -402,7 +408,7 @@ def index(request):
     pets = Pet.objects.exclude(id__in=excluded_pet_ids).order_by('-id')  # id順で並べ替え（新しい順）
 
     # ページネーションの設定
-    paginator = Paginator(pets, 12)  # 10匹ずつ表示
+    paginator = Paginator(pets, 12)  # 12匹ずつ表示
     page_number = request.GET.get('page')  # クエリパラメータから現在のページ番号を取得
     page_obj = paginator.get_page(page_number)  # ページオブジェクトを取得
 

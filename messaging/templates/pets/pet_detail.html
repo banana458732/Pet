@@ -279,12 +279,15 @@
             max-width: 500px; /* 最大幅を指定 */
         }
 
+        /* コメント入力フォーム */
         .comment-form textarea {
-            width: 100%; /* 入力欄を親要素の幅に合わせる */
+            width: 100%;  /* 横幅を親要素に合わせる */
             max-width: 500px; /* 最大幅を指定 */
+            height: 100px;  /* 高さを固定 */
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
+            resize: none;  /* ユーザーによるリサイズを禁止 */
         }
 
         .comment-form .submit-button {
@@ -354,6 +357,14 @@
 
         .delete-button[type="submit"]:hover {
         text-decoration: underline;
+        }
+
+        /* セクションの区切り線 */
+        .separator {
+            height: 2px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(200, 200, 200, 1) 50%, rgba(255, 255, 255, 0) 100%);
+            margin-top: 30px;  /* 上の余白を広げる */
+            margin-bottom: 40px; /* 下の余白を広げる */
         }
 
         /* 画面が600px以下の場合のスタイル変更（モバイルビュー） */
@@ -593,56 +604,63 @@
             <td>{{ pet.formatted_phone_number }}</td>
         </tr>
         <tr>
-            <td><strong>保護場所</strong></td>
+            <td><strong>保護施設</strong></td>
             <td>{{ pet.location }}</td>
         </tr>
     </table>
 </div>
 
-    <div class="comments-section">
-        <h2>コメント</h2>
-        <div class="comment-container">
-            <!-- コメントがある場合 -->
-            {% if comments %}
-                <ul>
-                    {% for comment in comments %}
-                    <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
-                        <!-- ユーザーのプロフィール画像 -->
-                        <div class="comment-header">
-                            {% if comment.user.profile_image and comment.user.profile_image.name != 'profile_images/default.jpg' %}
-                                <img src="{{ comment.user.profile_image.url }}" alt="{{ comment.user.username }}のプロフィール画像" class="profile-image" />
-                            {% else %}
-                                <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
-                            {% endif %}
-                            <strong>{{ comment.user.username }}
-                                {% if comment.user.is_superuser %}
-                                    <span style="color: red;">[管理者]</span>
-                                {% endif %}
-                            </strong>
-                        </div>
-                        <div class="comment-content">
-                            {{ comment.content }}
-                            <br><small>{{ comment.timestamp }}</small>
-                        </div>
-    
-                        <!-- 管理者のみ削除ボタンを表示 -->
-                        {% if user.is_superuser %}
-                            <form method="post" style="display:inline;">
-                                {% csrf_token %}
-                                <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                                <button type="submit" name="delete_comment" class="delete-button" style="color: red;">削除</button>
-                            </form>
+<!-- セクションの間に線 -->
+<div class="separator"></div>
+
+<!-- コメントセクション -->
+<div class="comments-section">
+    <h2>コメント</h2>
+    <div class="comment-container">
+        <!-- コメントがある場合 -->
+        {% if comments %}
+            <ul>
+                {% for comment in comments %}
+                <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
+                    <!-- ユーザーのプロフィール画像 -->
+                    <div class="comment-header">
+                        {% if comment.user.profile_image and comment.user.profile_image.name != 'profile_images/default.jpg' %}
+                            <img src="{{ comment.user.profile_image.url }}" alt="{{ comment.user.username }}のプロフィール画像" class="profile-image" />
+                        {% else %}
+                            <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
                         {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <!-- コメントがない場合 -->
-                <p>まだコメントはありません。</p>
-            {% endif %}
-        </div>
-    </div>    
-    
+                        <strong>{{ comment.user.username }}
+                            {% if comment.user.is_superuser %}
+                                <span style="color: red;">[管理者]</span>
+                            {% endif %}
+                        </strong>
+                    </div>
+                    <div class="comment-content">
+                        {{ comment.content }}
+                        <br><small>{{ comment.timestamp }}</small>
+                    </div>
+
+                    <!-- 管理者のみ削除ボタンを表示 -->
+                    {% if user.is_superuser %}
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                            <button type="submit" name="delete_comment" class="delete-button" style="color: red;">削除</button>
+                        </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <!-- コメントがない場合 -->
+            <p>まだコメントはありません。</p>
+        {% endif %}
+    </div>
+</div>
+
+    <!-- セクションの間に線 -->
+    <div class="separator"></div>
+
     <!-- コメントフォーム -->
     <div class="comment-form-container">
         {% if user.is_authenticated %}
@@ -671,15 +689,16 @@
             <p>コメントを投稿するには、ログインが必要です。<a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>してください。</p>
         {% endif %}
     </div>
-    
+
+    <!-- 仮契約セクション -->
     <div class="karikeiyaku-section">
         <h2>仮契約について</h2>
-    
+
         {% if user.is_authenticated %}
-        <!-- ログインしている場合に表示する文 -->
-        <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
+            <!-- ログインしている場合に表示する文 -->
+            <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
         {% endif %}
-        
+
         {% if not user.is_authenticated %}
             <!-- ログインしていない場合 -->
             <p>仮契約を進めるには、ログインが必要です。<a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>してください。</p>
@@ -687,8 +706,8 @@
             {% if other_user_karikeiyaku %}
                 <!-- 他のユーザーが仮契約中 -->
                 <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
-            {% elif user_karikeiyaku %}
-                <!-- 自分が仮契約中 -->
+            {% elif user_karikeiyaku and user_karikeiyaku.status != None %}
+                <!-- 自分が仮契約中（statusがNoneでない場合） -->
                 <div class="btn-group">
                     <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中・詳細を見る</a>
                 </div>

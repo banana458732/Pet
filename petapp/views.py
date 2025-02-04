@@ -135,13 +135,13 @@ def pet_create_view(request):
                         })
 
                     # 電話番号保存
-                    phone_number = request.POST.get('phone_number')
+                    phone_number = str(request.POST.get('phone_number', '')).strip()
                     if phone_number:
                         PhoneNumber.objects.create(pet=pet, number=phone_number)
 
                     # ペットのIDを確認した後にCSVにデータを追加
                     new_pet_data = {
-                        'id': pet_id,  # 保存後に確定するIDを使用
+                        'id': str(pet_id),  # IDを文字列として扱う
                         'type': pet.type,
                         'size': pet.size,
                         'color': pet.color,
@@ -150,23 +150,30 @@ def pet_create_view(request):
                         'disease': pet.disease,
                         'personality': pet.personality,
                         'sex': pet.sex,
-                        'post_code': pet.post_code,
+                        'post_code': str(pet.post_code).strip(),  # 郵便番号を文字列として扱う
                         'address': pet.address,
-                        'phone_number': pet.phone_number,
+                        'phone_number': phone_number,  # 文字列として保存
                         'location': pet.location,
                         'image_urls': ', '.join(image_urls)  # 画像URLをカンマ区切りで保存
                     }
 
                     # 新しいペットがCSVに存在しない場合は追加
-                    if int(pet_id) not in data['id'].astype(int).values:
+                    if str(pet_id) not in data['id'].astype(str).values:
                         data = pd.concat([data, pd.DataFrame([new_pet_data])], ignore_index=True)
                         write_csv(data)
 
                     return redirect('petapp:pet-create-comp', pet_id=pet.id)
             except ValidationError as e:
+                # ValidationErrorが発生した場合、エラーメッセージをキャッチ
                 error_messages.append(f"Validation error: {str(e)}")
                 # トランザクションがロールバックされると、何もデータベースに保存されません
+                return render(request, 'petapp/pet_create.html', {
+                    'form': pet_form,
+                    'photo_formset': photo_formset,
+                    'csv_data': data.head(),  # CSVデータを表示
+                })
 
+    # ペット作成フォームと画像フォームセットを含むビューをレンダリング
     return render(request, 'petapp/pet_create.html', {
         'form': pet_form,
         'photo_formset': photo_formset,
@@ -408,7 +415,7 @@ def pet_update_comp_view(request, pet_id):
         'post_code': '郵便番号',
         'address': '住所',
         'phone_number': '電話番号',
-        'location': '保護場所',
+        'location': '保護施設',
     }
 
     # updated_fieldsを日本語ラベルに変換

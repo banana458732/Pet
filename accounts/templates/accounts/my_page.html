@@ -5,93 +5,149 @@
 
 {% block contents %}
 <style>
-  /* タブのスタイル */
-  .tabs {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #ddd;
-  }
+/* タブのスタイル */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ddd;
+}
 
-  .tabs a {
-    padding: 10px 20px;
-    text-decoration: none;
-    font-size: 1.2em;
-    color: #555;
-    margin: 0 10px;
-    border-radius: 5px 5px 0 0;
-    border: 1px solid #ddd;
-  }
+.tabs a {
+  padding: 10px 20px;
+  text-decoration: none;
+  font-size: 1.2em;
+  color: #555;
+  margin: 0 10px;
+  border-radius: 5px 5px 0 0;
+  border: 1px solid #ddd;
+}
 
-  .tabs a.active {
-    background-color: #007BFF;
-    color: #fff;
-    border-color: #007BFF;
-  }
+.tabs a.active {
+  background-color: #007BFF;
+  color: #fff;
+  border-color: #007BFF;
+}
 
-  .tab-content {
-    display: none;
-    padding-top: 20px;
-  }
+.tab-content {
+  display: none;
+  padding-top: 20px;
+}
 
-  .tab-content.active {
-    display: block;
-  }
+.tab-content.active {
+  display: block;
+}
 
-  /* その他のスタイルはそのまま */
-  .profile-container {
-    text-align: center;
-    margin: 20px auto;
-    width: 90%;
-    max-width: 1000px;
-    background-color: #f9f9f9;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  }
-  
+/* その他のスタイルはそのまま */
+.profile-container {
+  text-align: center;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
 
-  .profile-image {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #ddd;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
 
-  .profile-info {
-    margin: 30px auto;
-    width: 100%;
-    max-width: 600px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    padding: 20px;
-  }
+/* プロフィール情報 */
+.profile-info {
+  margin: 30px auto;
+  width: 100%;
+  max-width: 900px; /* 最大幅を900pxに設定 */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  box-sizing: border-box; /* ボックス内にパディングを含める */
+}
 
+.profile-info table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 列の幅を均等に固定 */
+}
+
+.profile-info th, .profile-info td {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  word-wrap: break-word; /* 長い文字列を折り返す */
+}
+
+.profile-info th {
+  background-color: #f7f7f7;
+  color: #333;
+  font-weight: bold;
+  width: 20%; /* 項目幅を固定 */
+  white-space: nowrap; /* 項目は改行なし */
+}
+
+.profile-info td {
+  background-color: #fff;
+  color: #555;
+  width: 80%; /* 値の幅を広く */
+  word-wrap: break-word; /* 長い文字列を折り返す */
+  white-space: normal; /* 値は改行可能 */
+}
+
+/* 小画面時の調整 */
+@media (max-width: 768px) {
   .profile-info table {
     width: 100%;
-    border-collapse: collapse;
+    max-width: 100%; /* テーブル幅を100%に */
+    table-layout: auto; /* 自動で列幅を調整 */
+    margin: 0 auto;
   }
 
   .profile-info th, .profile-info td {
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
+    padding: 10px 8px; /* 余白を調整 */
+    font-size: 14px; /* フォントサイズを小さく */
   }
 
   .profile-info th {
-    background-color: #f7f7f7;
-    color: #333;
-    font-weight: bold;
+    width: 30%; /* 小画面では項目幅を少し広げる */
+    white-space: nowrap;
   }
 
   .profile-info td {
-    background-color: #fff;
-    color: #555;
+    width: 70%; /* 値の幅を広げる */
+    white-space: normal;
   }
+}
+
+/* 画像やプロフィール情報を中央揃え */
+.profile-container {
+  text-align: center;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 900px;
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 画像のスタイル */
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
 
 /* ペットカードのスタイル */
 .contract-pet-card {
@@ -115,10 +171,12 @@
   border-radius: 5px; /* 画像の角を丸くする */
 }
 
+/* ペット情報テーブル */
 .pet-info-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  table-layout: fixed; /* 列の幅を均等に固定 */
 }
 
 .pet-info-table th,
@@ -126,13 +184,54 @@
   border: 1px solid #ddd;
   padding: 10px;
   text-align: left;
+  word-wrap: break-word; /* 長い文字列を折り返す */
 }
 
 .pet-info-table th {
   background-color: #f4f4f4;
   font-weight: bold;
+  width: 20%; /* 項目の幅を20%に狭く設定 */
+  white-space: nowrap; /* 項目は改行なし */
 }
 
+.pet-info-table td {
+  background-color: #fff;
+  color: #555;
+  width: 80%; /* 値の幅を80%に設定 */
+  word-wrap: break-word; /* 値は折り返し */
+  white-space: normal; /* 値は改行可能 */
+}
+
+/* 小画面時の調整 */
+@media (max-width: 768px) {
+  .pet-info-table {
+    width: 100%; /* テーブルの幅を画面いっぱいに */
+    max-width: 500px; /* 最大幅を500pxに固定 */
+    table-layout: fixed; /* 列の幅を均等に固定 */
+    margin: 0 auto; /* テーブルを中央に配置 */
+  }
+
+  .pet-info-table th {
+    width: 20%; /* 項目の幅を狭く */
+    white-space: nowrap; /* 項目は改行なし */
+    word-break: break-word; /* 長い文字列を折り返す */
+    text-align: left; /* 左寄せ */
+    font-size: 14px; /* 小さめのフォントサイズ */
+    line-height: 1.5; /* 行間調整 */
+    padding: 6px 4px; /* 余白を小さく */
+  }
+
+  .pet-info-table td {
+    width: 80%; /* 値の幅を広く */
+    white-space: normal; /* 値は改行可能 */
+    word-wrap: break-word; /* 長い文字列を折り返す */
+    font-size: 14px; /* 小さめのフォントサイズ */
+    line-height: 1.5; /* 行間調整 */
+    padding: 6px 4px; /* 余白を小さく */
+  }
+}
+
+/* Google Mapのスタイル */
 .google-map {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 アスペクト比 */
@@ -153,21 +252,49 @@
   height: 100%;
 }
 
+/* アクションリンク */
 .action-link-container a {
   font-size: 1.2em;
-  color: #007BFF;
+  color: #fff; /* 文字色を白に設定 */
   text-decoration: none;
+  background-color: #dc3545; /* 赤色の背景 */
+  padding: 10px 20px; /* 内側に余白を追加 */
+  border-radius: 5px; /* 角を丸く */
+  display: inline-block; /* ボタンのようにインラインブロックにする */
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* 背景色とアニメーション */
 }
 
 .action-link-container a:hover {
-  text-decoration: underline;
+  background-color: #bb2d3b; /* ホバー時にさらに暗い赤色 */
+  transform: scale(1.05); /* 少し拡大する効果 */
 }
-/* プロフィール変更リンクのデザイン */
+
+.action-link-container {
+  text-align: center;
+}
+
+/* キャンセルリンクのスタイル */
+.cancel-link-container {
+  text-align: center;
+}
+
+.cancel-link-container a {
+  font-size: 1.2em;
+  color: #007BFF; /* リンク色を青に設定 */
+  text-decoration: none;
+}
+
+.cancel-link-container a:hover {
+  text-decoration: underline; /* ホバー時に下線を表示 */
+}
+
+/* プロフィール変更リンクのスタイル */
 .action-link-pro {
   display: inline-block;
   padding: 10px 20px;
   background-color: #6c757d; /* グレー系の背景色 */
-  color: white; /* テキストは白 */
+  color: white; /* テキストを白に設定 */
   text-decoration: none;
   border-radius: 8px; /* 角を丸く */
   font-size: 1.1rem; /* フォントサイズを調整 */
@@ -175,55 +302,14 @@
 }
 
 .action-link-pro:hover {
-    background-color: #565e64; /* ホバー時の濃いグレー */
-    color: white; /* テキスト色を白に保つ */
-}
-#toppage_button {
-  font-size: 1.2em;
-  color: #6c757d; /* グレー */
-  text-decoration: none;
-  transition: color 0.3s;
+  background-color: #5a6268; /* ホバー時の濃いグレー */
+  color: white; /* テキスト色を白に保つ */
 }
 
-#toppage_button:hover {
-  color: #565e64; /* 濃いグレー */
-  text-decoration: underline;
+.action-link-pro:focus {
+  outline: none; /* フォーカス時のアウトラインを消去 */
 }
 
-/* 小画面時の調整 */
-@media (max-width: 768px) {
-  .pet-info-table, .profile-info table {
-    width: 100%;
-    table-layout: fixed; /* 列幅を固定 */
-  }
-
-  .pet-info-table th, .profile-info th {
-    width: 30%; /* 項目側（th）の幅を狭く */
-    white-space: normal; /* 改行を許可 */
-    word-break: break-word; /* 長い文字列を折り返す */
-    text-align: left; /* 項目を左寄せ */
-    font-size: 14px; /* 小さめのフォントサイズ */
-    line-height: 1.5; /* 行間調整 */
-    padding: 6px 4px; /* 余白を小さく */
-  }
-
-  .pet-info-table td, .profile-info td {
-    width: 70%; /* 値側（td）の幅を広く */
-    white-space: normal; /* 改行を許可 */
-    word-break: break-word; /* 長い文字列を折り返す */
-    text-align: left; /* 左寄せ（必要に応じて変更） */
-    font-size: 14px; /* 小さめのフォントサイズ */
-    line-height: 1.5; /* 行間調整 */
-    padding: 6px 4px; /* 余白を小さく */
-  }
-
-  /* 表全体の横スクロールを許可 */
-  .pet-info-table {
-    overflow-x: auto;
-    display: block;
-    -webkit-overflow-scrolling: touch; /* スムーズスクロール対応 */
-  }
-}
 
 </style>
 
@@ -243,33 +329,39 @@
 
   <div class="profile-info">
     <h2>ユーザー情報</h2>
-      <table>
-        <tr>
-          <th>ユーザー名</th>
-          <td>{{ user.username }}</td>
-        </tr>
-        <tr>
-          <th>メールアドレス</th>
-          <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-          <th>郵便番号</th>
-          <td>{{ user.post_code }}</td>
-        </tr>
-        <tr>
-          <th>都道府県 市区町村</th>
-          <td>{{ user.address1 }}</td>
-        </tr>
-        <tr>
-          <th>番地</th>
-          <td>{{ user.street_address }}</td>
-        </tr>
-        <tr>
-          <th>電話番号</th>
-          <td>{{ user.phone_number }}</td>
-        </tr>
-      </table>
-    </div>
+    <table>
+      <tr>
+        <th>ユーザー名</th>
+        <td>{{ user.username }}</td>
+      </tr>
+      <tr>
+        <th>メールアドレス</th>
+        <td>{{ user.email }}</td>
+      </tr>
+      <tr>
+        <th>郵便番号</th>
+        <td>{{ formatted_post_code }}</td> <!-- フォーマットされた郵便番号 -->
+      </tr>
+      <tr>
+        <th>都道府県 市区町村</th>
+        <td>{{ user.address1 }}</td>
+      </tr>
+      <tr>
+        <th>番地</th>
+        <td>{{ user.street_address }}</td>
+      </tr>
+      <tr>
+        {% if user.address2 %}
+          <th>建物名</th>
+          <td>{{ user.address2 }}</td>
+        {% endif %}
+      </tr>
+      <tr>
+        <th>電話番号</th>
+        <td>{{ formatted_phone_number }}</td> <!-- フォーマットされた電話番号 -->
+      </tr>
+    </table>
+  </div>
   <!-- タブ -->
   <div class="tabs">
     <a href="javascript:void(0);" class="tab-link active" data-tab="contract-pet-tab">仮契約中のペット</a>
@@ -346,7 +438,7 @@
                 <td>{{ pet_data.pet.address }}</td>
               </tr>
               <tr>
-                <th>保護場所</th>
+                <th>保護施設</th>
                 <td>{{ pet_data.pet.location }}</td>
               </tr>
             </table>

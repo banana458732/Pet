@@ -4,6 +4,9 @@
 
 {% block contents %}
 <style>
+    h2 {
+        margin-bottom: 20px;
+    }
     .pet-list {
         display: flex;
         flex-wrap: wrap;
@@ -66,6 +69,39 @@
         text-decoration: underline; /* ホバー時に下線を追加 */
     }
 
+    /* ページネーションのデザイン */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px; /* 間隔を少し縮める */
+        margin-top: 20px; /* マージンを少し縮める */
+        font-family: Arial, sans-serif;
+    }
+
+    .page-num {
+        padding: 4px 8px; /* パディングを少し縮める */
+        background-color: #f9f9f9; /* ページ番号の背景 */
+        color: black; /* 黒 */
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem; /* フォントサイズを少し小さくする */
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .page-num:hover {
+        background-color: #e0e0e0; /* ページ番号ホバー時の色 */
+        color: #333; /* ホバー時の文字色 */
+    }
+
+    .current-page {
+        padding: 4px 8px; /* パディングを少し縮める */
+        background-color: #e0e0e0; /* 現在のページ番号の背景 */
+        color: #333; /* 現在のページ番号の文字色 */
+        font-weight: bold;
+        border-radius: 4px;
+    }
+
     /* 小画面時のスタイル調整 */
     @media (max-width: 768px) {
         .pet-item {
@@ -99,11 +135,35 @@
             </div>
         </li>
     {% empty %}
-        <p>仮契約中のペットはありません。</p>
+        <h4>仮契約中のペットはありません。</h4>
     {% endfor %}
 </ul>
 
 <div style="text-align: center; margin-top: 20px;">
-    <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">スタッフメニューに戻る</a>
+    <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">メニューに戻る</a>
 </div>
+
+<!-- ページネーション部分 -->
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1" class="page-num">&laquo; 最初</a>
+        <a href="?page={{ page_obj.previous_page_number }}" class="page-num">＜ 前</a>
+    {% endif %}
+
+    <span class="page-numbers">
+        {% for num in page_obj.paginator.page_range %}
+            {% if num == page_obj.number %}
+                <span class="current-page">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}" class="page-num">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="page-num">次 ＞</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-num">最後 &raquo;</a>
+    {% endif %}
+</div>
+
 {% endblock %}
