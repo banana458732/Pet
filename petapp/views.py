@@ -11,6 +11,8 @@ from .forms import PetCreateForm, PetImageFormSet, PetUpdateForm, PetImageForm
 from django.forms import modelformset_factory
 from django.core.files.storage import default_storage
 from django.db import transaction
+import requests
+
 
 # CSVファイルのパスを指定
 CSV_FILE_PATH = os.getenv('PETS_CSV_PATH', 'pets_data.csv')
@@ -225,6 +227,10 @@ def pet_update_view(request, pet_id):
             'location': pet.location,
         }
 
+        # 変更前のペット住所を保存
+        request.session['old_pet_address'] = pet.address
+
+
         # フォームの初期化
         pet_form = PetUpdateForm(request.POST, instance=pet)
         image_formset = PetImageFormSet(request.POST, request.FILES, queryset=existing_images)
@@ -260,6 +266,9 @@ def pet_update_view(request, pet_id):
                 # トランザクション開始
                 with transaction.atomic():
                     pet = pet_form.save()  # ペット情報を更新
+
+                    # 新しいペットの住所をセッションに保存。
+                    request.session['new_pet_address'] = pet.address
 
                     updated_fields = []
                     for field, old_value in old_pet_data.items():
@@ -336,6 +345,7 @@ def pet_update_view(request, pet_id):
                     except Exception as e:
                         logger.error(f"CSVの書き込みに失敗しました: {e}")
                         raise e
+                    
 
                     # セッションに変更内容を保存
                     request.session['updated_fields'] = updated_fields
@@ -366,6 +376,22 @@ def pet_update_view(request, pet_id):
         })
 
 
+# 住所から緯度経度を求めるメソッド
+def get_lat_lng(address, api_key):
+
+    api_url = f"https://maps.googleapis.com/maps/api/geocode/json?address={address}&key={api_key}"
+    response = requests.get(api_url)
+    data = response.json()
+    print(api_url)
+
+    if data['status'] == 'OK':
+        print(data)
+        lat = data['results'][0]['geometry']['location']['lat']
+        lng = data['results'][0]['geometry']['location']['lng']
+        return lat, lng
+    else:
+        raise Exception(f"Error fetching coordinates for address: {address}")
+
 def pet_update_comp_view(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
 
@@ -374,7 +400,8 @@ def pet_update_comp_view(request, pet_id):
     added_images = request.session.pop('added_images', [])
     updated_images = request.session.pop('updated_images', [])
     deleted_images = request.session.pop('deleted_images', [])
-
+    session_address = request.session.pop('old_pet_address', None)
+    new_session_address = request.session.pop('new_pet_address', None)
     # ラベル変換辞書
     field_labels = {
         'age': '歳',
@@ -397,6 +424,22 @@ def pet_update_comp_view(request, pet_id):
         field_name, changes = field.split(": ", 1)
         localized_field_name = field_labels.get(field_name, field_name)  # 日本語ラベルに変換
         localized_updated_fields.append(f"{localized_field_name}: {changes}")
+
+    # 住所が変更されたら緯度経度も変更する処理。
+    # session_address = request.session.get['old_pet_address']
+    if  session_address != new_session_address:
+        print("hoge")
+        try:
+            adr = new_session_address
+            apikey = "AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q"
+            # api_key = "AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q"
+            lat, lng = get_lat_lng(adr, apikey)
+            pet.latitude = lat
+            pet.longitude = lng
+            print(lat)
+            pet.save()
+        except Exception as e:
+            print(e)
 
     # 完了画面でのメッセージ表示の準備
     messages = []

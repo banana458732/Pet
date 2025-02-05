@@ -132,9 +132,9 @@
 
     .form-check {
         display: flex;
-        flex-direction: column; /* ラジオボタンを縦並びに */
-        margin-left: 15px;  /* ラジオボタンとラベルの間隔を少し広げる */
-        margin-left: -30px;
+        flex-direction: row; /* 横並び */
+        align-items: center;
+        gap: 15px; /* 各要素の間隔を調整 */
     }
 
     .form-check input[type="radio"] {
@@ -187,16 +187,15 @@
     }
 
     @media (max-width: 768px) {
-        .survey-container {
-            padding: 10px; /* 余白を調整 */
+        .sidebar {
+            width: 100%; /* 画面幅いっぱいに */
+            height: auto; /* 高さを自動調整 */
+            position: relative; /* 固定配置を解除 */
+            margin-top: 0;
         }
 
-        .survey-title {
-            font-size: 1.5rem; /* タイトルを少し小さく */
-        }
-
-        .form-check label {
-            font-size: 0.9rem; /* ラベルのフォントサイズを小さく */
+        .form-check {
+            flex-direction: column; /* 小さい画面では縦並び */
         }
     }
 </style>

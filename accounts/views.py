@@ -250,13 +250,7 @@ class MyPageView(LoginRequiredMixin, TemplateView):
                     pet.latitude = lat
                     pet.longitude = lng
                     print(lat)
-                    print(lng)
-                    print(contract_pet)
-                    print(contract_pets)
                     pet.save()
-                
-                    print(f"住所: {adr}")
-                    print(f"緯度: {lat}, 経度: {lng}")
                 except Exception as e:
                     print(e)
             
