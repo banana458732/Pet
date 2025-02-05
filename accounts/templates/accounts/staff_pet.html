@@ -143,6 +143,7 @@
     <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">メニューに戻る</a>
 </div>
 
+{% if karikeiyaku%}
 <!-- ページネーション部分 -->
 <div class="pagination">
     {% if page_obj.has_previous %}

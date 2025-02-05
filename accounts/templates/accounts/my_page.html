@@ -203,7 +203,7 @@
 }
 
 /* 小画面時の調整 */
-@media (max-width: 768px) {
+@media (max-width: 693px) {
   .pet-info-table {
     width: 100%; /* テーブルの幅を画面いっぱいに */
     max-width: 500px; /* 最大幅を500pxに固定 */
@@ -436,6 +436,10 @@
               <tr>
                 <th>住所</th>
                 <td>{{ pet_data.pet.address }}</td>
+              </tr>
+              <tr>
+                <th>電話番号</th>
+                <td>{{ pet_data.pet.formatted_phone_number }}</td>
               </tr>
               <tr>
                 <th>保護施設</th>

@@ -274,7 +274,7 @@
                         </tr>
                         <tr>
                             <th>郵便番号</th>
-                            <td>{{ pet.post_code }}</td>
+                            <td>{{ pet.formatted_post_code }}</td>
                         </tr>
                         <tr>
                             <th>住所</th>
@@ -282,7 +282,7 @@
                         </tr>
                         <tr>
                             <th>電話番号</th>
-                            <td>{{ pet.phone_number }}</td>
+                            <td>{{ pet.formatted_phone_number }}</td>
                         </tr>
                         <tr>
                             <th>保護施設</th>
@@ -290,7 +290,7 @@
                         </tr>
                         <tr>
                             <th>契約期限</th>
-                            <td>{{ form.end_date.value|date:'Y年m月d日' }}</td>
+                            <td>{{ karikeiyaku.created_at }} ～ {{ karikeiyaku.end_date }}</td>
                         </tr>
                     </table>
                 </div>                

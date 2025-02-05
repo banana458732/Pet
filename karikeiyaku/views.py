@@ -5,10 +5,14 @@ from .forms import KarikeiyakuForm
 from datetime import date, timedelta
 from django.contrib import messages
 from django.urls import reverse
+from django.utils.timezone import now
 
 
 def karikeiyaku_form(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
+
+    # ** ① 期限切れの仮契約を自動キャンセル **
+    Karikeiyaku.objects.filter(user=request.user, status="仮契約中", end_date__lt=now()).update(status="キャンセル")
 
     # ユーザーが現在契約中のペットを取得
     user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet, status="仮契約中").first()
@@ -50,14 +54,16 @@ def karikeiyaku_form(request, pet_id):
                 karikeiyaku.status = "仮契約中"
                 # end_dateが空の場合、2週間後の日付を設定
                 if not karikeiyaku.end_date:
-                    karikeiyaku.end_date = date.today() + timedelta(weeks=2)
+                    karikeiyaku.end_date = date.today() + timedelta(minutes=1)
                 karikeiyaku.save()
                 return redirect('karikeiyaku:complete')
+            else:
+                print(form.errors)  # フォームのエラーをログに出力
+                messages.error(request, "フォームの入力に誤りがあります。")
 
     # end_dateをYYYY-MM-DD形式でテンプレートに渡す
     end_date = form.fields['end_date'].initial.strftime('%Y-%m-%d') if form.fields['end_date'].initial else None
 
-    # コンテキストにcan_contractとother_user_karikeiyakuを追加
     return render(request, 'karikeiyaku/karikeiyaku_form.html', {
         'form': form,
         'pet': pet,
@@ -109,8 +115,11 @@ def contractor(request, pet_id):
             karikeiyaku.save()
             print(f"After update: {karikeiyaku.status}")  # 更新後のログ
 
-        # マイページにリダイレクト
-        return redirect(reverse('karikeiyaku:com', kwargs={'pet_id': pet.id}))  # 'mypage'ビューにリダイレクト
+        redirect_url = reverse('karikeiyaku:com', kwargs={'pet_id': pet.id})
+        print(f"Redirecting to: {redirect_url}")  # リダイレクト先のログを追加
+
+        # 🔽 実際にリダイレクトを実行する
+        return redirect(redirect_url)
 
     return render(request, 'karikeiyaku/contractor.html', {
         'pet': pet,

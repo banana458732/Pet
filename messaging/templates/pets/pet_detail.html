@@ -68,6 +68,9 @@
     </div>
 
     <style>
+        h2 {
+
+        }
         .karikeiyaku-section {
         display: flex; /* 子要素をflexboxで配置 */
         justify-content: center; /* 横方向の中央揃え */
@@ -250,6 +253,10 @@
             text-align: center; /* テキストを中央に配置 */
             margin-top: 20px;
         }
+        .comments-section h2 {
+            margin-top: -10px;
+            margin-bottom: 40px;
+        }
 
         /* コメントフォーム全体の中央配置 */
         .comment-form-container {
@@ -264,6 +271,7 @@
         /* h3 のスタイル調整 */
         .comment-form-container h3 {
             font-size: 24px; /* 適切なフォントサイズ */
+            margin-top: -10px;
             margin-bottom: 20px; /* 下に余白を追加 */
             color: #333; /* テキストカラー */
         }
@@ -306,137 +314,137 @@
             background-color: #5a6268; /* ダークグレー */
         }
 
-        /* コメントアイテム */
+        /* コメント全体 */
         .comment {
-        display: flex;
-        flex-direction: column; /* コメント内容を縦に配置 */
-        align-items: flex-start; /* 左側に配置 */
-        margin-bottom: 10px; /* コメント間の余白を広げる */
-        padding: 12px;
-        border-radius: 10px;
-        background-color: #f9f9f9; /* コメント背景色 */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 軽いシャドウを追加 */
-        position: relative; /* これにより削除ボタンを右側に配置 */
+            display: flex;
+            flex-direction: column; /* コメント内容は縦に並べる */
+            align-items: flex-start; /* 左寄せ */
+            margin-bottom: 20px; /* コメント間の余白 */
+            padding: 20px; /* パディングを増やして余裕を持たせる */
+            background-color: #f9f9f9; /* 明るいグレー背景 */
+            border: 1px solid #ddd; /* コメントを囲むボーダー */
+            border-radius: 10px; /* 角を丸く */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 軽いシャドウ */
+            position: relative;
+            transition: box-shadow 0.3s ease; /* ホバー時にシャドウのアニメーション */
         }
 
-        /* 管理者・ユーザー共通のスタイル */
-        .comment-content {
-        max-width: 400px; /* コメントの幅を調整 */
-        margin-top: 10px; /* コメント内容と名前を分ける */
-        font-size: 18px; /* コメント内容の文字サイズを変更 */
-        line-height: 1.5; /* 行間を広げて読みやすく */
-        color: #333; /* コメント内容の色 */
+        /* コメントホバー時のエフェクト */
+        .comment:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* ホバー時にシャドウを強く */
         }
 
         /* コメント者の名前 */
         .comment strong {
-        font-weight: bold;
-        font-size: 20px; /* コメント者の名前の文字サイズを変更 */
-        color: #007BFF; /* 名前の色を青に変更 */
+            font-weight: bold;
+            font-size: 18px; /* 名前を少し大きく */
+            color: #007BFF; /* 名前の色を青に */
+            margin-bottom: 10px; /* 名前と内容の間に余白を追加 */
+        }
+
+        /* コメント内容 */
+        .comment-content {
+            font-size: 16px; /* コメント内容のフォントサイズ */
+            line-height: 1.6; /* 行間を広げて読みやすく */
+            color: #333; /* コメント内容の色 */
+            word-wrap: break-word; /* 長い単語を折り返して表示 */
+            margin-bottom: 10px; /* コメント内容の下に余白を追加 */
         }
 
         /* コメントのタイムスタンプ */
         .comment small {
-        font-size: 14px;
-        color: #888;
-        margin-top: 5px; /* タイムスタンプと内容を分ける */
+            font-size: 14px; /* 時間のフォントサイズ */
+            color: #888; /* 時間の色 */
+            font-style: italic; /* イタリック体 */
+            position: absolute;
+            right: 20px; /* 右側に配置 */
+            bottom: 10px; /* コメントの下部に配置 */
         }
 
-        /* コメントの削除ボタン（管理者用） */
+        /* コメント削除ボタン（管理者用） */
         .delete-button[type="submit"] {
-        background-color: transparent;
-        border: none;
-        color: red;
-        cursor: pointer;
-        font-size: 14px;
-        position: absolute;
-        right: 10px; /* 右側に配置 */
-        top: 50%;
-        transform: translateY(-50%); /* ボタンを中央揃え */
+            background-color: transparent;
+            border: none;
+            color: red;
+            cursor: pointer;
+            font-size: 14px;
+            position: absolute;
+            top: 10px; /* 上部に配置 */
+            right: 20px; /* 右側に配置 */
         }
 
         .delete-button[type="submit"]:hover {
-        text-decoration: underline;
+            text-decoration: underline;
         }
 
-        /* セクションの区切り線 */
+        /* コメントの入力フォーム */
+        .comment-form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 入力フォームを中央に配置 */
+            margin: 20px auto; /* 上下に余白 */
+            width: 100%;
+            max-width: 600px; /* 最大幅を指定 */
+        }
+
+        /* コメント入力欄 */
+        .comment-form textarea {
+            width: 100%; /* 親要素に合わせて幅を広げる */
+            max-width: 600px; /* 最大幅を指定 */
+            height: 100px;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none; /* ユーザーによるリサイズを禁止 */
+            margin-bottom: 20px; /* 入力欄の下に余白 */
+        }
+
+        /* セクション区切り線 */
         .separator {
             height: 2px;
             background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(200, 200, 200, 1) 50%, rgba(255, 255, 255, 0) 100%);
-            margin-top: 30px;  /* 上の余白を広げる */
-            margin-bottom: 40px; /* 下の余白を広げる */
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        /* 画面が600px以下の場合のスタイル変更（モバイルビュー） */
+        /* スマートフォン用のレスポンシブデザイン */
         @media screen and (max-width: 600px) {
-        /* コメント内容のフォントサイズを小さく */
-        .comment-content {
-            font-size: 14px;
-            max-width: 300px; /* コメントの最大幅を小さく */
-        }
+            .comment-content {
+                font-size: 14px; /* 小さな画面ではコメント内容のフォントサイズを小さく */
+            }
 
-        /* コメント者の名前のフォントサイズを小さく */
-        .comment strong {
-            font-size: 16px;
-        }
+            .comment small {
+                font-size: 12px; /* タイムスタンプのフォントサイズを小さく */
+            }
 
-        /* コメントのタイムスタンプのフォントサイズを小さく */
-        .comment small {
-            font-size: 12px;
-        }
-
-        /* コメントアイテムのパディングを小さく */
-        .comment {
-            padding: 8px;
-        }
-
-        /* コメントの削除ボタンを少し小さく */
-        .delete-button[type="submit"] {
-            font-size: 12px;
-        }
-        }
-
-        /* 画面が1024px以上の場合のスタイル変更（タブレットまたはデスクトップビュー） */
-        @media screen and (min-width: 1024px) {
-        /* コメント内容のフォントサイズを大きく */
-        .comment-content {
-            font-size: 20px;
-            max-width: 500px; /* コメントの最大幅を広く */
-        }
-
-        /* コメント者の名前のフォントサイズを大きく */
-        .comment strong {
-            font-size: 22px;
-        }
-
-        /* コメントのタイムスタンプのフォントサイズを大きく */
-        .comment small {
-            font-size: 16px;
-        }
-
-        /* コメントアイテムのパディングを広く */
-        .comment {
-            padding: 12px;
-        }
-
-        /* コメントの削除ボタンを大きく */
-        .delete-button[type="submit"] {
-            font-size: 16px;
-        }
-            /* 入力欄の幅調整 */
             .comment-form textarea {
-            max-width: 700px; /* 最大幅を広げる */
-            font-size: 18px; /* 大画面で文字サイズを大きく */
-            padding: 15px; /* パディングを増やす */
+                font-size: 14px; /* 入力欄の文字サイズを小さく */
             }
-        
-            /* 送信ボタンの調整 */
-            .comment-form .submit-button {
-            font-size: 18px; /* 大画面で文字サイズを大きく */
-            padding: 12px 24px; /* ボタンのサイズを調整 */
+
+            .submit-button {
+                font-size: 14px; /* 送信ボタンの文字サイズを小さく */
             }
         }
 
+        /* 大画面用（タブレットやデスクトップ） */
+        @media screen and (min-width: 1024px) {
+            .comment-content {
+                font-size: 18px; /* コメント内容の文字サイズを大きく */
+            }
+
+            .comment small {
+                font-size: 16px; /* タイムスタンプのフォントサイズを大きく */
+            }
+
+            .comment-form textarea {
+                font-size: 18px; /* 入力欄の文字サイズを大きく */
+            }
+
+            .submit-button {
+                font-size: 18px; /* 送信ボタンの文字サイズを大きく */
+            }
+        }
         /* 画面が大きい時（幅800px以上）のレイアウト */
         @media screen and (min-width: 800px) {
         .pet-details-container {
@@ -540,8 +548,9 @@
         text-decoration: none;
         font-size: 1rem;
         transition: background-color 0.3s ease;
+        margin-top: 20px;
+        margin-bottom: 20px;
         }
-
         .karikeiyaku-section .btn-success:hover {
             background-color: #0056b3; /* 濃い青 */
         }

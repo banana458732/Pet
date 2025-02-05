@@ -73,9 +73,11 @@
     background-color: #0056b3;
   }
 
-  .action-link {
-    color: #FF6600; /* オレンジ色 */
-    text-decoration: none;
+  .profile-form-container input:focus,
+  .profile-form-container select:focus {
+      outline: none; /* デフォルトの枠線を削除 */
+      border: 1px solid black; /* 黒色の枠線に変更 */
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* 黒色の柔らかい影を追加 */
   }
 
   .action-link:hover {
