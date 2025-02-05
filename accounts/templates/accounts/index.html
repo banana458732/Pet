@@ -169,6 +169,7 @@
 </div>
 
 <!-- ページネーション部分 -->
+{% if page_obj.paginator.count > 0 %}
 <div class="pagination">
     {% if page_obj.has_previous %}
         <a href="?page=1" class="page-num">&laquo; 最初</a>
@@ -190,5 +191,6 @@
         <a href="?page={{ page_obj.paginator.num_pages }}" class="page-num">最後 &raquo;</a>
     {% endif %}
 </div>
+{% endif %}
 
 {% endblock %}
