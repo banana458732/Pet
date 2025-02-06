@@ -137,6 +137,10 @@
     color: red;
     font-size: 12px; /* 小さく設定 */
   }
+  input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: none;
+  }
 </style>
 
 
@@ -147,18 +151,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
 
-              {% if messages %}
-              <div class="alert alert-dismissible">
-                  {% for message in messages %}
-                      <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}">
-                          {{ message }}
-                      </div>
-                  {% endfor %}
-              </div>
-          {% endif %}
-
             <!-- ユーザー情報編集 -->
-            <h2>ユーザー情報を編集</h2>
             <div class="form-group">
                 <label for="id_username">ユーザー名</label>
                 {{ user_form.username }}
@@ -272,5 +265,46 @@
 
 <!-- Yubinbango.js の読み込み -->
 <script src="https://yubinbango.github.io/yubinbango/yubinbango.js" charset="UTF-8"></script>
+
+<script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function () {
+      let profileImageInput = document.querySelector("#id_profile_image"); // 画像アップロード
+      let deleteCheckbox = document.querySelector("#id_delete_image"); // 画像削除チェックボックス
+
+      if (profileImageInput && deleteCheckbox) {
+          // 初期状態設定
+          toggleInputs();
+
+          // 削除チェックボックスが変更されたときの処理
+          deleteCheckbox.addEventListener("change", function () {
+              if (deleteCheckbox.checked) {
+                  profileImageInput.disabled = true; // 画像選択を無効化
+                  profileImageInput.value = ""; // 画像選択をクリア
+              } else {
+                  profileImageInput.disabled = false; // 画像選択を有効化
+              }
+          });
+
+          // 画像入力が変更されたときの処理
+          profileImageInput.addEventListener("change", function () {
+              if (profileImageInput.files.length > 0) {
+                  deleteCheckbox.checked = false; // チェックを外す
+                  deleteCheckbox.disabled = true; // 削除チェックボックスを無効化
+              } else {
+                  deleteCheckbox.disabled = false; // 画像がない場合は削除チェックを有効化
+              }
+          });
+
+          // 状態を切り替える関数
+          function toggleInputs() {
+              if (deleteCheckbox.checked) {
+                  profileImageInput.disabled = true;
+              } else {
+                  profileImageInput.disabled = false;
+              }
+          }
+      }
+  });
+</script>
 
 {% endblock %}

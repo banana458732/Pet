@@ -22,6 +22,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.core.paginator import Paginator
 from geopy.geocoders import Nominatim
+from django.utils import timezone
 
 geolocator = Nominatim(user_agent="test")
 
@@ -219,6 +220,10 @@ class MyPageView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.request.user
+
+        # 仮契約の期限切れをチェックして自動で削除
+        expired_karikeiyaku = Karikeiyaku.objects.filter(status="仮契約中", end_date__lt=timezone.now())
+        expired_karikeiyaku.delete()  # 仮契約を削除
 
         # 仮契約中のペット情報を取得
         contract_pets = Karikeiyaku.objects.filter(user=user, status="仮契約中").select_related('pet')

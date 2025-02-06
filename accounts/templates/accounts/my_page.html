@@ -309,8 +309,16 @@
 .action-link-pro:focus {
   outline: none; /* フォーカス時のアウトラインを消去 */
 }
+#toppage_button {
+    color: #8e6e4f;  /* 落ち着いた茶色 */
+    text-decoration: underline;  /* 下線を追加 */
+}
 
-
+#toppage_button:hover {
+    color: #6e4b33;  /* ホバー時の色を少し濃いめに */
+    text-decoration: underline;  /* ホバー時も下線を維持 */
+    background-color: #f0f0f0;  /* ホバー時の背景色 */
+}
 </style>
 
 <div class="profile-container">
@@ -427,7 +435,7 @@
               </tr>
               <tr>
                 <th>契約期間</th>
-                <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日" }}</td>
+                <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日 H:i:s" }}</td>
               </tr>
               <tr>
                 <th>郵便番号</th>

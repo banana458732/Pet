@@ -7,7 +7,7 @@ from django.conf import settings
 class Karikeiyaku(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="ユーザー")
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name="ペット")
-    end_date = models.DateField(null=True, blank=True, verbose_name="契約終了日")
+    end_date = models.DateTimeField(null=True, blank=True, verbose_name="契約終了日時")
     created_at = models.DateField(auto_now_add=True, verbose_name="作成日時")
     status = models.CharField(
         max_length=50,
