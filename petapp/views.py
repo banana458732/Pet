@@ -345,7 +345,6 @@ def pet_update_view(request, pet_id):
                     except Exception as e:
                         logger.error(f"CSVの書き込みに失敗しました: {e}")
                         raise e
-                    
 
                     # セッションに変更内容を保存
                     request.session['updated_fields'] = updated_fields
@@ -391,6 +390,7 @@ def get_lat_lng(address, api_key):
         return lat, lng
     else:
         raise Exception(f"Error fetching coordinates for address: {address}")
+
 
 def pet_update_comp_view(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)

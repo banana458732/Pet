@@ -431,46 +431,51 @@
 </div>
 
 <script type="text/javascript">
-    // ページロード時に、削除と更新が両方選択されている場合の制御
     document.addEventListener("DOMContentLoaded", function () {
-    let imageForms = document.querySelectorAll(".form-group"); // 各画像フォームを取得
+        let imageForms = document.querySelectorAll(".image-item"); // 各画像フォームを取得
 
-    imageForms.forEach(function (form) {
-        let deleteCheckbox = form.querySelector("[name$='-DELETE']"); // 削除チェックボックス
-        let imageInput = form.querySelector("input[type='file']"); // 画像入力フィールド
+        imageForms.forEach(function (form) {
+            let deleteCheckbox = form.querySelector("[name$='-DELETE']"); // 削除チェックボックス
+            let imageInput = form.querySelector("input[type='file']"); // 画像入力フィールド
 
-        if (deleteCheckbox && imageInput) {
-            // 初期状態設定
-            toggleInputs(deleteCheckbox, imageInput);
-
-            // 削除チェックボックスが変更されたときの処理
-            deleteCheckbox.addEventListener("change", function () {
+            if (deleteCheckbox && imageInput) {
+                // 初期状態設定
                 toggleInputs(deleteCheckbox, imageInput);
-            });
 
-            // 画像入力が変更されたときの処理
-            imageInput.addEventListener("change", function () {
-                if (imageInput.files.length > 0) {
-                    deleteCheckbox.checked = false; // 削除チェックボックスをオフにする
-                }
-                toggleInputs(deleteCheckbox, imageInput);
-            });
+                // 削除チェックボックスが変更されたときの処理
+                deleteCheckbox.addEventListener("change", function () {
+                    toggleInputs(deleteCheckbox, imageInput);
+                });
+
+                // 画像入力が変更されたときの処理
+                imageInput.addEventListener("change", function () {
+                    if (imageInput.files.length > 0) {
+                        deleteCheckbox.checked = false; // 削除チェックボックスをオフにする
+                    }
+                    toggleInputs(deleteCheckbox, imageInput);
+                });
+            }
+        });
+
+        // 入力状態を切り替える関数
+        function toggleInputs(deleteCheckbox, imageInput) {
+            // 削除チェックボックスが選択されている場合
+            if (deleteCheckbox.checked) {
+                imageInput.disabled = true; // 画像更新フィールドを無効化
+                deleteCheckbox.disabled = false; // 削除チェックボックスは有効
+            }
+            // 画像が選択されている場合
+            else if (imageInput.files.length > 0) {
+                deleteCheckbox.disabled = true; // 削除チェックボックスを無効化
+                imageInput.disabled = false; // 画像更新フィールドは有効
+            }
+            // どちらも選ばれていない場合
+            else {
+                deleteCheckbox.disabled = false; // 削除チェックボックスを有効化
+                imageInput.disabled = false; // 画像更新フィールドも有効化
+            }
         }
     });
-
-    // 入力状態を切り替える関数
-    function toggleInputs(deleteCheckbox, imageInput) {
-        if (deleteCheckbox.checked) {
-            imageInput.disabled = true; // 画像更新フィールドを無効化
-            deleteCheckbox.disabled = false; // 削除チェックボックスは有効
-        } else if (imageInput.files.length > 0) {
-            deleteCheckbox.disabled = true; // 削除チェックボックスを無効化
-            imageInput.disabled = false; // 画像更新フィールドは有効
-        } else {
-            deleteCheckbox.disabled = false; // 削除チェックボックスを有効化
-            imageInput.disabled = false; // 画像更新フィールドも有効化
-        }
-    }
-});
 </script>
+
 {% endblock %}

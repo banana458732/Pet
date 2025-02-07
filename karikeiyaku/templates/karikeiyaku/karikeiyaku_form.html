@@ -130,7 +130,7 @@
     }
 
     /* エラーメッセージのスタイル */
-    .error-message {
+    .alert-danger {
         color: red;
         font-weight: bold;
         text-align: center;
@@ -199,6 +199,17 @@
         opacity: 0.6 !important; /* 見た目の透明感 */
         cursor: not-allowed !important; /* カーソルを変更 */
     }
+    #toppage_button {
+    color: #8e6e4f;  /* 落ち着いた茶色 */
+    text-decoration: underline;  /* 下線を追加 */
+    margin-top: 20px;
+}
+
+#toppage_button:hover {
+    color: #6e4b33;  /* ホバー時の色を少し濃いめに */
+    text-decoration: underline;  /* ホバー時も下線を維持 */
+    background-color: #f0f0f0;  /* ホバー時の背景色 */
+}
 </style>
 
     <!-- 全体のフォームを囲む -->
@@ -293,37 +304,53 @@
                             <td>{{ karikeiyaku.created_at }} ～ {{ karikeiyaku.end_date }}</td>
                         </tr>
                     </table>
-                </div>                
-                <!-- 同意確認 -->
-                <div class="agree">
-                    {% if not user_karikeiyaku %}
-                        <label for="agreement">契約内容を確認し、同意しますか？</label>
-                        <input type="checkbox" id="agreement" name="agreement" {% if current_karikeiyaku_count >= 3 %}disabled{% endif %} required> 
-                        <label for="agreement">同意します</label>
-                    {% endif %}
                 </div>
-
+                
+                <!-- 同意確認 -->
+                {% if not user_karikeiyaku and current_karikeiyaku_count < 3 and not other_user_karikeiyaku %}
+                    <div class="agree">
+                        <label for="agreement">契約内容を確認し、同意しますか？</label>
+                        <input type="checkbox" id="agreement" name="agreement" required> 
+                        <label for="agreement">同意します</label>
+                    </div>
+                {% endif %}
+        
                 <!-- 仮契約中の場合のボタン -->
                 <div class="button-group">
                     {% if user_karikeiyaku %}
                         <button class="btn btn-primary" disabled>契約中</button>
                         <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
-                            <div class="return-button-wrapper">
-                                <a href="#" class="return-button" onclick="history.back()">戻る</a>
-                            </div>
                     {% else %}
-                        <!-- 契約がまだの場合 -->
-                        <button type="submit" class="btn btn-success" {% if current_karikeiyaku_count >= 3 %}disabled{% endif %}>契約する</button>
-                        
-                        <!-- 戻るリンク（文字のみ） -->
+                        {% if current_karikeiyaku_count < 3 and not other_user_karikeiyaku %}
+                            <button type="submit" class="btn btn-success">契約する</button>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <!-- 通常は戻るボタンを表示 -->
+                    {% if not error_message %}
                         <div class="return-button-wrapper">
                             <a href="#" class="return-button" onclick="history.back()">戻る</a>
                         </div>
                     {% endif %}
                 </div>
-            {% if not can_contract %}
-                <p class="error-message">これ以上は契約できません。</p>
-            {% endif %}
-        </section>
+
+                {% if error_message %}
+                    <div class="alert-danger">
+                        {{ error_message }}
+                    </div>
+
+                    {% if error_message == "他のユーザーが仮契約中です。契約できません。" %}
+                        <!-- トップページに戻るボタンのみ表示 -->
+                        <div class="return-button-wrapper">
+                            <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a>
+                        </div>
+                    {% elif error_message == "三匹以上契約できません" %}
+                        <!-- 戻るボタンのみ表示 -->
+                        <div class="return-button-wrapper">
+                            <a href="#" class="return-button" onclick="history.back()">戻る</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+        </section>                
     </div>
 {% endblock %}

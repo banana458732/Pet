@@ -709,22 +709,22 @@
         {% endif %}
 
         {% if not user.is_authenticated %}
-            <!-- ログインしていない場合 -->
-            <p>仮契約を進めるには、ログインが必要です。<a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>してください。</p>
+        <!-- ログインしていない場合 -->
+        <p>仮契約を進めるには、ログインが必要です。<a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>してください。</p>
+    {% else %}
+        {% if other_user_karikeiyaku %}
+            <!-- 他のユーザーが仮契約中 -->
+            <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
+        {% elif user_karikeiyaku and user_karikeiyaku.end_date >= now %}
+            <!-- 自分が仮契約中（statusが仮契約中でend_dateが未来の場合） -->
+            <div class="btn-group">
+                <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中・詳細を見る</a>
+            </div>
         {% else %}
-            {% if other_user_karikeiyaku %}
-                <!-- 他のユーザーが仮契約中 -->
-                <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
-            {% elif user_karikeiyaku and user_karikeiyaku.status != None %}
-                <!-- 自分が仮契約中（statusがNoneでない場合） -->
-                <div class="btn-group">
-                    <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中・詳細を見る</a>
-                </div>
-            {% else %}
-                <!-- 仮契約していない -->
-                <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
-            {% endif %}
+            <!-- 仮契約していない -->
+            <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
         {% endif %}
+    {% endif %}
     </div>
 </div>
 

@@ -5,19 +5,18 @@ from .forms import KarikeiyakuForm
 from datetime import date, timedelta
 from django.contrib import messages
 from django.urls import reverse
-from django.utils.timezone import now
+from django.utils import timezone
+from django.db import transaction
+from datetime import datetime, timedelta
 
 
 def karikeiyaku_form(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
 
-    # ** ① 期限切れの仮契約を自動キャンセル **
-    Karikeiyaku.objects.filter(user=request.user, status="仮契約中", end_date__lt=now()).update(status="キャンセル")
+    # 仮契約の状態をリセットして再取得（キャンセルされたものも考慮）
+    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet).exclude(status="キャンセル").first()
 
-    # ユーザーが現在契約中のペットを取得
-    user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, pet=pet, status="仮契約中").first()
-
-    # 他のユーザーが仮契約しているかをチェック
+    # 他のユーザーが仮契約中か確認する
     other_user_karikeiyaku = Karikeiyaku.objects.filter(pet=pet).exclude(user=request.user).first()
 
     # 仮契約中のペット数をカウント
@@ -25,6 +24,13 @@ def karikeiyaku_form(request, pet_id):
 
     # 仮契約が3匹以上の場合、契約できない
     can_contract = current_karikeiyaku_count < 3 or user_karikeiyaku is not None
+
+    # エラーメッセージ
+    error_message = None
+    if current_karikeiyaku_count >= 3:
+        error_message = "仮契約中のペットは3匹までです。"
+    elif other_user_karikeiyaku:  # 他のユーザーが仮契約中の場合
+        error_message = "他のユーザーが仮契約中です。契約できません。"
 
     # 病気の除外リスト
     exclusion_list = [
@@ -47,19 +53,25 @@ def karikeiyaku_form(request, pet_id):
         if current_karikeiyaku_count >= 3:
             messages.error(request, "仮契約中のペットは3匹までです。")
         else:
-            if form.is_valid():
-                karikeiyaku = form.save(commit=False)
-                karikeiyaku.pet = pet
-                karikeiyaku.user = request.user
-                karikeiyaku.status = "仮契約中"
-                # end_dateが空の場合、2週間後の日付を設定
-                if not karikeiyaku.end_date:
-                    karikeiyaku.end_date = date.today() + timedelta(minutes=1)
-                karikeiyaku.save()
-                return redirect('karikeiyaku:complete')
-            else:
-                print(form.errors)  # フォームのエラーをログに出力
-                messages.error(request, "フォームの入力に誤りがあります。")
+            # トランザクションを使って競合状態を防ぐ
+            with transaction.atomic():
+                # 他のユーザーが仮契約していないかを再確認
+                if Karikeiyaku.objects.filter(pet=pet, status="仮契約中").exclude(user=request.user).exists():
+                    messages.error(request, "他のユーザーが仮契約中です。契約できません。")
+                else:
+                    if form.is_valid():
+                        karikeiyaku = form.save(commit=False)
+                        karikeiyaku.pet = pet
+                        karikeiyaku.user = request.user
+                        karikeiyaku.status = "仮契約中"
+                        # end_dateが空の場合、2週間後の日付を設定
+                        if not karikeiyaku.end_date:
+                            karikeiyaku.end_date = datetime.now() + timedelta(seconds=30)
+                        karikeiyaku.save()
+                        return redirect('karikeiyaku:complete')
+                    else:
+                        print(form.errors)  # フォームのエラーをログに出力
+                        messages.error(request, "フォームの入力に誤りがあります。")
 
     # end_dateをYYYY-MM-DD形式でテンプレートに渡す
     end_date = form.fields['end_date'].initial.strftime('%Y-%m-%d') if form.fields['end_date'].initial else None
@@ -74,19 +86,29 @@ def karikeiyaku_form(request, pet_id):
         'current_karikeiyaku_count': current_karikeiyaku_count,  # 仮契約数をテンプレートに渡す
         'can_contract': can_contract,  # can_contractを渡す
         'other_user_karikeiyaku': other_user_karikeiyaku,  # 他のユーザーの仮契約情報を渡す
+        'error_message': error_message,  # エラーメッセージを渡す
     })
 
 
 def karikeiyaku_cancel(request, pet_id):
     pet = get_object_or_404(Pet, id=pet_id)
-    karikeiyaku = get_object_or_404(Karikeiyaku, pet=pet, user=request.user)
+
+    # 複数のKarikeiyakuレコードが存在する可能性があるため、filter()を使用
+    karikeiyaku_list = Karikeiyaku.objects.filter(pet=pet, user=request.user)
+
+    if karikeiyaku_list.count() > 1:
+        # 複数のレコードがある場合、どれを削除するか選ぶ処理を追加
+        karikeiyaku = karikeiyaku_list.first()
+    elif karikeiyaku_list.count() == 1:
+        karikeiyaku = karikeiyaku_list.first()  # 一件だけの場合
 
     if request.method == 'POST':
         # 仮契約を削除
+        print(f"Deleting Karikeiyaku: {karikeiyaku}")  # 削除対象のログを確認
         karikeiyaku.delete()
 
         # キャンセル完了画面へリダイレクト
-        return redirect('karikeiyaku:cancel_complete')  # キャンセル完了画面へのリダイレクト
+        return redirect('karikeiyaku:cancel_complete')
 
     return render(request, 'karikeiyaku/karikeiyaku_cancel.html', {'pet': pet})
 
