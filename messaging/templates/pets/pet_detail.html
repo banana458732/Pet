@@ -106,6 +106,7 @@
             border-radius: 50%; /* 丸い画像にする */
             margin-right: 10px; /* 画像とテキストの間にスペース */
             object-fit: cover; /* アスペクト比を保ちながら、画像を切り取って表示 */
+            text-align: left;
         }
 
         /* ペット情報アイテム */
@@ -318,7 +319,6 @@
         .comment {
             display: flex;
             flex-direction: column; /* コメント内容は縦に並べる */
-            align-items: flex-start; /* 左寄せ */
             margin-bottom: 20px; /* コメント間の余白 */
             padding: 20px; /* パディングを増やして余裕を持たせる */
             background-color: #f9f9f9; /* 明るいグレー背景 */
@@ -348,7 +348,8 @@
             line-height: 1.6; /* 行間を広げて読みやすく */
             color: #333; /* コメント内容の色 */
             word-wrap: break-word; /* 長い単語を折り返して表示 */
-            margin-bottom: 10px; /* コメント内容の下に余白を追加 */
+            margin-bottom: 30px; /* コメント内容の下に余白を追加 */
+            text-align: center !important; /* コメント内容を中央に配置 */
         }
 
         /* コメントのタイムスタンプ */
@@ -401,11 +402,18 @@
         }
 
         /* セクション区切り線 */
-        .separator {
+        .separator1 {
             height: 2px;
             background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(200, 200, 200, 1) 50%, rgba(255, 255, 255, 0) 100%);
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: -10px;
+            margin-bottom: 40px;
+        }
+        /* セクション区切り線 */
+        .separator2 {
+            height: 2px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(200, 200, 200, 1) 50%, rgba(255, 255, 255, 0) 100%);
+            margin-top: 30px;
+            margin-bottom: 40px;
         }
 
         /* スマートフォン用のレスポンシブデザイン */
@@ -620,36 +628,38 @@
 </div>
 
 <!-- セクションの間に線 -->
-<div class="separator"></div>
+<div class="separator1"></div>
 
 <!-- コメントセクション -->
 <div class="comments-section">
     <h2>コメント</h2>
     <div class="comment-container">
-        <!-- コメントがある場合 -->
         {% if comments %}
             <ul>
                 {% for comment in comments %}
                 <li class="comment {% if comment.user.is_superuser %}admin-comment{% else %}user-comment{% endif %}">
                     <!-- ユーザーのプロフィール画像 -->
                     <div class="comment-header">
-                        {% if comment.user.profile_image and comment.user.profile_image.name != 'profile_images/default.jpg' %}
-                            <img src="{{ comment.user.profile_image.url }}" alt="{{ comment.user.username }}のプロフィール画像" class="profile-image" />
-                        {% else %}
-                            <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
-                        {% endif %}
-                        <strong>{{ comment.user.username }}
-                            {% if comment.user.is_superuser %}
-                                <span style="color: red;">[管理者]</span>
+                        <div class="profile-image-container">
+                            {% if comment.user.profile_image and comment.user.profile_image.name != 'profile_images/default.jpg' %}
+                                <img src="{{ comment.user.profile_image.url }}" alt="{{ comment.user.username }}のプロフィール画像" class="profile-image" />
+                            {% else %}
+                                <img src="{% static 'images/ダウンロード3.jpeg' %}" alt="デフォルト画像" class="profile-image" />
                             {% endif %}
-                        </strong>
+                        </div>
+                        <div class="username-container">
+                            <strong>{{ comment.user.username }}
+                                {% if comment.user.is_superuser %}
+                                    <span style="color: red;">[管理者]</span>
+                                {% endif %}
+                            </strong>
+                        </div>
                     </div>
                     <div class="comment-content">
                         {{ comment.content }}
                         <br><small>{{ comment.timestamp }}</small>
                     </div>
 
-                    <!-- 管理者のみ削除ボタンを表示 -->
                     {% if user.is_superuser %}
                         <form method="post" style="display:inline;">
                             {% csrf_token %}
@@ -661,14 +671,13 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <!-- コメントがない場合 -->
             <p>まだコメントはありません。</p>
         {% endif %}
     </div>
 </div>
 
     <!-- セクションの間に線 -->
-    <div class="separator"></div>
+    <div class="separator2"></div>
 
     <!-- コメントフォーム -->
     <div class="comment-form-container">
@@ -701,31 +710,35 @@
 
     <!-- 仮契約セクション -->
     <div class="karikeiyaku-section">
-        <h2>仮契約について</h2>
-
-        {% if user.is_authenticated %}
+        {% if not user.is_superuser %}
+            <h2>仮契約について</h2>
+        {% endif %}
+    
+        {% if user.is_authenticated  and not user.is_superuser %}
             <!-- ログインしている場合に表示する文 -->
             <p>このペットに仮契約を申し込む場合は、以下のボタンをクリックしてください。</p>
         {% endif %}
-
+    
         {% if not user.is_authenticated %}
-        <!-- ログインしていない場合 -->
-        <p>仮契約を進めるには、ログインが必要です。<a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>してください。</p>
-    {% else %}
-        {% if other_user_karikeiyaku %}
-            <!-- 他のユーザーが仮契約中 -->
-            <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
-        {% elif user_karikeiyaku and user_karikeiyaku.end_date >= now %}
-            <!-- 自分が仮契約中（statusが仮契約中でend_dateが未来の場合） -->
-            <div class="btn-group">
-                <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中・詳細を見る</a>
-            </div>
+            <!-- ログインしていない場合 -->
+            <p>仮契約を進めるには、ログインが必要です。<a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>してください。</p>
         {% else %}
-            <!-- 仮契約していない -->
-            <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
+            {% if user.is_superuser %}
+                <!-- スーパーユーザーには仮契約フォームを表示しない -->
+            {% elif other_user_karikeiyaku %}
+                <!-- 他のユーザーが仮契約中 -->
+                <button class="btn btn-warning" disabled>他のユーザーが仮契約中です</button>
+            {% elif user_karikeiyaku and user_karikeiyaku.end_date >= now %}
+                <!-- 自分が仮契約中（statusが仮契約中でend_dateが未来の場合） -->
+                <div class="btn-group">
+                    <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-primary">仮契約中・詳細を見る</a>
+                </div>
+            {% else %}
+                <!-- 仮契約していない -->
+                <a href="{% url 'karikeiyaku:form' pet.id %}" class="btn btn-success">仮契約フォームに進む</a>
+            {% endif %}
         {% endif %}
-    {% endif %}
-    </div>
+    </div>    
 </div>
 
 {% endblock %}

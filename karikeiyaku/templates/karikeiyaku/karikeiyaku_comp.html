@@ -51,6 +51,76 @@
 <div class="registration-complete">
     <h2>仮契約が完了しました！</h2>
     <p>ご登録ありがとうございました。</p>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <td>{{ pet.id }}</td>
+        </tr>
+        <tr>
+            <th>種類</th>
+            <td>{{ pet.type }}</td>
+        </tr>
+        <tr>
+            <th>サイズ</th>
+            <td>{{ pet.size }}</td>
+        </tr>
+        <tr>
+            <th>性別</th>
+            <td>{{ pet.sex }}</td>
+        </tr>
+        <tr>
+            <th>品種</th>
+            <td>{{ pet.kinds }}</td>
+        </tr>
+        <tr>
+            <th>色</th>
+            <td>{{ pet.color }}</td>
+        </tr>
+        <tr>
+            <th>年齢</th>
+            <td>{{ pet.age }}</td>
+        </tr>
+        <tr>
+            <th>性格</th>
+            <td>{{ pet.personality }}</td>
+        </tr>
+        <tr>
+            <th>病歴</th>
+            <td>{% if show_disease %}{{ pet.disease }}{% else %}なし{% endif %}</td>
+        </tr>
+        <tr>
+            <th>郵便番号</th>
+            <td>{{ pet.formatted_post_code }}</td>
+        </tr>
+        <tr>
+            <th>住所</th>
+            <td>{{ pet.address }}</td>
+        </tr>
+        <tr>
+            <th>電話番号</th>
+            <td>{{ pet.formatted_phone_number }}</td>
+        </tr>
+        <tr>
+            <th>保護施設</th>
+            <td>{{ pet.location }}</td>
+        </tr>
+        <tr>
+            <th>契約期限</th>
+            <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日" }}</td>
+        </tr>
+    </table>
+
+
+    <!-- ペット画像を表示 -->
+    {% if pet.petimage_set.all %}
+        <div class="pet-images">
+            {% for image in pet.petimage_set.all %}
+                <img src="{{ image.image.url }}" alt="ペットの画像">
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <a href="{% url 'accounts:my_page' %}">マイページへ</a>
 </div>
 

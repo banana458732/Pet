@@ -199,17 +199,22 @@
         opacity: 0.6 !important; /* 見た目の透明感 */
         cursor: not-allowed !important; /* カーソルを変更 */
     }
-    #toppage_button {
-    color: #8e6e4f;  /* 落ち着いた茶色 */
-    text-decoration: underline;  /* 下線を追加 */
-    margin-top: 20px;
-}
+    .form-footer {
+    margin-top: 30px;
+    text-align: center;
+    }
 
-#toppage_button:hover {
-    color: #6e4b33;  /* ホバー時の色を少し濃いめに */
-    text-decoration: underline;  /* ホバー時も下線を維持 */
-    background-color: #f0f0f0;  /* ホバー時の背景色 */
-}
+    .form-footer a {
+        font-size: 1.2em;
+        color: #6c757d; /* グレー */
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .form-footer a:hover {
+        color: #565e64; /* 濃いグレー */
+        text-decoration: underline;
+    }
 </style>
 
     <!-- 全体のフォームを囲む -->
@@ -301,7 +306,7 @@
                         </tr>
                         <tr>
                             <th>契約期限</th>
-                            <td>{{ karikeiyaku.created_at }} ～ {{ karikeiyaku.end_date }}</td>
+                            <td>{{ created_at }} ～ {{ end_date }}</td>
                         </tr>
                     </table>
                 </div>
@@ -341,8 +346,8 @@
 
                     {% if error_message == "他のユーザーが仮契約中です。契約できません。" %}
                         <!-- トップページに戻るボタンのみ表示 -->
-                        <div class="return-button-wrapper">
-                            <a href="{% url 'accounts:index' %}" id="toppage_button">トップページに戻る</a>
+                        <div class="form-footer">
+                            <p><a href="{% url 'accounts:index' %}" class="action-link">トップページに戻る</a></p>
                         </div>
                     {% elif error_message == "三匹以上契約できません" %}
                         <!-- 戻るボタンのみ表示 -->

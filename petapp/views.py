@@ -444,12 +444,9 @@ def pet_update_comp_view(request, pet_id):
     # 完了画面でのメッセージ表示の準備
     messages = []
 
-    if added_images:
-        messages.append("新しい画像が追加されました。")
-    if updated_images:
-        messages.append("画像が更新されました。")
-    if deleted_images:
-        messages.append("画像が削除されました。")
+    # 画像が変更された場合
+    if added_images or updated_images or deleted_images:
+        messages.append("画像が変更されました。")
 
     return render(request, 'petapp/pet_update_comp.html', {
         'pet': pet,

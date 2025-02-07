@@ -242,7 +242,8 @@ class MyPageView(LoginRequiredMixin, TemplateView):
                     'images': images if images.exists() else None,
                     'created_at': contract_pet.created_at,
                     'end_date': contract_pet.end_date,
-                    'status': contract_pet.status
+                    'status': contract_pet.status,
+                    'handover_date': contract_pet.handover_date  # 引き渡し日を追加
                 })
             # ペットに緯度経度の情報がなかった場合。
             if not pet.latitude and not pet.longitude:
@@ -250,7 +251,6 @@ class MyPageView(LoginRequiredMixin, TemplateView):
                 try:
                     adr = pet.address
                     apikey = "AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q"
-                    # api_key = "AIzaSyDPU-IPGOS4Fyj47WdcVU6pwAPeljw-lHo&q"
                     lat, lng = get_lat_lng(adr, apikey)
                     pet.latitude = lat
                     pet.longitude = lng
@@ -270,7 +270,8 @@ class MyPageView(LoginRequiredMixin, TemplateView):
                     'images': images if images.exists() else None,
                     'created_at': completed_pet.created_at,
                     'end_date': completed_pet.end_date,
-                    'status': completed_pet.status
+                    'status': completed_pet.status,
+                    'handover_date': completed_pet.handover_date  # 引き渡し日を追加
                 })
 
         # コンテキストにデータを追加
@@ -303,7 +304,6 @@ def get_lat_lng(address, api_key):
         return lat, lng
     else:
         raise Exception(f"Error fetching coordinates for address: {address}")
-
 
 
 def add_contract_pet(request, pet_id):

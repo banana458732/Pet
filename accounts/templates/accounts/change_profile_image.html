@@ -145,122 +145,123 @@
 
 
 <div class="profile-container">
-    <h1>プロフィールの変更</h1>
+  <h1>プロフィールの変更</h1>
 
-    <div class="profile-form-container">
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+  <div class="profile-form-container">
+      <form method="post" enctype="multipart/form-data" class="h-adr">
+          {% csrf_token %}
+          <span class="p-country-name" style="display: none;">Japan</span>  <!-- Yubinbango用の国名 -->
 
-            <!-- ユーザー情報編集 -->
-            <div class="form-group">
-                <label for="id_username">ユーザー名</label>
-                {{ user_form.username }}
-                {% if user_form.username.errors %}
-                    <ul class="error-list">
-                        {% for error in user_form.username.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <!-- ユーザー情報編集 -->
+          <div class="form-group">
+              <label for="id_username">ユーザー名</label>
+              {{ user_form.username }}
+              {% if user_form.username.errors %}
+                  <ul class="error-list">
+                      {% for error in user_form.username.errors %}
+                          <li class="error">{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </div>
 
-            <div class="form-group">
-                <label for="id_email">メールアドレス</label>
-                {{ user_form.email }}
-                {% if user_form.email.errors %}
-                    <ul class="error-list">
-                        {% for error in user_form.email.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <div class="form-group">
+              <label for="id_email">メールアドレス</label>
+              {{ user_form.email }}
+              {% if user_form.email.errors %}
+                  <ul class="error-list">
+                      {% for error in user_form.email.errors %}
+                          <li class="error">{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </div>
 
-            <div class="form-group">
-                <label for="id_post_code">郵便番号</label>
-                {{ user_form.post_code }}
-                {% if user_form.post_code.errors %}
-                    <ul class="error-list">
-                        {% for error in user_form.post_code.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <div class="form-group">
+              <label for="id_post_code">郵便番号</label>
+              {{ user_form.post_code }}
+              {% if user_form.post_code.errors %}
+                  <ul class="error-list">
+                      {% for error in user_form.post_code.errors %}
+                          <li class="error">{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </div>
 
-            <div class="form-group">
-                <label for="id_address1">都道府県 市区町村</label>
-                {{ user_form.address1 }}
-                {% if user_form.address1.errors %}
-                    <ul class="error-list">
-                        {% for error in user_form.address1.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <div class="form-group">
+            <label for="id_address1">都道府県 市区町村</label>
+            {{ user_form.address1 }}
+            {% if user_form.address1.errors %}
+                <ul class="error-list">
+                    {% for error in user_form.address1.errors %}
+                        <li class="error">{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+          </div>
 
-            <div class="form-group">
-                <label for="id_street_address">番地</label>
-                {{ user_form.street_address }}
-                {% if user_form.street_address.errors %}
-                    <ul class="error-list">
-                        {% for error in user_form.street_address.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <div class="form-group">
+              <label for="id_street_address">番地</label>
+              {{ user_form.street_address }}
+              {% if user_form.street_address.errors %}
+                  <ul class="error-list">
+                      {% for error in user_form.street_address.errors %}
+                          <li class="error">{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </div>
 
-            <div class="form-group">
-                <label for="id_address2">建物名</label>
-                {{ user_form.address2 }}
-                {% if user_form.address2.errors %}
-                    <ul class="error-list">
-                        {% for error in user_form.address2.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <div class="form-group">
+              <label for="id_address2">建物名</label>
+              {{ user_form.address2 }}
+              {% if user_form.address2.errors %}
+                  <ul class="error-list">
+                      {% for error in user_form.address2.errors %}
+                          <li class="error">{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </div>
 
-            <div class="form-group">
-                <label for="id_phone_number">電話番号</label>
-                {{ user_form.phone_number }}
-                {% if user_form.phone_number.errors %}
-                    <ul class="error-list">
-                        {% for error in user_form.phone_number.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <div class="form-group">
+              <label for="id_phone_number">電話番号</label>
+              {{ user_form.phone_number }}
+              {% if user_form.phone_number.errors %}
+                  <ul class="error-list">
+                      {% for error in user_form.phone_number.errors %}
+                          <li class="error">{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </div>
 
-            <!-- プロフィール画像編集 -->
-            <h2>プロフィール画像の変更</h2>
-            <div class="form-group">
-                {{ profile_form.profile_image }}
-                {% if profile_form.profile_image.errors %}
-                    <ul class="error-list">
-                        {% for error in profile_form.profile_image.errors %}
-                            <li class="error">{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+          <!-- プロフィール画像編集 -->
+          <h2>プロフィール画像の変更</h2>
+          <div class="form-group">
+              {{ profile_form.profile_image }}
+              {% if profile_form.profile_image.errors %}
+                  <ul class="error-list">
+                      {% for error in profile_form.profile_image.errors %}
+                          <li class="error">{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+              {% endif %}
+          </div>
 
-            <div class="form-group inline">
-                <label for="id_delete_image">画像を削除</label>
-                {{ profile_form.delete_image }}
-            </div>
+          <div class="form-group inline">
+              <label for="id_delete_image">画像を削除</label>
+              {{ profile_form.delete_image }}
+          </div>
 
-            <button type="submit">変更を保存</button>
-        </form>
-    </div>
+          <button type="submit">変更を保存</button>
+      </form>
+  </div>
 
-    <div class="form-footer">
-        <p><a href="{% url 'accounts:my_page' %}" class="action-link">マイページに戻る</a></p>
-    </div>
+  <div class="form-footer">
+      <p><a href="{% url 'accounts:my_page' %}" class="action-link">マイページに戻る</a></p>
+  </div>
 </div>
 
 <!-- Yubinbango.js の読み込み -->

@@ -156,8 +156,6 @@
                     <li><strong>{{ field }}</strong></li>
                 {% endfor %}
             </ul>
-        {% else %}
-            <p>変更はありませんでした。</p>  <!-- 変更がない場合のメッセージ -->
         {% endif %}
 
         <!-- 更新・追加・削除に関するメッセージ -->
@@ -168,6 +166,11 @@
                     <li>{{ message }}</li>
                 {% endfor %}
             </ul>
+        {% endif %}
+
+        <!-- 変更がない場合 -->
+        {% if not updated_fields and not messages %}
+            <p>変更はありませんでした。</p>
         {% endif %}
     </div>
     <!-- 戻るリンク -->

@@ -14,8 +14,8 @@ def validate_phone_number(value):
 
 
 def validate_address(value):
-    if not re.match(r'^[\w\s\-、。、・〒]+$', value):
-        raise ValidationError('有効な住所を入力してください。記号や特殊文字は使用できません。')
+    if not re.match(r'^[ぁ-んァ-ン一-龥0-9a-zA-Z\s\-、。、・〒]+$', value):
+        raise ValidationError('有効な住所を入力してください。')
 
 
 def validate_username(value):
@@ -130,8 +130,8 @@ class ProfileImageForm(forms.ModelForm):
         return instance
 
 
-# ユーザー情報編集フォーム
 class CustomUserUpdateForm(forms.ModelForm):
+    # ユーザー名
     username = forms.CharField(
         label="ユーザー名",
         max_length=150,
@@ -142,6 +142,8 @@ class CustomUserUpdateForm(forms.ModelForm):
         }),
         validators=[RegexValidator(regex=r'^[a-zA-Z0-9]*$', message='ユーザー名は英字と数字のみで入力してください。')]
     )
+
+    # メールアドレス
     email = forms.EmailField(
         label="メールアドレス",
         min_length=7,
@@ -149,9 +151,11 @@ class CustomUserUpdateForm(forms.ModelForm):
         required=True,
         widget=forms.TextInput(attrs={'placeholder': '例: pet@pet.com'}),
     )
+
+    # 郵便番号
     post_code = forms.CharField(
         label="郵便番号",
-        max_length=8,
+        max_length=7,
         required=True,
         widget=forms.TextInput(attrs={
             'placeholder': '例: 1234567（ハイフンなし）',
@@ -159,17 +163,20 @@ class CustomUserUpdateForm(forms.ModelForm):
         }),
         validators=[validate_post_code]
     )
+
+    # 都道府県 市区町村（例: 長野県長野市）
     address1 = forms.CharField(
         label="都道府県 市区町村",
-        min_length=10,
         max_length=100,
         required=True,
         widget=forms.TextInput(attrs={
-            'placeholder': '例: 長野県長野市元善町',
-            'class': 'p-region p-locality p-street-address p-extended-address form-control'
+            'class': 'p-region p-locality p-street-address p-extended-address form-control',
+            'placeholder': '例: 長野県長野市長野元善町'
         }),
         validators=[validate_address]
     )
+
+    # 番地（例: 10番地）
     street_address = forms.CharField(
         label="番地",
         max_length=6,
@@ -180,6 +187,8 @@ class CustomUserUpdateForm(forms.ModelForm):
         }),
         validators=[validate_street_address]
     )
+
+    # 建物名（任意）
     address2 = forms.CharField(
         label="建物名",
         max_length=40,
@@ -189,6 +198,8 @@ class CustomUserUpdateForm(forms.ModelForm):
             'class': 'form-control'
         })
     )
+
+    # 電話番号
     phone_number = forms.CharField(
         label="電話番号",
         max_length=15,
@@ -204,7 +215,6 @@ class CustomUserUpdateForm(forms.ModelForm):
         model = CustomUser
         fields = ['username', 'email', 'post_code', 'address1', 'street_address', 'phone_number', 'address2']
 
-        # フィールドごとのエラーメッセージを設定
         error_messages = {
             'phone_number': {
                 'invalid': '電話番号は10桁または11桁の数字でなければなりません。',
