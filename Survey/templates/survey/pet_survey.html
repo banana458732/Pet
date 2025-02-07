@@ -147,7 +147,7 @@
         display: inline-flex;  /* インラインのフレックスボックスでラベルを整列 */
         align-items: center;  /* ラベルのテキストとラジオボタンを縦に揃える */
         height: 18px;  /* ラベルの高さをラジオボタンの高さと一致させる */
-        margin-left: 10px;  /* ラベルとラジオボタンの間隔を調整 */
+        margin-left: -10px;  /* ラベルとラジオボタンの間隔を調整 */
         margin-bottom: 18px;  /* ラベルとラジオボタンの間隔を調整 */
     }
 
@@ -176,7 +176,7 @@
         width: 14px;  /* ラジオボタンの幅 */
         height: 14px; /* ラジオボタンの高さ */
         vertical-align: middle; /* ラベルと縦に揃える */
-        margin-left: 10px;
+        margin-left: -10px;
         margin-bottom: 8px; /* 下の余白を小さく設定 */
     }
 
@@ -184,6 +184,7 @@
     #pet_type_dog + label, #pet_type_cat + label {
         margin-top: 0;  /* 上の余白をリセット */
         margin-bottom: 0; /* 下の余白をリセット */
+        margin-left: 10px;
     }
 
     @media (max-width: 768px) {

@@ -43,9 +43,13 @@
                     {% endif %}
                 {% endif %}
 
-                <span class="current">
-                    ページ {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
-                </span>
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <span class="current-page">{{ num }}</span>
+                    {% else %}
+                        <a href="{% url 'survey:results' %}?page={{ num }}" class="page-num">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
         
                 {% if page_obj.has_next %}
                     {% if request.GET.page %}
@@ -183,6 +187,42 @@
         display: block;
         margin-bottom: 20px;
         margin-left: 330px;
+    }
+
+    /* ページネーションのデザイン */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    /* ページ番号リンクのスタイル */
+    .page-num, .pagination-link {
+        padding: 4px 8px;
+        background-color: #f9f9f9;
+        color: black;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* ホバー時のスタイル */
+    .page-num:hover, .pagination-link:hover {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    /* 現在のページのスタイル */
+    .current-page {
+        padding: 4px 8px;
+        background-color: #e0e0e0;
+        color: #333;
+        font-weight: bold;
+        border-radius: 4px;
     }
 
     @media (max-width: 500px) {

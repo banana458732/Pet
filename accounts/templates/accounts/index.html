@@ -91,6 +91,40 @@
         border-radius: 4px;
     }
 
+    .survey-banner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 180px;
+        background: linear-gradient(135deg, #f0e9e1, #d8cfc6); /* 優しいベージュグラデーション */
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: 30px auto;
+        max-width: 85%;
+    }
+
+    .survey-link {
+        display: inline-block;
+        background: #ffffff;
+        color: #5c504a;
+        padding: 15px 35px;
+        font-size: 22px;
+        font-weight: bold;
+        text-decoration: none;
+        border-radius: 50px;
+        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 2px solid #c7b8ad; /* 淡いグレージュの縁取り */
+    }
+
+    .survey-link:hover {
+        background: #e8e2dc;
+        color: #3d3632;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        transform: scale(1.05);
+    }
+
     @media (max-width: 768px) {
         .pagination {
             font-size: 0.8rem; /* フォントサイズをさらに小さくする */
@@ -125,8 +159,8 @@
     }
 </style>
 
-<div>
-    <a href="{% url 'survey:pet_survey' %}">アンケート</a>
+<div class="survey-banner">
+    <a href="{% url 'survey:pet_survey' %}" class="survey-link">🐶 ペットアンケートはこちら 🐱</a>
 </div>
 
 <h1>現在保護されているペット</h1>
