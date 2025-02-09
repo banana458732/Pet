@@ -136,15 +136,21 @@ def karikeiyaku_comp(request):
     user_karikeiyaku = Karikeiyaku.objects.filter(user=request.user, status="仮契約中").first()
 
     if not user_karikeiyaku:
-        # 仮契約が存在しない場合、エラーメッセージを表示（オプション）
+        # 仮契約が存在しない場合、エラーメッセージを表示
         messages.error(request, "仮契約が完了していません。")
-        return redirect('accounts:my_page')  # 必要に応じてリダイレクト先を調整
+        return redirect('accounts:my_page')
 
     # 仮契約中のペット情報
     pet = user_karikeiyaku.pet
 
+    # 契約期限をフォーマット（YYYY年MM月DD日）
+    end_date = user_karikeiyaku.end_date.strftime('%Y年%m月%d日') if user_karikeiyaku.end_date else None
+    created_at = user_karikeiyaku.created_at.strftime('%Y年%m月%d日') if user_karikeiyaku else datetime.now().date().strftime('%Y年%m月%d日')
+
     return render(request, 'karikeiyaku/karikeiyaku_comp.html', {
-        'pet': pet,  # ペット情報をテンプレートに渡す
+        'pet': pet,
+        'end_date': end_date,  # 契約期限をテンプレートに渡す
+        'created_at': created_at,
     })
 
 

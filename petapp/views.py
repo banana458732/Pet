@@ -230,7 +230,6 @@ def pet_update_view(request, pet_id):
         # 変更前のペット住所を保存
         request.session['old_pet_address'] = pet.address
 
-
         # フォームの初期化
         pet_form = PetUpdateForm(request.POST, instance=pet)
         image_formset = PetImageFormSet(request.POST, request.FILES, queryset=existing_images)
@@ -242,6 +241,8 @@ def pet_update_view(request, pet_id):
         error_message = None
 
         logger = logging.getLogger(__name__)
+
+        errors = False
 
         if pet_form.is_valid() and image_formset.is_valid():
             # 削除後に残る画像数を計算
@@ -258,9 +259,9 @@ def pet_update_view(request, pet_id):
             if remaining_images < 1:
                 error_message = "画像は1枚以上登録されている必要があります。"
                 for form in image_formset:
-                    form.add_error(None, error_message)
+                    form.add_error(None, error_message)  # 各フォームにエラーを追加
+                pet_form.add_error(None, error_message)  # ペットフォームにもエラーを追加
                 errors = True
-                image_formset.is_valid = False
 
             if not errors:
                 # トランザクション開始

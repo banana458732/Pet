@@ -3,91 +3,140 @@
 
 {% block contents %}
 <style>
-    /* 全体のスタイル */
     .registration-complete {
         max-width: 800px;
         margin: 20px auto;
-        padding: 40px;
+        padding: 40px; /* より広い余白 */
         background-color: #f9f9f9;
-        border: 3px solid #ddd;
+        border: 1px solid #ddd;
         border-radius: 8px;
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         text-align: center;
         font-family: Arial, sans-serif;
-        overflow: hidden;
+        overflow: hidden; /* 親要素が子要素のはみ出しを隠す */
     }
 
-    /* 見出しのスタイル */
     .registration-complete h2 {
-        color: #000; /* 見出しを黒に変更 */
+        color: #000;
         font-size: 2.5rem;
         margin-bottom: 20px;
     }
 
-    /* メッセージのスタイル */
     .registration-complete p {
         font-size: 1.2rem;
         color: #333;
         margin-bottom: 30px;
     }
+    @media (max-width: 693px) {
+    .registration-complete {
+        padding: 30px 20px; /* 上下30px、左右20pxの余白を確保 */
+        margin: 30px auto; /* 外側の余白も確保 */
+        max-width: 90%; /* 画面幅に対して90%以内に収める */
+    }
 
-    /* ボタンのスタイル */
+    .table {
+        max-width: 95%; /* 画面いっぱいに広がらないようにする */
+        margin: 20px auto; /* 上下の余白も確保 */
+        table-layout: fixed;
+    }
+
+    .table th, .table td {
+        font-size: 14px;
+        line-height: 1.6; /* 文字の間隔を少し広げる */
+        padding: 8px 6px; /* セルの余白を増やす */
+    }
+}
+
+
+    /* ペット情報テーブル */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: fixed;
+        margin-bottom: 20px;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        word-wrap: break-word;
+    }
+
+    .table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+        width: 20%;
+        white-space: nowrap;
+    }
+
+    .table td {
+        background-color: #fff;
+        color: #555;
+        width: 80%;
+        white-space: normal;
+    }
+
+    @media (max-width: 693px) {
+    .table {
+        max-width: 500px;
+        margin: 20px auto; /* これを追加 */
+        table-layout: fixed;
+    }
+
+    .table th, .table td {
+        font-size: 14px;
+        line-height: 1.5;
+        padding: 6px 4px;
+    }
+}
+
     .registration-complete a {
         display: inline-block;
-        background-color: #007bff; /* 青色ボタン */
+        background-color: #007bff;
         color: white;
         padding: 10px 20px;
         font-size: 1rem;
         text-decoration: none;
         border-radius: 5px;
         transition: background-color 0.3s;
+        margin-top: 10px;
+        margin-bottom: -10px;
     }
 
     .registration-complete a:hover {
-        background-color: #0056b3; /* ホバー時の濃い青 */
+        background-color: #0056b3;
     }
+
+.bottom-my{
+    background-color: #f0f8ff;
+    padding: 10px;
+    border-radius: 5px;
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+}
+
 </style>
 
 <div class="registration-complete">
     <h2>仮契約が完了しました！</h2>
     <p>ご登録ありがとうございました。</p>
 
-    <table>
+    <table class="table">
         <tr>
             <th>ID</th>
             <td>{{ pet.id }}</td>
-        </tr>
-        <tr>
-            <th>種類</th>
-            <td>{{ pet.type }}</td>
-        </tr>
-        <tr>
-            <th>サイズ</th>
-            <td>{{ pet.size }}</td>
-        </tr>
-        <tr>
-            <th>性別</th>
-            <td>{{ pet.sex }}</td>
         </tr>
         <tr>
             <th>品種</th>
             <td>{{ pet.kinds }}</td>
         </tr>
         <tr>
-            <th>色</th>
-            <td>{{ pet.color }}</td>
-        </tr>
-        <tr>
             <th>年齢</th>
             <td>{{ pet.age }}</td>
-        </tr>
-        <tr>
-            <th>性格</th>
-            <td>{{ pet.personality }}</td>
-        </tr>
-        <tr>
-            <th>病歴</th>
-            <td>{% if show_disease %}{{ pet.disease }}{% else %}なし{% endif %}</td>
         </tr>
         <tr>
             <th>郵便番号</th>
@@ -107,19 +156,15 @@
         </tr>
         <tr>
             <th>契約期限</th>
-            <td>{{ pet_data.created_at|date:"Y年m月d日" }} ～ {{ pet_data.end_date|date:"Y年m月d日" }}</td>
+            <td>{{ created_at }} ～ {{ end_date }}</td>
         </tr>
     </table>
 
+    <div class="bottom-my">
+        💡 詳細は下のボタンを押してください！
+    </div>       
 
-    <!-- ペット画像を表示 -->
-    {% if pet.petimage_set.all %}
-        <div class="pet-images">
-            {% for image in pet.petimage_set.all %}
-                <img src="{{ image.image.url }}" alt="ペットの画像">
-            {% endfor %}
-        </div>
-    {% endif %}
+<br>
 
     <a href="{% url 'accounts:my_page' %}">マイページへ</a>
 </div>

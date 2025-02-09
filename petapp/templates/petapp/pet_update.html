@@ -44,6 +44,16 @@
         border-radius: 4px;
         box-sizing: border-box;
     }
+    .alert {
+        border: none !important; /* 枠線を完全に消す */
+        box-shadow: none !important; /* 影を消す（もし影があるなら） */
+        background-color: transparent !important; /* 背景を透明にする */
+        color: red;
+        font-size: 0.9em;
+        text-align: start;
+        margin-bottom: -20px;
+        margin-top: 10px;
+    }
 
     .pet-form .error-list {
         color: red;
@@ -53,6 +63,14 @@
 
     .pet-form .error {
         margin-top: 5px;
+    }
+
+    .bottomm {
+        display: flex;
+        justify-content: center; /* 水平方向に中央配置 */
+        align-items: center; /* 垂直方向に中央配置（必要なら追加） */
+        width: 100%; /* 親要素の幅いっぱいに広げる */
+        margin-top: 20px; /* 適宜調整 */
     }
 
     /* ボタンのスタイル */
@@ -65,7 +83,8 @@
         border-radius: 4px;
         font-size: 16px;
         cursor: pointer;
-        margin-top: 20px;
+        margin-top: 10px;
+        margin-bottom: 20px;
     }
 
     .pet-form button.btn-submit:hover {
@@ -81,7 +100,7 @@
 
     /* 戻るボタンのスタイル */
     .return-button {
-        padding: 10px 20px; /* ボタンサイズ */
+        padding: 10px 30px; /* ボタンサイズ */
         background-color: #6c757d; /* グレーの背景色 */
         color: white; /* 白い文字色 */
         border: none; /* ボーダーなし */
@@ -89,6 +108,7 @@
         font-size: 16px; /* フォントサイズ */
         cursor: pointer; /* ポインターを表示 */
         text-decoration: none; /* 下線を削除 */
+        margin-bottom: 10px;
     }
 
     .return-button:hover {
@@ -104,103 +124,133 @@
         display: block; /* インライン画像をブロック化 */
     }
 
-    .form-group.inline {
+    /* 画像全体のコンテナ */
+    .image-container {
         display: flex;
-        justify-content: center; /* チェックボックスとラベルを中央揃え */
-        align-items: center;
-        gap: 5px; /* チェックボックスとラベルの間隔 */
+        flex-wrap: wrap; /* 行を折り返す */
+        gap: 10px;
+        justify-content: flex-start; /* 左揃え */
+        align-items: flex-start; /* 高さを揃える */
+        width: 100%;
     }
 
-/* 共通の画像フォームセットスタイル */
-.image-container {
-    display: flex;
-    flex-wrap: wrap; /* 横並びにした後、次の行に折り返す */
-    gap: 20px; /* 各フォームの間隔を調整 */
-    justify-content: space-between; /* 横並びのアイテムを均等に配置 */
-}
-
-/* 画像がある場合 */
-.image-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* 中央揃え */
-    gap: 15px; /* 各項目の間隔 */
-    padding: 15px;
-    border: 1px solid #ddd; /* 枠線を追加 */
-    border-radius: 8px; /* 丸みを帯びた角 */
-    background-color: #f9f9f9; /* 背景色 */
-    width: 30%; /* 1行に3つ並べるために幅を設定 */
-    box-sizing: border-box; /* 幅にパディングとボーダーを含める */
-}
-
-/* 画像がない場合 */
-.image-item.no-image {
-    padding: 10px; /* くくりを小さく */
-    border: 1px solid #ccc; /* ボーダーを薄く */
-    width: 30%; /* 1行に3つ並べるために幅を設定 */
-}
+    /* 既存画像の更新エリア */
+    .update-image-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        width: calc(20% - 10px); /* 横並びに5つ並べる */
+        box-sizing: border-box;
+        min-height: 250px; /* 画像ありの高さ */
+    }
 
 
-.image-preview img {
-    max-width: 100%; /* 画像の幅を親要素に合わせる */
-    height: auto;
-    border-radius: 4px; /* 画像に丸みをつける */
-}
+    .new-image-container {
+        width: calc(20% - 10px); /* 横並びに5つ並べる */
+        margin-top: 140px;
+    }
 
-/* 更新する画像入力部分 */
-.image-input.update-image {
-    background-color: #e0f7fa; /* 更新画像の入力部分に別の背景色 */
-    padding: 10px;
-    border: 1px solid #4caf50; /* 緑色の枠線 */
-    border-radius: 8px;
-}
 
-.image-input.update-image p {
-    font-weight: bold;
-    color: #00796b; /* テキスト色 */
-}
+    .image-item.no-image {
+        height: auto;
+        min-height: 80px; /* さらに小さく */
+        padding: 5px;
+    }
 
-/* 新しい画像入力部分 */
-.image-input.new-image {
-    background-color: #ffebee; /* 新しい画像の入力部分に別の背景色 */
-    padding: 10px;
-    border: 1px solid #f44336; /* 赤色の枠線 */
-    border-radius: 8px;
-}
+    /* 新しい画像選択のためのスタイル */
+    .no-image {
+        border: 2px dashed #ccc;
+        background-color: #f9f9f9;
+        text-align: center;
+        padding: 10px;
+        display: flex;
+        justify-content: center; /* 横方向に中央揃え */
+        align-items: center; /* 縦方向に中央揃え */
+        height: 150px; /* 高さを指定して中央揃え */
+        flex-direction: column; /* 縦方向に並べる */
+    }
 
-.image-input.new-image p {
-    font-weight: bold;
-    color: #d32f2f; /* テキスト色 */
-}
+    /* 画像がない場合の画像入力エリア */
+    .no-image .image-input {
+        display: flex;
+        flex-direction: column; /* 内容を縦に並べる */
+        justify-content: center; /* 縦方向に中央揃え */
+        align-items: center; /* 内容を中央揃え */
+        width: 100%;
+        height: 100%; /* 親要素の高さに合わせる */
+    }
 
-/* ファイル入力部分のスタイル修正 */
-.image-input input[type="file"] {
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    width: 100%; /* 親要素の幅に合わせる */
-    box-sizing: border-box; /* パディングやボーダーを幅に含める */
-}
+    /* 新しい画像入力部分の中央配置 */
+    .new-image {
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* 縦方向に中央揃え */
+        align-items: center;
+        height: 100%;
+        margin-top: auto;
+        margin-bottom: auto; /* 上下の余白を自動で調整 */
+    }
 
-/* フォームのラベルと入力のスタイル */
-.pet-form input[type="file"] {
-    padding: 10px;
-}
+    /* 画像プレビュー */
+    .image-preview img {
+        width: 100%;
+        height: 150px; /* 高さを統一 */
+        object-fit: cover;
+        border-radius: 4px;
+    }
 
-/* チェックボックスを中央に配置し、ラベルを上に配置 */
-.form-group.inline {
-    display: flex;
-    flex-direction: column;  /* ラベルを上に、チェックボックスを下に */
-    align-items: center;     /* チェックボックスを中央揃え */
-    justify-content: center; /* 垂直方向にも中央に配置 */
-    margin-top: 10px;        /* 上に少し余白を追加 */
-}
+    /* 画像入力エリア（統一） */
+    .image-input {
+        width: 100%;
+        text-align: center;
+    }
 
-/* チェックボックスのスタイル調整（中央に配置） */
-.form-group.inline input[type="checkbox"] {
-    margin-top: 5px;  /* チェックボックスとラベルの間に少し余白を追加 */
-}
+    /* ファイル選択ボタンの余白を減らす */
+    .image-input input[type="file"] {
+        width: 100%;
+        padding: 5px;
+        font-size: 14px;
+    }
 
+    /* 削除チェックボックスのレイアウト統一 */
+    .form-group.inline {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-top: 5px;
+        width: 100%; /* 幅を100%にして、ラベルが画面に収まるようにする */
+    }
+
+    /* チェックボックスの位置調整 */
+    .form-group.inline input[type="checkbox"] {
+        margin-top: 3px;
+    }
+
+    /* 削除の文字（ラベル）調整 */
+    .form-group.inline label {
+        font-size: 16px; /* 小画面でも読みやすいサイズに調整 */
+        word-wrap: break-word; /* 長い文字が収まらない場合に折り返し */
+        text-align: center; /* 文字が中央に揃うように調整 */
+        margin-top: 5px;
+    }
+    /* 小画面での調整 */
+    @media (max-width: 768px) {
+        /* 文字のサイズ調整 */
+        .form-group.inline label {
+            font-size: 14px; /* 小画面では文字サイズを少し小さく */
+        }
+
+        /* チェックボックスと文字の位置を適切に配置 */
+        .form-group.inline input[type="checkbox"] {
+            margin-right: 5px; /* チェックボックスと文字の間隔を調整 */
+        }
+    }
 
     /* レスポンシブ対応 */
     @media (max-width: 768px) {
@@ -397,19 +447,12 @@
         <h3>画像の更新</h3>
         {{ image_formset.management_form }} <!-- 管理フォームを追加 -->
 
-        {% if image_formset.non_field_errors %}
-            <ul class="error-list">
-                {% for error in image_formset.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
         <!-- 画像フォームセット -->
         <div class="image-container">
             {% for form in image_formset %}
-                <div class="image-item">
-                    {% if form.instance.image %}
+                {% if form.instance.image %}
+                    <!-- 既存画像の更新エリア -->
+                    <div class="image-item update-image-container">
                         <!-- 画像表示部分 -->
                         <div class="image-preview">
                             <img src="{{ form.instance.image.url }}" alt="Pet Image">
@@ -443,8 +486,10 @@
                                 </ul>
                             {% endif %}
                         </div>
-                    {% else %}
-                        <!-- 新しい画像入力部分 -->
+                    </div>
+                {% else %}
+                    <!-- 新しい画像の選択エリア -->
+                    <div class="image-item no-image new-image-container">
                         <div class="image-input new-image">
                             <p>新しい画像を選択</p>
                             <input type="file" name="{{ form.image.html_name }}" id="{{ form.image.id_for_label }}">
@@ -456,11 +501,20 @@
                                 </ul>
                             {% endif %}
                         </div>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             {% endfor %}
+        </div>
 
-        <button type="submit" class="btn-submit">更新</button>
+        {% if error_message %}
+            <div class="alert alert-danger error-box">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
+        <div class="bottomm">
+            <button type="submit" class="btn-submit">更新</button>
+        </div>
     </form>
 
     <div class="return-button-wrapper">

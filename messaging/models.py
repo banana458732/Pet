@@ -49,4 +49,3 @@ class Karikeiyaku(models.Model):
         choices=[('仮契約中', '仮契約中'), ('キャンセル', 'キャンセル'), ('仮契約済', '仮契約済')],
         default='仮契約中', verbose_name="ステータス"
     )
-    # 他のフィールド...
