@@ -422,3 +422,7 @@ def index(request):
     print(f"Remaining Pets: {pets}")
 
     return render(request, 'accounts/index.html', {'page_obj': page_obj})
+
+
+def thought(request):
+    return render(request, 'accounts/service.html')

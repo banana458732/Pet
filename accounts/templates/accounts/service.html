@@ -1,0 +1,71 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %}私たちの想い{% endblock %}
+
+{% block contents %}
+
+<style>
+    /* 全体のレイアウト設定 */
+    .content-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px;
+        background-color: #f5f5f5;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        font-family: 'Arial', sans-serif;
+    }
+
+    h3 {
+        font-size: 1.7rem;
+        color: #2c3e50;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-weight: bold;
+        text-align: left;
+        border-bottom: 2px solid #7a5c39; /* 変更: #7a5c39に設定 */
+        padding-bottom: 5px;
+    }
+
+    /* 段落のスタイル */
+    .content-container p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #34495e;
+        margin-bottom: 20px;
+    }
+
+    /* レスポンシブデザイン */
+    @media (max-width: 768px) {
+        .content-container {
+            padding: 20px;
+        }
+        h3 {
+            font-size: 1.5rem;
+        }
+        .content-container p {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+
+<div class="content-container">
+
+    <h3>殺処分の現状</h3>
+
+    <p>殺処分の方法としては、炭酸ガスを用いた窒息死が一般的ですが、この方法は苦痛を伴う場合があるため、動物愛護の観点からも問題視されています。日本では、2020年に約11万匹以上の犬と猫が殺処分されました。この数字は減少傾向にありますが、依然として深刻な問題です。海外では殺処分を禁止する国も増えており、日本でも同様の流れが求められています。</p>
+
+    <p>このような状況を少しでも改善したいという思いから、私たちはペットのマッチングシステムを開発しました。このシステムは、保護犬や保護猫と、新しい家族を求める人々をつなぐことを目的としています。</p>
+
+    <h3>システムの仕組み</h3>
+    
+    <p>私たちのマッチングシステムでは、全国の保護団体や保健所にいる犬や猫の情報をデータベース化し、より多くの人に情報を届けることを可能にします。登録された動物の情報には、年齢、性別、性格などが含まれています。</p>
+
+    <p>システムでは、希望する飼い主が自身のライフスタイルや住環境に合った動物を検索しやすくするために、検索機能を搭載しています。例えば、「小型犬」「柴犬」「明るく元気な子」など、特定の条件でフィルタリングし、自分に合ったペットを探すことができます。</p>
+
+    <p>私たちのシステムは、殺処分される運命にある命を救い、幸せな家庭へと導くことを目指しています。無力感を感じることが多い現状ですが、このシステムによって、ひとりでも多くの命が新たな希望を見つけることを願っています。</p>
+
+</div>
+
+{% endblock %}
