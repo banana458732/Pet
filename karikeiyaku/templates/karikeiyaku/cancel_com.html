@@ -41,7 +41,7 @@
 
     /* 戻るリンクのスタイル */
     .cancel-complete-container .return-button {
-        padding: 10px 20px; /* ボタンサイズ */
+        padding: 10px 30px; /* ボタンサイズ */
         background-color: #6c757d; /* グレーの背景色 */
         color: white; /* 白い文字色 */
         border: none; /* ボーダーなし */
@@ -55,6 +55,12 @@
     .cancel-complete-container .return-button:hover {
         background-color: #5a6268; /* ホバー時の濃いグレー */
         color: white;
+    }
+    @media (max-width: 768px) {
+        .cancel-complete-container {
+            margin: 20px 20px; /* 左右に15pxの余白を追加 */
+            padding: 30px 15px; /* 左右のパディングを追加 */
+        }
     }
 </style>
 

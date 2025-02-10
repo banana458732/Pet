@@ -4,6 +4,10 @@
 
 {% block contents %}
 <style>
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
     /* ペットリストのスタイル */
     .pet-list {
         display: flex;
@@ -124,7 +128,7 @@
 </style>
 
 <div class="pet-list-container">
-    <h1>契約済みのペット</h1>
+    <h2>契約済みのペット</h2>
 
     <ul class="pet-list">
         {% for pet_data in pet_images_completed %}
@@ -144,7 +148,7 @@
                 </div>
             </li>
         {% empty %}
-            <p>契約済みのペットが存在しません。</p>
+            <h4>契約済みのペットが存在しません。</h4>
         {% endfor %}
     </ul>
     
@@ -154,26 +158,29 @@
 </div>
 
 <!-- ページネーション部分 -->
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <a href="?page=1" class="page-num">&laquo; 最初</a>
-        <a href="?page={{ page_obj.previous_page_number }}" class="page-num">＜ 前</a>
-    {% endif %}
+{% if page_obj.paginator.count > 0 %}
 
-    <span class="page-numbers">
-        {% for num in page_obj.paginator.page_range %}
-            {% if num == page_obj.number %}
-                <span class="current-page">{{ num }}</span>
-            {% else %}
-                <a href="?page={{ num }}" class="page-num">{{ num }}</a>
-            {% endif %}
-        {% endfor %}
-    </span>
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="page-num">&laquo; 最初</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-num">＜ 前</a>
+        {% endif %}
 
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="page-num">次 ＞</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-num">最後 &raquo;</a>
-    {% endif %}
-</div>
+        <span class="page-numbers">
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <span class="current-page">{{ num }}</span>
+                {% else %}
+                    <a href="?page={{ num }}" class="page-num">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="page-num">次 ＞</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="page-num">最後 &raquo;</a>
+        {% endif %}
+    </div>
+{% endif %}
 
 {% endblock %}

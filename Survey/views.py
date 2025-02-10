@@ -126,13 +126,16 @@ def pet_survey(request):
         pets_with_score = pets_data[pets_data['score'] >= 1]
 
         # 分岐処理
-        if not size and not color and not kinds and not disease and not personality and not sex and not age_range:
-            latest_pets = pets_with_score
-        else:
-            if pets_with_score['score'].max() == 1 and len(pets_with_score) == len(pets_data):
-                latest_pets = pets_data.head(3)
-            else:
+        if not pets_with_score.empty:
+            if not size and not color and not kinds and not disease and not personality and not sex and not age_range:
                 latest_pets = pets_with_score
+            else:
+                if pets_with_score['score'].max() == 1 and len(pets_with_score) == len(pets_data):
+                    latest_pets = pets_data.head(3)
+                else:
+                    latest_pets = pets_with_score
+        else:
+            latest_pets = None  # 条件に一致するペットがなければ None にする
         
         # 検索結果をセッションに保存
         request.session['pets_data'] = pets_data.to_dict('records')
@@ -141,6 +144,7 @@ def pet_survey(request):
         paginator = Paginator(latest_pets, 10)  # 1ページに表示する件数
         page_number = request.GET.get('page')  # URLからページ番号を取得
         page_obj = paginator.get_page(page_number)
+        
 
         # 画像の処理
         pets_with_images = []

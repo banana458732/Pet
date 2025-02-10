@@ -34,6 +34,7 @@ urlpatterns = [
     path('pet-selection/', PetSelectionView.as_view(), name='pet_selection'),
     path('temporary-pet/', RedirectTemporaryPetView.as_view(), name='temporary_pet'),
     path('change_profile_image/', views.change_profile_image, name='change_profile_image'),  # 追加
+    path('thought/', views.thought, name='thought'),  # 追加
 ]
 
 

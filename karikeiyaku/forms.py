@@ -5,7 +5,7 @@ from datetime import date, timedelta
 
 class KarikeiyakuForm(forms.ModelForm):
     agreement = forms.BooleanField(
-        required=True, 
+        required=True,
         label="上記について同意します",
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
@@ -23,7 +23,6 @@ class KarikeiyakuForm(forms.ModelForm):
         self.fields['end_date'].widget = forms.DateInput(
             format='%Y-%m-%d',
             attrs={
-                'readonly': 'readonly',
                 'class': 'form-control',
                 'placeholder': 'YYYY-MM-DD'
             }

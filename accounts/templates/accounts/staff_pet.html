@@ -144,26 +144,28 @@
 </div>
 
 <!-- ページネーション部分 -->
-<div class="pagination">
-    {% if page_obj.has_previous %}
-        <a href="?page=1" class="page-num">&laquo; 最初</a>
-        <a href="?page={{ page_obj.previous_page_number }}" class="page-num">＜ 前</a>
-    {% endif %}
+{% if page_obj.paginator.count > 0 %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="page-num">&laquo; 最初</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-num">＜ 前</a>
+        {% endif %}
 
-    <span class="page-numbers">
-        {% for num in page_obj.paginator.page_range %}
-            {% if num == page_obj.number %}
-                <span class="current-page">{{ num }}</span>
-            {% else %}
-                <a href="?page={{ num }}" class="page-num">{{ num }}</a>
-            {% endif %}
-        {% endfor %}
-    </span>
+        <span class="page-numbers">
+            {% for num in page_obj.paginator.page_range %}
+                {% if num == page_obj.number %}
+                    <span class="current-page">{{ num }}</span>
+                {% else %}
+                    <a href="?page={{ num }}" class="page-num">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+        </span>
 
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="page-num">次 ＞</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}" class="page-num">最後 &raquo;</a>
-    {% endif %}
-</div>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="page-num">次 ＞</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="page-num">最後 &raquo;</a>
+        {% endif %}
+    </div>
+{% endif %}
 
 {% endblock %}

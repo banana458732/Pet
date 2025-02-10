@@ -117,17 +117,15 @@
         border: none !important;
     }
 
-
-
     .return-button-wrapper {
         display: flex;
-        justify-content: flex-start;
+        justify-content: center;
         width: 100%;
         margin-top: 20px;
     }
 
     .return-button {
-        padding: 10px 20px;
+        padding: 10px 30px;
         background-color: #6c757d;
         color: white;
         border: none;
@@ -144,6 +142,17 @@
         font-size: 1rem;
         color: #999;
     }
+    .staff-menu-link {
+        font-size: 1.2em;
+        color: #6c757d; /* グレー */
+        text-decoration: none;
+        transition: color 0.3s, text-decoration 0.3s;
+    }
+
+    .staff-menu-link:hover {
+        color: #565e64; /* 濃いグレー */
+        text-decoration: underline; /* ホバー時に下線を追加 */
+    }
 </style>
 
 <div class="contractor-container">
@@ -155,15 +164,45 @@
         {% endif %}
     </div>
 
-    <h3>ID-{{ pet.id }}</h3>
-
     <!-- ペット情報 -->
     <div class="pet-info">
         <h2>ペット情報</h2>
         <table class="pet-info-table">
             <tr>
+                <th>ID</th>
+                <td>{{ pet.id }}</td>
+            </tr>
+            <tr>
+                <th>種類</th>
+                <td>{{ pet.get_type_display }}</td>
+            </tr>
+            <tr>
+                <th>サイズ</th>
+                <td>{{ pet.get_size_display }}</td>
+            </tr>
+            <tr>
+                <th>色</th>
+                <td>{{ pet.color }}</td>
+            </tr>
+            <tr>
+                <th>年齢</th>
+                <td>{{ pet.age }} 歳</td>
+            </tr>
+            <tr>
+                <th>性別</th>
+                <td>{{ pet.get_sex_display }}</td>
+            </tr>
+            <tr>
+                <th>性格</th>
+                <td>{{ pet.personality }}</td>
+            </tr>
+            <tr>
+                <th>病気</th>
+                <td>{% if pet.disease %}{{ pet.disease }}{% else %}なし{% endif %}</td>
+            </tr>
+            <tr>
                 <th>郵便番号</th>
-                <td>{{ pet.post_code }}</td>
+                <td>{{ pet.formatted_post_code }}</td>
             </tr>
             <tr>
                 <th>住所</th>
@@ -171,7 +210,7 @@
             </tr>
             <tr>
                 <th>電話番号</th>
-                <td>{{ pet.phone_number }}</td>
+                <td>{{ pet.formatted_phone_number }}</td>
             </tr>
             <tr>
                 <th>保護施設</th>
@@ -193,12 +232,8 @@
                     <td>{{ karikeiyaku.user.email }}</td>
                 </tr>
                 <tr>
-                    <th>電話番号</th>
-                    <td>{{ karikeiyaku.user.phone_number }}</td>
-                </tr>
-                <tr>
                     <th>郵便番号</th>
-                    <td>{{ karikeiyaku.user.post_code }}</td>
+                    <td>{{ karikeiyaku.user.formatted_post_code }}</td>
                 </tr>
                 <tr>
                     <th>都道府県 市区町村</th>
@@ -210,6 +245,10 @@
                         <td>{{ karikeiyaku.user.street_address }}</td>
                     </tr>
                 {% endif %}
+                <tr>
+                    <th>電話番号</th>
+                    <td>{{ karikeiyaku.user.formatted_phone_number }}</td>
+                </tr>
                 <tr>
                     <th>契約期間</th>
                     <td>{{ karikeiyaku.created_at }} ～ {{ karikeiyaku.end_date }}</td>
@@ -234,6 +273,10 @@
     <div class="return-button-wrapper">
         <button type="button" class="return-button" onclick="history.back()">戻る</button>
     </div>
+</div>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">メニューに戻る</a>
 </div>
 
 {% endblock %}

@@ -34,12 +34,12 @@
                 <a href="{% url 'accounts:index' %}">ペット一覧</a>
                 <a href="{% url 'accounts:my_page' %}">マイページ</a>
                 <a href="{% url 'messaging:send_message' %}">お問い合わせ</a>
-                <a href="#contact">サービス内容</a>
+                <a href="{% url 'accounts:thought' %}">私たちの想い</a>
             </nav>
             <div class="actions">
 
                 {% if user.is_authenticated %} 
-                    <a href="{% url 'accounts:logout' %}" style="background-color: rgb(133, 133, 133);">ログアウト</a>
+                    <a href="{% url 'accounts:logout' %}" style="background-color: #cb2626;">ログアウト</a>
                 {% else %}
                     <a href="{% url 'accounts:login' %}?next={{ request.path }}">ログイン</a>
                     <a href="{% url 'accounts:signup' %}">アカウント登録</a>

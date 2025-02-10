@@ -8,7 +8,7 @@ class Karikeiyaku(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="ユーザー")
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, verbose_name="ペット")
     end_date = models.DateField(null=True, blank=True, verbose_name="契約終了日")
-    created_at = models.DateField(auto_now_add=True, verbose_name="作成日時")
+    created_at = models.DateField(auto_now_add=True, verbose_name="契約開始日")
     status = models.CharField(
         max_length=50,
         choices=[
@@ -20,6 +20,8 @@ class Karikeiyaku(models.Model):
         default='仮契約中', verbose_name="ステータス",
         null=True, blank=True
     )
+    handover_date = models.DateField(null=True, blank=True, verbose_name="引き渡し日")  # 契約完了日
+
 
     class Meta:
         app_label = 'karikeiyaku'

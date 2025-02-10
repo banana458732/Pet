@@ -130,7 +130,7 @@
     }
 
     /* エラーメッセージのスタイル */
-    .error-message {
+    .alert-danger {
         color: red;
         font-weight: bold;
         text-align: center;
@@ -180,7 +180,7 @@
 
     /* 戻るボタンのスタイル（左側に空白を追加） */
     .return-button {
-        padding: 10px 20px; /* ボタンサイズ */
+        padding: 10px 30px; /* ボタンサイズ */
         background-color: #6c757d; /* グレーの背景色 */
         color: white; /* 白い文字色 */
         border: none; /* ボーダーなし */
@@ -198,6 +198,22 @@
         color: #fff !important; /* 白い文字 */
         opacity: 0.6 !important; /* 見た目の透明感 */
         cursor: not-allowed !important; /* カーソルを変更 */
+    }
+    .form-footer {
+    margin-top: 30px;
+    text-align: center;
+    }
+
+    .form-footer a {
+        font-size: 1.2em;
+        color: #6c757d; /* グレー */
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .form-footer a:hover {
+        color: #565e64; /* 濃いグレー */
+        text-decoration: underline;
     }
 </style>
 
@@ -274,7 +290,7 @@
                         </tr>
                         <tr>
                             <th>郵便番号</th>
-                            <td>{{ pet.post_code }}</td>
+                            <td>{{ pet.formatted_post_code }}</td>
                         </tr>
                         <tr>
                             <th>住所</th>
@@ -282,7 +298,7 @@
                         </tr>
                         <tr>
                             <th>電話番号</th>
-                            <td>{{ pet.phone_number }}</td>
+                            <td>{{ pet.formatted_phone_number }}</td>
                         </tr>
                         <tr>
                             <th>保護施設</th>
@@ -290,40 +306,56 @@
                         </tr>
                         <tr>
                             <th>契約期限</th>
-                            <td>{{ form.end_date.value|date:'Y年m月d日' }}</td>
+                            <td>{{ created_at }} ～ {{ end_date }}</td>
                         </tr>
                     </table>
-                </div>                
-                <!-- 同意確認 -->
-                <div class="agree">
-                    {% if not user_karikeiyaku %}
-                        <label for="agreement">契約内容を確認し、同意しますか？</label>
-                        <input type="checkbox" id="agreement" name="agreement" {% if current_karikeiyaku_count >= 3 %}disabled{% endif %} required> 
-                        <label for="agreement">同意します</label>
-                    {% endif %}
                 </div>
-
+                
+                <!-- 同意確認 -->
+                {% if not user_karikeiyaku and current_karikeiyaku_count < 3 and not other_user_karikeiyaku %}
+                    <div class="agree">
+                        <label for="agreement">契約内容を確認し、同意しますか？</label>
+                        <input type="checkbox" id="agreement" name="agreement" required> 
+                        <label for="agreement">同意します</label>
+                    </div>
+                {% endif %}
+        
                 <!-- 仮契約中の場合のボタン -->
                 <div class="button-group">
                     {% if user_karikeiyaku %}
                         <button class="btn btn-primary" disabled>契約中</button>
                         <a href="{% url 'karikeiyaku:cancel' pet.id %}" class="btn btn-danger">キャンセル</a>
-                            <div class="return-button-wrapper">
-                                <a href="#" class="return-button" onclick="history.back()">戻る</a>
-                            </div>
                     {% else %}
-                        <!-- 契約がまだの場合 -->
-                        <button type="submit" class="btn btn-success" {% if current_karikeiyaku_count >= 3 %}disabled{% endif %}>契約する</button>
-                        
-                        <!-- 戻るリンク（文字のみ） -->
+                        {% if current_karikeiyaku_count < 3 and not other_user_karikeiyaku %}
+                            <button type="submit" class="btn btn-success">契約する</button>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <!-- 通常は戻るボタンを表示 -->
+                    {% if not error_message %}
                         <div class="return-button-wrapper">
                             <a href="#" class="return-button" onclick="history.back()">戻る</a>
                         </div>
                     {% endif %}
                 </div>
-            {% if not can_contract %}
-                <p class="error-message">これ以上は契約できません。</p>
-            {% endif %}
-        </section>
+
+                {% if error_message %}
+                    <div class="alert-danger">
+                        {{ error_message }}
+                    </div>
+
+                    {% if error_message == "他のユーザーが仮契約中です。契約できません。" %}
+                        <!-- トップページに戻るボタンのみ表示 -->
+                        <div class="form-footer">
+                            <p><a href="{% url 'accounts:index' %}" class="action-link">トップページに戻る</a></p>
+                        </div>
+                    {% elif error_message == "三匹以上契約できません" %}
+                        <!-- 戻るボタンのみ表示 -->
+                        <div class="return-button-wrapper">
+                            <a href="#" class="return-button" onclick="history.back()">戻る</a>
+                        </div>
+                    {% endif %}
+                {% endif %}
+        </section>                
     </div>
 {% endblock %}

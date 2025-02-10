@@ -1,53 +1,291 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>契約済み詳細ページ</title>
-    <style>
-        .detail-container {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+{% extends 'accounts/base_admin.html' %}
+
+{% block title %}契約済みのペット{% endblock %}
+
+{% block contents %}
+<style>
+    .detail-container {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+    }
+
+    h3 {
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    .table-container {
+        margin-bottom: 20px;
+    }
+
+    .center-text {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .staff-menu-link {
+    font-size: 1.2em;
+    color: #6c757d; /* グレー */
+    text-decoration: none;
+    transition: color 0.3s, text-decoration 0.3s;
+    }
+
+    .staff-menu-link:hover {
+        color: #565e64; /* 濃いグレー */
+        text-decoration: underline; /* ホバー時に下線を追加 */
+    }
+
+    .return-button-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    }
+
+    .return-button {
+        padding: 10px 30px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .return-button:hover {
+        background-color: #5a6268;
+    }
+
+    img {
+        max-width: 300px;
+        display: block;
+        margin: 10px auto;
+        border-radius: 5px; /* 画像の角を丸く */
+    }
+
+    /* ペットカードのスタイル */
+    .contract-pet-card {
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+        max-width: 800px;
+        margin: 20px auto;
+        box-sizing: border-box;
+    }
+
+    .pet-image {
+        width: 80%;
+        max-width: 200px;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    /* ペット情報テーブル */
+    .pet-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        table-layout: fixed;
+    }
+
+    .pet-info-table th,
+    .pet-info-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        word-wrap: break-word;
+    }
+
+    .pet-info-table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+        width: 30%; /* 項目の幅を30%に設定 */
+        white-space: nowrap;
+    }
+
+    .pet-info-table td {
+        background-color: #fff;
+        color: #555;
+        width: 70%; /* 値の幅を70%に設定 */
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    /* 小画面時のペット情報テーブル調整 */
+    @media (max-width: 693px) {
+        .pet-info-table {
+            width: 100%;
+            margin: 0 auto;
         }
-        .detail-container h2 {
-            color: #333;
+
+        .pet-info-table th {
+            width: 30%;  /* 少し広めに調整 */
+            font-size: 14px;
+            padding: 6px 4px;
         }
-        .pet-info, .contractor-info {
-            margin-bottom: 20px;
+
+        .pet-info-table td {
+            width: 70%;  /* 少し広めに調整 */
+            font-size: 14px;
+            padding: 6px 4px;
         }
-    </style>
-</head>
-<body>
-    <div class="detail-container">
-        <h2>契約済み詳細ページ</h2>
-        
+    }
+
+    /* 契約者情報テーブル */
+    .contract-info-table {
+        width: 100%; /* 幅を100%にして大きく表示 */
+        margin: 0 auto;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }
+
+    .contract-info-table th,
+    .contract-info-table td {
+        border: 1px solid #ddd;
+        padding: 6px 8px; /* セルのパディングをさらに小さく */
+        text-align: left;
+        font-size: 13px; /* フォントサイズをさらに小さく */
+    }
+
+    .contract-info-table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+        width: 30%; /* 項目の幅を30%に設定 */
+    }
+
+    .contract-info-table td {
+        background-color: #fff;
+        color: #555;
+        width: 70%; /* 値の幅を70%に設定 */
+    }
+
+    /* 小画面時の契約者情報テーブル調整 */
+    @media (max-width: 693px) {
+        .contract-info-table {
+            width: 100%; /* 幅を100%に変更 */
+            margin: 0 auto;
+        }
+
+        .contract-info-table th {
+            width: 30%;  /* 少し広めに調整 */
+            font-size: 14px;
+            padding: 6px 4px;
+        }
+
+        .contract-info-table td {
+            width: 70%;  /* 少し広めに調整 */
+            font-size: 14px;
+            padding: 6px 4px;
+        }
+    }
+
+    /* 大画面時（幅を100%に広げてきれいに調整） */
+    @media (min-width: 694px) {
+        .contract-info-table {
+            width: 100%; /* 幅を100%にして、大画面でも広く表示 */
+            max-width: 1200px; /* 最大幅を設定し、あまり広がりすぎないように調整 */
+            margin: 0 auto;
+        }
+
+        .contract-info-table th,
+        .contract-info-table td {
+            padding: 10px 15px; /* パディングを少し大きくして、広がりを感じさせる */
+            font-size: 14px; /* 少し大きめにフォントを設定 */
+        }
+
+        .contract-info-table th {
+            font-weight: bold;
+            width: 30%; /* 項目の幅を30%に設定 */
+        }
+
+        .contract-info-table td {
+            width: 70%; /* 値の幅を70%に設定 */
+        }
+    }
+</style>
+
+    <div class="detail-container contract-pet-card">
+
         <!-- ペット情報 -->
-        <div class="pet-info">
-            <h3>ペット情報</h3>
-            <p><strong>名前:</strong> {{ pet.id }}</p>
-            <p><strong>年齢:</strong> {{ pet.age }}歳</p>
-            <p><strong>種類:</strong> {{ pet.kinds }}</p>
+        <div class="table-container">
             {% with pet.images.first as first_image %}
                 {% if first_image and first_image.image %}
-                    <img src="{{ first_image.image.url }}" alt="{{ pet.name }}の画像" style="max-width: 300px;">
+                    <img class="pet-image" src="{{ first_image.image.url }}" alt="{{ pet.name }}の画像">
                 {% else %}
-                    <p>画像が登録されていません。</p>
+                    <p style="text-align: center;">画像が登録されていません。</p>
                 {% endif %}
             {% endwith %}
+
+            <h3>ペット情報</h3>
+            <div class="pet-info-container">
+                <table class="pet-info-table">
+                    <tr><th>ID</th><td>{{ pet.id }}</td></tr>
+                    <tr><th>種類</th><td>{{ pet.type }}</td></tr>
+                    <tr><th>サイズ</th><td>{{ pet.size }}</td></tr>
+                    <tr><th>性別</th><td>{{ pet.sex }}</td></tr>
+                    <tr><th>品種</th><td>{{ pet.kinds }}</td></tr>
+                    <tr><th>色</th><td>{{ pet.color }}</td></tr>
+                    <tr><th>年齢</th><td>{{ pet.age }}歳</td></tr>
+                    <tr><th>性格</th><td>{{ pet.personality }}</td></tr>
+                    <tr><th>病歴</th><td>{% if show_disease %}{{ pet.disease }}{% else %}なし{% endif %}</td></tr>
+                    <tr><th>郵便番号</th><td>{{ pet.formatted_post_code }}</td></tr>
+                    <tr><th>住所</th><td>{{ pet.address }}</td></tr>
+                    <tr><th>電話番号</th><td>{{ pet.formatted_phone_number }}</td></tr>
+                    <tr><th>保護施設</th><td>{{ pet.location }}</td></tr>
+                </table>
+            </div>
+            
+            <!-- 契約者情報 -->
+            <div class="contract-info-container">
+                <h3>契約者情報</h3>
+                <table class="contract-info-table">
+                    <tr><th>ユーザー名</th><td>{{ contract.user.username }}</td></tr>
+                    <tr><th>メールアドレス</th><td>{{ contract.user.email }}</td></tr>
+                    <tr><th>郵便番号</th><td>{{ user.formatted_post_code }}</td></tr>
+                    <tr><th>都道府県 市区町村</th><td>{{ contract.user.address1 }}</td></tr>
+                    {% if contract.user.address2 %}
+                        <tr><th>番地</th><td>{{ contract.user.address2 }}</td></tr>
+                    {% endif %}
+                    <tr><th>電話番号</th><td>{{ user.formatted_phone_number }}</td></tr>
+                    <tr><th>契約状況</th><td>{{ contract.status }}</td></tr>
+                    <tr><th>契約期限</th><td>{{ contract.created_at|date:"Y年m月d日" }} ~ {{ contract.end_date|date:"Y年m月d日" }}</td></tr>
+                </table>
+            </div>
         </div>
 
-        <!-- 契約者情報 -->
-        <div class="contractor-info">
-            <h3>契約者情報</h3>
-            <p><strong>名前:</strong> {{ contract.user.username }}</p>
-            <p><strong>メールアドレス:</strong> {{ contract.user.email }}</p>
-            <p><strong>契約状況:</strong> {{ contract.status }}</p>
-            <p><strong>契約日:</strong> {{ contract.created_at|date:"Y年m月d日" }}</p>
-            <p><strong>契約終了日:</strong> {{ contract.end_date|date:"Y年m月d日" }}</p>
+        <div class="return-button-wrapper">
+            <button type="button" class="return-button" onclick="history.back()">戻る</button>
         </div>
+
     </div>
-</body>
-</html>
+
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{% url 'accounts:staff_menu' %}" class="staff-menu-link">メニューに戻る</a>
+</div>
+            
+{% endblock %}

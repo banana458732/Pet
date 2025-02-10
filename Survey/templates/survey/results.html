@@ -4,7 +4,9 @@
 {% block title %}ペット情報一覧{% endblock %}
 
 {% block contents %}
-<h1 style="font-weight: bold; font-size: 38px; margin-left: 48%; transform: translateX(-25%);">マッチングしたペット情報</h1>
+<h1 style="font-weight: bold; font-size: 40px; margin-left: 48%; transform: translateX(-25%); border-bottom: 3px solid #FF4F02; padding-bottom: 5px;">
+    マッチングしたペット情報
+</h1>
 
 <!-- 検索結果の分岐 -->
 {% if pets and not latest_pets %}
@@ -28,35 +30,45 @@
         {% endfor %}
     </ul>
 
-    <!-- ページネーション -->
-    <div class="pagination" style="text-align: center; margin-top: 20px;">
-        <span class="step-links">
-            {% if page_obj.has_previous %}
-                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
-            {% else %}
-                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
-                <a href="{% url 'survey:results' %}?page=1{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
-            {% endif %}
-    
-            <span class="current">
-                ページ <span class="current-page">{{ page_obj.number }}</span> / {{ page_obj.paginator.num_pages }}
+    {% if request.GET.page or page_obj.paginator.num_pages > 1 %}
+        <div class="pagination" style="display: flex; justify-content: center; margin-top: 20px;">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    {% if request.GET.page %}
+                        <a href="{% url 'survey:results' %}?page=1" class="pagination-link">&laquo; 最初</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}" class="pagination-link">前</a>
+                    {% else %}
+                        <a href="{% url 'survey:results' %}?page=1{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">&laquo; 最初</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.previous_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">前</a>
+                    {% endif %}
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <span class="current-page">{{ num }}</span>
+                    {% else %}
+                        <a href="{% url 'survey:results' %}?page={{ num }}" class="page-num">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+        
+                {% if page_obj.has_next %}
+                    {% if request.GET.page %}
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}" class="pagination-link">次</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}" class="pagination-link">最後 &raquo;</a>
+                    {% else %}
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
+                        <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
+                    {% endif %}
+                {% endif %}
             </span>
-    
-            {% if page_obj.has_next %}
-                <a href="{% url 'survey:results' %}?page={{ page_obj.next_page_number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
-            {% else %}
-                <a href="{% url 'survey:results' %}?page={{ page_obj.number }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">次</a>
-                <a href="{% url 'survey:results' %}?page={{ page_obj.paginator.num_pages }}{% if request.GET and not request.GET.page %}&{{ request.GET.urlencode }}{% endif %}" class="pagination-link">最後 &raquo;</a>
-            {% endif %}
-        </span>
-    </div>              
+        </div>
+    {% endif %}
 
 {% elif latest_pets %}
-    <!-- 追加条件が一致しない場合（最新の3匹を表示） -->
-    <h2 class="message-not-found" style="text-align: center; margin-top: 50px;">追加条件に一致するペットが見つかりませんでした。</h2>
-    <h3 style="text-align: center;">他にもこんなペットがいます！</h3>
+    <!-- 追加条件に一致しない場合（最新の3匹を表示） -->
+    <p style="font-weight: bold; font-size: 24px; text-align: center; margin-top: 50px;">
+        条件に合うペットがいませんでした。再度詳しく検索してください。
+    </p>
     <ul>
         {% for pet, image_url in latest_pets %}
             <li>
@@ -75,11 +87,6 @@
             </li>
         {% endfor %}
     </ul>
-
-{% else %}
-    <!-- 該当するペットがいない場合 -->
-    <h1 style="text-align: center; margin-bottom: 70px; margin-top: 50px;">マッチングしたペットはいませんでした。</h1>
-    <hr>
 {% endif %}
 
 <!-- サイドバー -->
@@ -128,6 +135,9 @@
     .pet-link {
         color: gray;
         text-decoration: none;
+        writing-mode: horizontal-tb; /* 横書きにする */
+        white-space: nowrap; /* 改行を防ぐ */
+        display: inline-block; /* 必要ならインラインブロックに */
     }
 
     .pet-link:hover {
@@ -179,20 +189,60 @@
         margin-left: 330px;
     }
 
-    /* 小さい画面向けの調整 */
+    /* ページネーションのデザイン */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    /* ページ番号リンクのスタイル */
+    .page-num, .pagination-link {
+        padding: 4px 8px;
+        background-color: #f9f9f9;
+        color: black;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* ホバー時のスタイル */
+    .page-num:hover, .pagination-link:hover {
+        background-color: #e0e0e0;
+        color: #333;
+    }
+
+    /* 現在のページのスタイル */
+    .current-page {
+        padding: 4px 8px;
+        background-color: #e0e0e0;
+        color: #333;
+        font-weight: bold;
+        border-radius: 4px;
+    }
+
     @media (max-width: 500px) {
         .pet-info {
-            flex-direction: column; /* 画像と詳細を縦並びにする */
+            flex-direction: column; /* 画像と詳細は縦並び */
             align-items: center;
         }
 
         .pet-image img {
-            width: 40%; /* 親要素の90%に収まるよう調整 */
+            width: 40%;
             height: auto;
         }
 
+        /* ここで詳細部分の配置を横並びに変更する */
         .pet-details {
-            text-align: center; /* 中央揃えに変更 */
+            display: flex;
+            flex-direction: row;      /* 子要素を横並びに */
+            align-items: center;      /* 必要に応じて縦位置を中央に */
+            text-align: center;
+            writing-mode: horizontal-tb; /* 万が一の縦書き対策 */
         }
     }
 </style>

@@ -88,7 +88,7 @@
 
     /* 戻るボタンのスタイル */
     .return-button {
-        padding: 10px 20px; /* ボタンサイズ */
+        padding: 10px 30px; /* ボタンサイズ */
         background-color: #6c757d; /* グレーの背景色 */
         color: white; /* 白い文字色 */
         border: none; /* ボーダーなし */
@@ -273,15 +273,14 @@
                 <label for="{{ form.image.id_for_label }}">写真</label>
                 {{ form.image }}
     
-                <!-- フォームエラーを表示 -->
-                {% if form.errors %}
-                    <div class="error">
-                        {% for error in form.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+            <!-- フォームセット全体のエラーメッセージを表示 -->
+            {% if photo_formset.non_form_errors %}
+            <div class="error-list">
+                {% for error in photo_formset.non_form_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
             </div>
+            {% endif %}
         {% endfor %}
     </div>
     <div class="button-bun">
