@@ -68,9 +68,6 @@
     </div>
 
     <style>
-        h2 {
-
-        }
         .karikeiyaku-section {
         display: flex; /* 子要素をflexboxで配置 */
         justify-content: center; /* 横方向の中央揃え */
@@ -315,42 +312,48 @@
             background-color: #5a6268; /* ダークグレー */
         }
 
-        /* コメント全体 */
-        .comment {
-            display: flex;
-            flex-direction: column; /* コメント内容は縦に並べる */
-            margin-bottom: 20px; /* コメント間の余白 */
-            padding: 20px; /* パディングを増やして余裕を持たせる */
-            background-color: #f9f9f9; /* 明るいグレー背景 */
-            border: 1px solid #ddd; /* コメントを囲むボーダー */
-            border-radius: 10px; /* 角を丸く */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 軽いシャドウ */
-            position: relative;
-            transition: box-shadow 0.3s ease; /* ホバー時にシャドウのアニメーション */
-        }
+/* コメント全体 */
+.comment {
+    display: flex;
+    flex-direction: column; /* コメント内容は縦に並べる */
+    margin-bottom: 20px; /* コメント間の余白 */
+    padding: 20px; /* パディングを増やして余裕を持たせる */
+    background-color: #f9f9f9; /* 明るいグレー背景 */
+    border: 1px solid #ddd; /* コメントを囲むボーダー */
+    border-radius: 10px; /* 角を丸く */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 軽いシャドウ */
+    position: relative;
+    transition: box-shadow 0.3s ease; /* ホバー時にシャドウのアニメーション */
+    width: 120%; /* 横幅を70%に設定 */
+    max-width: 700px; /* 最大幅を500pxに設定 */
+    margin-left: auto; /* 左右中央寄せ */
+    margin-right: auto; /* 左右中央寄せ */
+}
 
-        /* コメントホバー時のエフェクト */
-        .comment:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* ホバー時にシャドウを強く */
-        }
+/* コメントホバー時のエフェクト */
+.comment:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* ホバー時にシャドウを強く */
+}
 
-        /* コメント者の名前 */
-        .comment strong {
-            font-weight: bold;
-            font-size: 18px; /* 名前を少し大きく */
-            color: #007BFF; /* 名前の色を青に */
-            margin-bottom: 10px; /* 名前と内容の間に余白を追加 */
-        }
+/* コメント者の名前 */
+.comment strong {
+    font-weight: bold;
+    font-size: 18px; /* 名前を少し大きく */
+    color: #007BFF; /* 名前の色を青に */
+    margin-bottom: 10px; /* 名前と内容の間に余白を追加 */
+}
+/* コメント内容 */
+.comment-content {
+    font-size: 16px; /* コメント内容のフォントサイズ */
+    line-height: 1.6; /* 行間を広げて読みやすく */
+    color: #333; /* コメント内容の色 */
+    word-wrap: break-word; /* 長い単語を折り返して表示 */
+    margin-bottom: 30px; /* コメント内容の下に余白を追加 */
+    text-align: left; /* コメント内容を左寄せ */
+    padding-left: 50px; /* 左側に余白を追加 */
+    padding-right: 20px; /* 右側にも余白を追加 */
+}
 
-        /* コメント内容 */
-        .comment-content {
-            font-size: 16px; /* コメント内容のフォントサイズ */
-            line-height: 1.6; /* 行間を広げて読みやすく */
-            color: #333; /* コメント内容の色 */
-            word-wrap: break-word; /* 長い単語を折り返して表示 */
-            margin-bottom: 30px; /* コメント内容の下に余白を追加 */
-            text-align: center !important; /* コメント内容を中央に配置 */
-        }
 
         /* コメントのタイムスタンプ */
         .comment small {
@@ -419,6 +422,7 @@
         /* スマートフォン用のレスポンシブデザイン */
         @media screen and (max-width: 600px) {
             .comment-content {
+                margin: 20px auto; /* 上下に余白 */
                 font-size: 14px; /* 小さな画面ではコメント内容のフォントサイズを小さく */
             }
 
@@ -505,43 +509,72 @@
         }
         }
 
-        /* 画面が小さい時（幅800px未満）のレイアウト */
-        @media screen and (max-width: 799px) {
-        .pet-details-container {
-            display: block;
-        }
+/* 小画面時（幅800px未満）のレイアウト */
+@media screen and (max-width: 799px) {
+    .pet-details-container {
+        display: block;
+    }
 
-        .pet-images-section {
-            display: block;
-            margin-bottom: 0;
-        }
+    .pet-images-section {
+        display: block;
+        margin-bottom: 0;
+    }
 
-        /* メイン画像のスタイル（小画面用） */
-        .main-image {
-            width: 100%;
-            height: auto;
-            margin-bottom: 0;
-            object-fit: contain; /* 画像全体を収める（切れない） */
-        }
+    /* メイン画像のスタイル（小画面用） */
+    .main-image {
+        width: 100%;
+        height: auto;
+        margin-bottom: 0;
+        object-fit: contain; /* 画像全体を収める（切れない） */
+    }
 
-        .thumbnail-images {
-            display: flex;
-            justify-content: flex-start; /* サムネイルを左寄せ */
-            gap: 5px;
-            flex-wrap: nowrap; /* 画像が横一列に並ぶように */
-            overflow-x: auto; /* 横スクロールを許可（必要なら） */
-        }
+    .thumbnail-images {
+        display: flex;
+        justify-content: flex-start; /* サムネイルを左寄せ */
+        gap: 5px;
+        flex-wrap: nowrap; /* 画像が横一列に並ぶように */
+        overflow-x: auto; /* 横スクロールを許可（必要なら） */
+    }
 
-        /* サムネイル画像のスタイル */
-        .thumbnail-images img {
-            width: calc(100% / 5 - 5px); /* 5枚の画像が横並びに収まるように調整 */
-            height: auto;
-            object-fit: contain; /* 画像が縦横比を保って収まるようにする */
-            cursor: pointer;
-            border: 1px solid #ccc; /* 枠線を追加 */
-            border-radius: 4px; /* 角を丸くする（オプション） */
-        }
-        }
+    /* サムネイル画像のスタイル */
+    .thumbnail-images img {
+        width: calc(100% / 5 - 5px); /* 5枚の画像が横並びに収まるように調整 */
+        height: auto;
+        object-fit: contain; /* 画像が縦横比を保って収まるようにする */
+        cursor: pointer;
+        border: 1px solid #ccc; /* 枠線を追加 */
+        border-radius: 4px; /* 角を丸くする（オプション） */
+    }
+
+    /* コメントのくくり（全体の幅を調整してはみ出しを防止） */
+    .comment {
+        margin: 10px auto; /* 上下に余白を追加 */
+        width: 90%; /* コメントのくくり部分の幅を90%に調整 */
+        box-sizing: border-box; /* パディングを幅に含める */
+        margin-bottom: 30px;
+    }
+
+    /* コメント内容 */
+    .comment-content {
+        font-size: 14px; /* コメント内容の文字サイズ */
+    }
+
+    /* コメント内のタイムスタンプ */
+    .comment small {
+        font-size: 12px; /* タイムスタンプのフォントサイズ */
+    }
+
+    .comment-form textarea {
+        font-size: 14px; /* 入力欄の文字サイズを小さく */
+        width: 100%; /* 入力欄が画面幅を超えないように調整 */
+        box-sizing: border-box; /* パディングを幅に含める */
+    }
+
+    .submit-button {
+        font-size: 14px; /* 送信ボタンの文字サイズを小さく */
+    }
+}
+
         /* 左側のセルに背景色をつける */
         .pet-info-table td:first-child {
             background-color: #f7f7f7; /* 左側のセルに背景色 */
